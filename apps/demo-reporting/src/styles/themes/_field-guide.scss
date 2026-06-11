@@ -1,0 +1,167 @@
+@use 'sass:map';
+@use '@angular/material' as mat;
+@use './field-guide-colors' as palettes;
+
+/// "Field Guide" — alternate brand: naturalist's notebook. Kelly green +
+/// soft coral on warm white, rounded and approachable, Outfit throughout;
+/// dark mode is a soft ink-navy charcoal rather than a warm near-black.
+/// See DESIGN.md › Multi-brand themes.
+///
+/// Palettes generated from primary `#1E9E5A` (kelly green), tertiary
+/// `#E8604C` (soft coral), neutral `#8C8A82` (warm gray) — see
+/// `_field-guide-colors.scss`. Implements the brand mixin contract
+/// documented in `_instruments.scss`.
+///
+/// Note: Field Guide's data-cell tone is DM Mono, but the component layer
+/// currently hardcodes its mono stack (`report-table.component.scss`), so
+/// no `--app-font-data` token is emitted until a hook exists there.
+
+/// Typography per DESIGN.md: Outfit for body/UI and display/headline —
+/// one geometric family keeps the notebook voice friendly and consistent.
+/// Weights match the loaded Outfit cuts (500/600/700; no 400 is shipped),
+/// so headings land at the heavier end for the display feel.
+$_typography: (
+  plain-family: 'Outfit',
+  brand-family: 'Outfit',
+  regular-weight: 500,
+  medium-weight: 600,
+  bold-weight: 700,
+);
+
+/// Dark-mode neutrals: the warm-gray neutral seed reads as warm near-black
+/// in dark mode, but Field Guide's dark expression is a soft ink-navy
+/// charcoal. These tonal maps come from the same schematic utilities with
+/// neutral / neutral-variant seed `#434B5C` and replace the warm neutrals
+/// in the dark `mat.theme` emission only.
+$_dark-neutral: (
+  0: #000000,
+  10: #141c2b,
+  20: #283040,
+  25: #343b4c,
+  30: #3f4758,
+  35: #4a5264,
+  40: #565e70,
+  50: #6f778a,
+  60: #8991a4,
+  70: #a3abbf,
+  80: #bfc6db,
+  90: #dbe2f8,
+  95: #ecf0ff,
+  98: #f9f9ff,
+  99: #fdfbff,
+  100: #ffffff,
+  4: #060e1d,
+  6: #0b1322,
+  12: #18202f,
+  17: #222a3a,
+  22: #2d3545,
+  24: #31394a,
+  87: #d2daef,
+  92: #e0e8fd,
+  94: #e8eeff,
+  96: #f1f3ff,
+);
+
+$_dark-neutral-variant: (
+  0: #000000,
+  10: #141c2b,
+  20: #283040,
+  25: #343b4c,
+  30: #3f4758,
+  35: #4a5264,
+  40: #565e70,
+  50: #6f778a,
+  60: #8991a4,
+  70: #a3abbf,
+  80: #bfc6db,
+  90: #dbe2f8,
+  95: #ecf0ff,
+  98: #f9f9ff,
+  99: #fdfbff,
+  100: #ffffff,
+);
+
+$_dark-overrides: (
+  neutral: $_dark-neutral,
+  neutral-variant: $_dark-neutral-variant,
+);
+
+$_primary-palette-dark: map.merge(palettes.$primary-palette, $_dark-overrides);
+$_tertiary-palette-dark: map.merge(
+  palettes.$tertiary-palette,
+  $_dark-overrides
+);
+
+/// Status badge tokens (container / on-container pairs).
+///
+/// Seeds — draft warm sand `#B8A77E`, sent sky blue `#3B82C4`, paid kelly
+/// green `#1E9E5A`, overdue soft coral `#E8604C`, void cool gray `#707887`.
+@mixin status-tokens-light() {
+  --app-status-draft-bg: #f4e1b4;
+  --app-status-draft-fg: #3a2f10;
+  --app-status-sent-bg: #d1e4ff;
+  --app-status-sent-fg: #001d35;
+  --app-status-paid-bg: #85faac;
+  --app-status-paid-fg: #00210e;
+  --app-status-overdue-bg: #ffdad4;
+  --app-status-overdue-fg: #400100;
+  --app-status-void-bg: #dbe3f4;
+  --app-status-void-fg: #29313e;
+}
+
+@mixin status-tokens-dark() {
+  --app-status-draft-bg: #524624;
+  --app-status-draft-fg: #f4e1b4;
+  --app-status-sent-bg: #00497b;
+  --app-status-sent-fg: #d1e4ff;
+  --app-status-paid-bg: #00522a;
+  --app-status-paid-fg: #85faac;
+  --app-status-overdue-bg: #8a1c10;
+  --app-status-overdue-fg: #ffdad4;
+  --app-status-void-bg: #3f4755;
+  --app-status-void-fg: #dbe3f4;
+}
+
+/// Shape tokens: rounded, approachable notebook chrome — cards 16px,
+/// controls 12px, badges full pills.
+@mixin radius-tokens() {
+  --app-radius-card: 16px;
+  --app-radius-control: 12px;
+  --app-radius-badge: 999px;
+}
+
+/// Emits the full light theme: color, typography, density, status,
+/// and radius tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include status-tokens-light();
+  @include radius-tokens();
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode (with the ink-navy
+/// neutrals); typography, density, and radius are inherited from the
+/// light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: $_primary-palette-dark,
+        tertiary: $_tertiary-palette-dark,
+      ),
+    )
+  );
+  @include status-tokens-dark();
+  color-scheme: dark;
+}

@@ -10,7 +10,7 @@ body {
 
 body {
   margin: 0;
-  font-family: 'Instrument Sans', sans-serif;
+  font-family: var(--mat-sys-body-large-font, 'Instrument Sans'), sans-serif;
   background-color: var(--mat-sys-surface);
   color: var(--mat-sys-on-surface);
 }

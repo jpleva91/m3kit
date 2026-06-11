@@ -1,0 +1,98 @@
+@use '@angular/material' as mat;
+@use '../theme-colors' as palettes;
+
+/// "Instruments" — the default brand. Industrial-editorial instrument panel:
+/// cobalt + burnt sienna on cool slate, Instrument Sans / DM Serif Display /
+/// JetBrains Mono. See DESIGN.md for the binding spec.
+///
+/// Brand mixin contract (every module in styles/themes/ implements this):
+/// - `brand-light()` emits the full light theme: `mat.theme` color +
+///   typography + density tokens, the `--app-status-*` badge tokens, the
+///   `--app-radius-*` shape tokens, and `color-scheme: light`.
+/// - `brand-dark()` re-emits only what changes in dark mode: `mat.theme`
+///   color tokens, the `--app-status-*` tokens, and `color-scheme: dark`.
+///   Typography, density, and radius are inherited from the light emission
+///   (the brand's light selector always also matches in dark mode).
+
+/// Typography per DESIGN.md: Instrument Sans for body/UI/labels,
+/// DM Serif Display for the brand (display/headline) roles.
+$_typography: (
+  plain-family: 'Instrument Sans',
+  brand-family: 'DM Serif Display',
+  bold-weight: 600,
+);
+
+/// Status badge tokens (container / on-container pairs) derived from the
+/// DESIGN.md status seeds. The theme is the token source: components must
+/// consume these via `var()`, never raw hex.
+///
+/// Seeds — draft `#7B7B8F`, sent `#1B4FD8`, paid `#1A6B3A`,
+/// overdue `#B91C1C`, void `#3D1A5C`.
+@mixin status-tokens-light() {
+  --app-status-draft-bg: #e2e1ec;
+  --app-status-draft-fg: #303039;
+  --app-status-sent-bg: #dce1ff;
+  --app-status-sent-fg: #001550;
+  --app-status-paid-bg: #a5f2bb;
+  --app-status-paid-fg: #00210d;
+  --app-status-overdue-bg: #ffdad6;
+  --app-status-overdue-fg: #410002;
+  --app-status-void-bg: #efdbff;
+  --app-status-void-fg: #300a52;
+}
+
+@mixin status-tokens-dark() {
+  --app-status-draft-bg: #45464f;
+  --app-status-draft-fg: #e2e1ec;
+  --app-status-sent-bg: #003ab3;
+  --app-status-sent-fg: #dce1ff;
+  --app-status-paid-bg: #00522a;
+  --app-status-paid-fg: #a5f2bb;
+  --app-status-overdue-bg: #93000a;
+  --app-status-overdue-fg: #ffdad6;
+  --app-status-void-bg: #543579;
+  --app-status-void-fg: #efdbff;
+}
+
+/// Shape tokens per DESIGN.md: cards md (10px), controls sm (6px),
+/// badges full (999px). Brands may override these per identity.
+@mixin radius-tokens() {
+  --app-radius-card: 10px;
+  --app-radius-control: 6px;
+  --app-radius-badge: 999px;
+}
+
+/// Emits the full light theme: color, typography, density, status,
+/// and radius tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include status-tokens-light();
+  @include radius-tokens();
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include status-tokens-dark();
+  color-scheme: dark;
+}

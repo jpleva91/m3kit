@@ -4,16 +4,23 @@
   "projectType": "application",
   "prefix": "app",
   "sourceRoot": "apps/demo-reporting/src",
-  "tags": ["type:app", "scope:demo"],
+  "tags": [
+    "type:app",
+    "scope:demo"
+  ],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
-      "outputs": ["{options.outputPath}"],
+      "outputs": [
+        "{options.outputPath}"
+      ],
       "options": {
         "outputPath": "dist/apps/demo-reporting",
         "index": "apps/demo-reporting/src/index.html",
         "browser": "apps/demo-reporting/src/main.ts",
-        "polyfills": ["zone.js"],
+        "polyfills": [
+          "zone.js"
+        ],
         "tsConfig": "apps/demo-reporting/tsconfig.app.json",
         "inlineStyleLanguage": "scss",
         "assets": [
@@ -22,7 +29,9 @@
             "input": "apps/demo-reporting/public"
           }
         ],
-        "styles": ["apps/demo-reporting/src/styles.scss"],
+        "styles": [
+          "apps/demo-reporting/src/styles.scss"
+        ],
         "scripts": []
       },
       "configurations": {
@@ -72,7 +81,9 @@
     },
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
         "reportsDirectory": "../../coverage/apps/demo-reporting"
       }
@@ -83,55 +94,6 @@
         "buildTarget": "demo-reporting:build",
         "staticFilePath": "dist/apps/demo-reporting/browser",
         "spa": true
-      }
-    },
-    "storybook": {
-      "executor": "@storybook/angular:start-storybook",
-      "options": {
-        "port": 4400,
-        "configDir": "apps/demo-reporting/.storybook",
-        "browserTarget": "demo-reporting:build",
-        "compodoc": false
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "build-storybook": {
-      "executor": "@storybook/angular:build-storybook",
-      "outputs": ["{options.outputDir}"],
-      "options": {
-        "outputDir": "dist/storybook/demo-reporting",
-        "configDir": "apps/demo-reporting/.storybook",
-        "browserTarget": "demo-reporting:build",
-        "compodoc": false
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "test-storybook": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "test-storybook -c apps/demo-reporting/.storybook --url=http://localhost:4400"
-      }
-    },
-    "static-storybook": {
-      "executor": "@nx/web:file-server",
-      "dependsOn": ["build-storybook"],
-      "options": {
-        "buildTarget": "demo-reporting:build-storybook",
-        "staticFilePath": "dist/storybook/demo-reporting",
-        "spa": true
-      },
-      "configurations": {
-        "ci": {
-          "buildTarget": "demo-reporting:build-storybook:ci"
-        }
       }
     }
   }

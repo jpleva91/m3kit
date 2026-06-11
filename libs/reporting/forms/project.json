@@ -4,68 +4,22 @@
   "sourceRoot": "libs/reporting/forms/src",
   "prefix": "rpt",
   "projectType": "library",
-  "tags": ["type:lib", "scope:reporting-forms"],
+  "tags": [
+    "type:lib",
+    "scope:reporting-forms"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
         "reportsDirectory": "../../../coverage/libs/reporting/forms"
       }
     },
     "lint": {
       "executor": "@nx/eslint:lint"
-    },
-    "storybook": {
-      "executor": "@storybook/angular:start-storybook",
-      "options": {
-        "port": 4401,
-        "configDir": "libs/reporting/forms/.storybook",
-        "browserTarget": "reporting-forms:build-storybook",
-        "compodoc": false,
-        "styles": ["libs/reporting/forms/.storybook/storybook-theme.scss"]
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "build-storybook": {
-      "executor": "@storybook/angular:build-storybook",
-      "outputs": ["{options.outputDir}"],
-      "options": {
-        "outputDir": "dist/storybook/reporting-forms",
-        "configDir": "libs/reporting/forms/.storybook",
-        "browserTarget": "reporting-forms:build-storybook",
-        "compodoc": false,
-        "styles": ["libs/reporting/forms/.storybook/storybook-theme.scss"]
-      },
-      "configurations": {
-        "ci": {
-          "quiet": true
-        }
-      }
-    },
-    "test-storybook": {
-      "executor": "nx:run-commands",
-      "options": {
-        "command": "test-storybook -c libs/reporting/forms/.storybook --url=http://localhost:4401"
-      }
-    },
-    "static-storybook": {
-      "executor": "@nx/web:file-server",
-      "dependsOn": ["build-storybook"],
-      "options": {
-        "buildTarget": "reporting-forms:build-storybook",
-        "staticFilePath": "dist/storybook/reporting-forms",
-        "spa": true
-      },
-      "configurations": {
-        "ci": {
-          "buildTarget": "reporting-forms:build-storybook:ci"
-        }
-      }
     },
     "component-test": {
       "executor": "@nx/cypress:cypress",

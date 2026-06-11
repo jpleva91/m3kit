@@ -1,0 +1,93 @@
+@use '@angular/material' as mat;
+@use './ledger-colors' as palettes;
+
+/// "Ledger" — alternate brand: private-bank editorial heirloom. Oxblood +
+/// gold leaf on warm paper, Fraunces / Source Sans 3, light-first and
+/// unhurried; dark mode is deep warm umber with gold accents. See
+/// DESIGN.md › Multi-brand themes.
+///
+/// Palettes generated from primary `#6B1F2A` (oxblood), tertiary `#B08D3E`
+/// (gold leaf), neutral `#8A8275` (warm stone — carries the paper warmth) —
+/// see `_ledger-colors.scss`. Implements the brand mixin contract
+/// documented in `_instruments.scss`.
+
+/// Typography per DESIGN.md: Source Sans 3 for body/UI/labels, Fraunces
+/// for the brand (display/headline) roles.
+$_typography: (
+  plain-family: 'Source Sans 3',
+  brand-family: 'Fraunces',
+  bold-weight: 600,
+);
+
+/// Status badge tokens (container / on-container pairs).
+///
+/// Seeds — draft warm stone `#8A8275`, sent gold `#B08D3E`, paid ink
+/// green `#2D5A3D`, overdue oxblood `#8C2332`, void faded plum `#6F5664`.
+@mixin status-tokens-light() {
+  --app-status-draft-bg: #ece1d2;
+  --app-status-draft-fg: #4c463b;
+  --app-status-sent-bg: #ffdf9e;
+  --app-status-sent-fg: #261a00;
+  --app-status-paid-bg: #bceec8;
+  --app-status-paid-fg: #00210f;
+  --app-status-overdue-bg: #ffdada;
+  --app-status-overdue-fg: #40000c;
+  --app-status-void-bg: #fbd9ea;
+  --app-status-void-fg: #281621;
+}
+
+@mixin status-tokens-dark() {
+  --app-status-draft-bg: #4c463b;
+  --app-status-draft-fg: #ece1d2;
+  --app-status-sent-bg: #5b4300;
+  --app-status-sent-fg: #ffdf9e;
+  --app-status-paid-bg: #224f33;
+  --app-status-paid-fg: #bceec8;
+  --app-status-overdue-bg: #861f2e;
+  --app-status-overdue-fg: #ffdada;
+  --app-status-void-bg: #57404d;
+  --app-status-void-fg: #fbd9ea;
+}
+
+/// Shape tokens: square editorial print — cards 2px, controls 2px,
+/// badges 0 (rules and stamps, not pills).
+@mixin radius-tokens() {
+  --app-radius-card: 2px;
+  --app-radius-control: 2px;
+  --app-radius-badge: 0px;
+}
+
+/// Emits the full light theme: color, typography, density, status,
+/// and radius tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include status-tokens-light();
+  @include radius-tokens();
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include status-tokens-dark();
+  color-scheme: dark;
+}

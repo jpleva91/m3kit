@@ -5,9 +5,16 @@ import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 
 describe('AppComponent', () => {
+  const BRAND_CLASSES = [
+    'theme-instruments',
+    'theme-terminal',
+    'theme-ledger',
+    'theme-field-guide',
+  ];
+
   beforeEach(async () => {
     localStorage.clear();
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('dark', ...BRAND_CLASSES);
 
     await TestBed.configureTestingModule({
       imports: [AppComponent],
@@ -17,7 +24,7 @@ describe('AppComponent', () => {
 
   afterEach(() => {
     localStorage.clear();
-    document.documentElement.classList.remove('dark');
+    document.documentElement.classList.remove('dark', ...BRAND_CLASSES);
   });
 
   it('should render the toolbar title', () => {
@@ -56,6 +63,40 @@ describe('AppComponent', () => {
     );
   });
 
+  it('should render a brand switcher that applies the selected brand class', async () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+    const switcher = compiled.querySelector<HTMLButtonElement>(
+      'mat-toolbar button.brand-switcher'
+    );
+    expect(switcher).toBeTruthy();
+
+    switcher?.click();
+    fixture.detectChanges();
+    await fixture.whenStable();
+
+    const items = Array.from(
+      document.querySelectorAll<HTMLButtonElement>('[mat-menu-item]')
+    );
+    expect(items.map((item) => item.textContent?.trim())).toEqual([
+      'checkInstruments',
+      'Terminal',
+      'Ledger',
+      'Field Guide',
+    ]);
+
+    items[1].click();
+    fixture.detectChanges();
+
+    expect(
+      document.documentElement.classList.contains('theme-terminal')
+    ).toBe(true);
+    expect(
+      JSON.parse(localStorage.getItem('demo-reporting.theme') ?? '{}')
+    ).toEqual({ brand: 'terminal', mode: 'light' });
+  });
+
   it('should toggle dark mode on the root element and persist it', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
@@ -68,7 +109,9 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     expect(document.documentElement.classList.contains('dark')).toBe(true);
-    expect(localStorage.getItem('demo-reporting.theme')).toBe('dark');
+    expect(localStorage.getItem('demo-reporting.theme')).toBe(
+      JSON.stringify({ brand: 'instruments', mode: 'dark' })
+    );
     expect(toggle?.querySelector('mat-icon')?.textContent?.trim()).toBe(
       'light_mode'
     );
@@ -77,6 +120,8 @@ describe('AppComponent', () => {
     fixture.detectChanges();
 
     expect(document.documentElement.classList.contains('dark')).toBe(false);
-    expect(localStorage.getItem('demo-reporting.theme')).toBe('light');
+    expect(localStorage.getItem('demo-reporting.theme')).toBe(
+      JSON.stringify({ brand: 'instruments', mode: 'light' })
+    );
   });
 });

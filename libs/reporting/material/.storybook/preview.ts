@@ -1,16 +1,33 @@
 import type { Preview } from '@storybook/angular';
 
+const BRANDS = ['instruments', 'terminal', 'ledger', 'field-guide'] as const;
+
 /**
- * Theme toolbar: toggles the `dark` class on the preview root element so the
- * M3 system tokens emitted by storybook-theme.scss flip between light and
- * dark color schemes.
+ * Theme toolbars: `brand` applies a `theme-<brand>` class (Instruments, the
+ * default, carries no brand class) and `mode` toggles the `dark` class on the
+ * preview root element, so the M3 system tokens emitted by
+ * storybook-theme.scss switch between the four brands and light/dark.
  */
 const preview: Preview = {
   globalTypes: {
-    theme: {
+    brand: {
+      description: 'Brand theme',
+      toolbar: {
+        title: 'Brand',
+        icon: 'paintbrush',
+        items: [
+          { value: 'instruments', title: 'Instruments' },
+          { value: 'terminal', title: 'Terminal' },
+          { value: 'ledger', title: 'Ledger' },
+          { value: 'field-guide', title: 'Field Guide' },
+        ],
+        dynamicTitle: true,
+      },
+    },
+    mode: {
       description: 'Material color scheme',
       toolbar: {
-        title: 'Theme',
+        title: 'Mode',
         icon: 'mirror',
         items: [
           { value: 'light', title: 'Light', icon: 'sun' },
@@ -21,13 +38,22 @@ const preview: Preview = {
     },
   },
   initialGlobals: {
-    theme: 'light',
+    brand: 'instruments',
+    mode: 'light',
   },
   decorators: [
     (story, context) => {
-      const isDark = context.globals['theme'] === 'dark';
-      document.documentElement.classList.toggle('dark', isDark);
-      document.body.classList.toggle('dark', isDark);
+      const brand = context.globals['brand'] ?? 'instruments';
+      const isDark = context.globals['mode'] === 'dark';
+      for (const root of [document.documentElement, document.body]) {
+        for (const candidate of BRANDS) {
+          root.classList.toggle(
+            `theme-${candidate}`,
+            candidate !== 'instruments' && candidate === brand
+          );
+        }
+        root.classList.toggle('dark', isDark);
+      }
       return story();
     },
   ],

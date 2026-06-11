@@ -1,96 +1,56 @@
-@use '@angular/material' as mat;
-@use './theme-colors' as palettes;
+@use './themes/instruments';
+@use './themes/terminal';
+@use './themes/ledger';
+@use './themes/field-guide';
 
-/// Material 3 theming for the demo app — "Instruments" design system.
+/// Multi-brand Material 3 theming aggregator.
 ///
-/// `mat.theme` emits the M3 system tokens (`--mat-sys-*`) as CSS custom
-/// properties, so switching themes is just re-emitting the color tokens
-/// under a `.dark` class scope — no duplicate component styles.
+/// Each brand module in `themes/` exposes `brand-light()` / `brand-dark()`
+/// mixins that emit the M3 system tokens (`--mat-sys-*`) via `mat.theme`
+/// plus the `--app-status-*` and `--app-radius-*` custom props (contract
+/// documented in `themes/_instruments.scss`). Switching brands or modes is
+/// just re-emitting tokens under a class scope — no duplicate component
+/// styles.
 ///
-/// Palettes are generated from the DESIGN.md seeds (cobalt `#1B4FD8`,
-/// burnt sienna `#C45F1A`, cool slate `#79808F`) in `_theme-colors.scss`.
-
-/// Typography per DESIGN.md: Instrument Sans for body/UI/labels,
-/// DM Serif Display for the brand (display/headline) roles.
-$_typography: (
-  plain-family: 'Instrument Sans',
-  brand-family: 'DM Serif Display',
-  bold-weight: 600,
-);
-
-/// Status badge tokens (container / on-container pairs) derived from the
-/// DESIGN.md status seeds. This file is the token source: components must
-/// consume these via `var()`, never raw hex.
+/// Class scheme on the root element (managed by ThemeService):
+/// - no brand class (or `theme-instruments`) → Instruments, the default
+/// - `theme-terminal` / `theme-ledger` / `theme-field-guide` → alternates
+/// - `dark` → dark mode for whichever brand is active
 ///
-/// Seeds — draft `#7B7B8F`, sent `#1B4FD8`, paid `#1A6B3A`,
-/// overdue `#B91C1C`, void `#3D1A5C`.
-@mixin status-tokens-light() {
-  --app-status-draft-bg: #e2e1ec;
-  --app-status-draft-fg: #303039;
-  --app-status-sent-bg: #dce1ff;
-  --app-status-sent-fg: #001550;
-  --app-status-paid-bg: #a5f2bb;
-  --app-status-paid-fg: #00210d;
-  --app-status-overdue-bg: #ffdad6;
-  --app-status-overdue-fg: #410002;
-  --app-status-void-bg: #efdbff;
-  --app-status-void-fg: #300a52;
-}
-
-@mixin status-tokens-dark() {
-  --app-status-draft-bg: #45464f;
-  --app-status-draft-fg: #e2e1ec;
-  --app-status-sent-bg: #003ab3;
-  --app-status-sent-fg: #dce1ff;
-  --app-status-paid-bg: #00522a;
-  --app-status-paid-fg: #a5f2bb;
-  --app-status-overdue-bg: #93000a;
-  --app-status-overdue-fg: #ffdad6;
-  --app-status-void-bg: #543579;
-  --app-status-void-fg: #efdbff;
-}
-
-/// Emits the full light theme: color, typography, and density tokens.
-@mixin light-theme() {
-  @include mat.theme(
-    (
-      color: (
-        theme-type: light,
-        primary: palettes.$primary-palette,
-        tertiary: palettes.$tertiary-palette,
-      ),
-      typography: $_typography,
-      density: 0,
-    )
-  );
-  @include status-tokens-light();
-  color-scheme: light;
-}
-
-/// Re-emits only the color tokens for dark mode; typography and density
-/// are inherited from the light theme.
-@mixin dark-theme() {
-  @include mat.theme(
-    (
-      color: (
-        theme-type: dark,
-        primary: palettes.$primary-palette,
-        tertiary: palettes.$tertiary-palette,
-      ),
-    )
-  );
-  @include status-tokens-dark();
-  color-scheme: dark;
-}
-
-/// Applies the light theme to `html` and the dark theme when the `dark`
-/// class is present on the root element.
+/// Dark selectors re-emit only color tokens; typography, density, and
+/// radius cascade from the brand's light emission, which still matches.
 @mixin app-theme() {
-  html {
-    @include light-theme();
+  html,
+  html.theme-instruments {
+    @include instruments.brand-light();
   }
 
-  html.dark {
-    @include dark-theme();
+  html.dark,
+  html.theme-instruments.dark {
+    @include instruments.brand-dark();
+  }
+
+  html.theme-terminal {
+    @include terminal.brand-light();
+  }
+
+  html.theme-terminal.dark {
+    @include terminal.brand-dark();
+  }
+
+  html.theme-ledger {
+    @include ledger.brand-light();
+  }
+
+  html.theme-ledger.dark {
+    @include ledger.brand-dark();
+  }
+
+  html.theme-field-guide {
+    @include field-guide.brand-light();
+  }
+
+  html.theme-field-guide.dark {
+    @include field-guide.brand-dark();
   }
 }

@@ -1,0 +1,100 @@
+@use '@angular/material' as mat;
+@use './terminal-colors' as palettes;
+
+/// "Terminal" — alternate brand: retro-futuristic ops console. Phosphor
+/// green + amber signal on charcoal, Archivo throughout; dark mode is the
+/// primary expression (deep near-black surfaces), light mode a restrained
+/// pale-graphite console. See DESIGN.md › Multi-brand themes.
+///
+/// Palettes generated from primary `#2FD584` (phosphor green), tertiary
+/// `#F59E0B` (amber signal), neutral `#232830` (charcoal) — see
+/// `_terminal-colors.scss`. Implements the brand mixin contract documented
+/// in `_instruments.scss`.
+///
+/// Note: Terminal's data-cell tone is IBM Plex Mono, but the component
+/// layer currently hardcodes its mono stack (`report-table.component.scss`),
+/// so no `--app-font-data` token is emitted until a hook exists there.
+
+/// Typography per DESIGN.md: Archivo for body/UI and display/headline —
+/// a single utilitarian family keeps the console register. Weights match
+/// the loaded Archivo cuts (500/600/700; no 400 is shipped).
+$_typography: (
+  plain-family: 'Archivo',
+  brand-family: 'Archivo',
+  regular-weight: 500,
+  medium-weight: 600,
+  bold-weight: 700,
+);
+
+/// Status badge tokens (container / on-container pairs).
+///
+/// Seeds — draft cool gray `#727781`, sent cyan `#22B8CF`, paid phosphor
+/// green `#2FD584`, overdue signal red `#EF4444`, void dim violet `#6B5B95`.
+@mixin status-tokens-light() {
+  --app-status-draft-bg: #dee2ed;
+  --app-status-draft-fg: #2c3139;
+  --app-status-sent-bg: #aaedfb;
+  --app-status-sent-fg: #001f26;
+  --app-status-paid-bg: #64fea8;
+  --app-status-paid-fg: #00210f;
+  --app-status-overdue-bg: #ffdad6;
+  --app-status-overdue-fg: #410002;
+  --app-status-void-bg: #e7def8;
+  --app-status-void-fg: #211934;
+}
+
+@mixin status-tokens-dark() {
+  --app-status-draft-bg: #424750;
+  --app-status-draft-fg: #dee2ed;
+  --app-status-sent-bg: #004e5b;
+  --app-status-sent-fg: #aaedfb;
+  --app-status-paid-bg: #00522e;
+  --app-status-paid-fg: #64fea8;
+  --app-status-overdue-bg: #93000a;
+  --app-status-overdue-fg: #ffdad6;
+  --app-status-void-bg: #483f60;
+  --app-status-void-fg: #e7def8;
+}
+
+/// Shape tokens: near-square console chrome — cards 4px, controls 3px,
+/// badges 3px (no pill silhouettes in Terminal).
+@mixin radius-tokens() {
+  --app-radius-card: 4px;
+  --app-radius-control: 3px;
+  --app-radius-badge: 3px;
+}
+
+/// Emits the full light theme: color, typography, density, status,
+/// and radius tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include status-tokens-light();
+  @include radius-tokens();
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include status-tokens-dark();
+  color-scheme: dark;
+}

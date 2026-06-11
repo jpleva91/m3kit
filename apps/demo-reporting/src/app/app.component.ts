@@ -5,7 +5,8 @@ import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatListModule } from '@angular/material/list';
 import { MatIconModule } from '@angular/material/icon';
 import { MatButtonModule } from '@angular/material/button';
-import { ThemeService } from './core/theme.service';
+import { MatMenuModule } from '@angular/material/menu';
+import { ThemeBrand, ThemeService } from './core/theme.service';
 
 @Component({
   imports: [
@@ -17,6 +18,7 @@ import { ThemeService } from './core/theme.service';
     MatListModule,
     MatIconModule,
     MatButtonModule,
+    MatMenuModule,
   ],
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -24,6 +26,13 @@ import { ThemeService } from './core/theme.service';
 })
 export class AppComponent {
   protected readonly themeService = inject(ThemeService);
+
+  protected readonly brands: readonly { value: ThemeBrand; label: string }[] = [
+    { value: 'instruments', label: 'Instruments' },
+    { value: 'terminal', label: 'Terminal' },
+    { value: 'ledger', label: 'Ledger' },
+    { value: 'field-guide', label: 'Field Guide' },
+  ];
 
   title = 'demo-reporting';
 }

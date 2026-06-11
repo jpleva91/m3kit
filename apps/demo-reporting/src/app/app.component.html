@@ -4,16 +4,39 @@
   <button
     mat-icon-button
     type="button"
+    class="brand-switcher"
+    aria-label="Choose brand theme"
+    [matMenuTriggerFor]="brandMenu"
+  >
+    <mat-icon>palette</mat-icon>
+  </button>
+  <mat-menu #brandMenu="matMenu">
+    @for (brand of brands; track brand.value) {
+      <button
+        mat-menu-item
+        type="button"
+        (click)="themeService.setBrand(brand.value)"
+      >
+        @if (themeService.brand() === brand.value) {
+          <mat-icon>check</mat-icon>
+        }
+        <span>{{ brand.label }}</span>
+      </button>
+    }
+  </mat-menu>
+  <button
+    mat-icon-button
+    type="button"
     class="theme-toggle"
     [attr.aria-label]="
-      themeService.theme() === 'dark'
+      themeService.mode() === 'dark'
         ? 'Switch to light mode'
         : 'Switch to dark mode'
     "
-    (click)="themeService.toggle()"
+    (click)="themeService.toggleMode()"
   >
     <mat-icon>{{
-      themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode'
+      themeService.mode() === 'dark' ? 'light_mode' : 'dark_mode'
     }}</mat-icon>
   </button>
 </mat-toolbar>
