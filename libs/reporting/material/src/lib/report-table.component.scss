@@ -22,6 +22,12 @@
     width: 100%;
   }
 
+  // Dense tables keep their analytical width; on narrow viewports the
+  // table scrolls within its own container instead of panning the page.
+  &__scroll {
+    overflow-x: auto;
+  }
+
   &__row {
     cursor: pointer;
 

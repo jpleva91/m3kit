@@ -6,3 +6,16 @@
   );
   align-items: stretch;
 }
+
+// Narrow viewports collapse to a single column; explicit spans (inline
+// styles from rptGridSpan) are neutralized so they cannot force extra
+// implicit tracks past the viewport.
+@media (max-width: 599px) {
+  :host {
+    grid-template-columns: 1fr;
+  }
+
+  :host ::ng-deep > * {
+    grid-column: auto !important;
+  }
+}
