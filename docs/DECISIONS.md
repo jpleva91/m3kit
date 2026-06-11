@@ -32,7 +32,7 @@ change anything here; version moves require a new ADR.
 
 ## ADR-002 — Library split: core / material / testing, with per-lib scope tags
 
-**Status:** Accepted
+**Status:** Accepted (amended 2026-06-11)
 
 **Decision:** Three libraries under `libs/reporting/`:
 
@@ -46,6 +46,23 @@ Dependency rules are enforced by `@nx/enforce-module-boundaries` in
 `eslint.config.mjs` (core → nothing internal; material → core; testing → core;
 app → all three). A deliberate violation was introduced once to confirm lint fails,
 then reverted.
+
+> **Amendment note (2026-06-11):** The library set has grown from three to six
+> under `libs/reporting/`. In addition to the original core/material/testing:
+>
+> - `@m3kit/dashboard` — dashboard primitives (KPI cards, detail cards, grid);
+>   may depend on core only (`scope:reporting-dashboard`)
+> - `@m3kit/forms` — typed form components and definition-driven filter forms;
+>   may depend on core only (`scope:reporting-forms`)
+> - `reporting-theme` — the SCSS-only theming SDK (`scope:reporting-theme`).
+>   It has no TypeScript entry point and therefore sits outside the
+>   TS module-boundary graph; its coupling is via SCSS `@use` and a
+>   `stylePreprocessorOptions.includePaths` entry, with cache correctness
+>   handled by `implicitDependencies` in consuming projects.
+>
+> The boundary rules extend the original scheme unchanged in spirit: core →
+> nothing internal; material/testing/dashboard/forms → core only; the app may
+> depend on all libs. The per-lib scope-tag rationale below applies to all six.
 
 **Generator choice:** all three libraries, including `core`, were generated with
 `@nx/angular` rather than `@nx/js`. This keeps tooling consistent across the three
@@ -161,7 +178,7 @@ file plus a clear README statement covers the whole tree with zero per-file nois
 
 ## ADR-009 — Theme: azure-blue prebuilt Material theme (placeholder)
 
-**Status:** Accepted (provisional)
+**Status:** Superseded 2026-06-11 (originally accepted as provisional)
 
 **Decision:** The demo app uses the prebuilt Angular Material M3 `azure-blue`
 theme, wired by the `@angular/material:ng-add` schematic, with
@@ -172,6 +189,15 @@ A prebuilt theme is zero-maintenance, obviously stock (no design assets to
 question the provenance of), and trivially replaced — adopters are expected to
 swap in their own theme, and a custom theme example may replace this placeholder
 in a later phase.
+
+> **Amendment note (2026-06-11) — superseded.** The placeholder played out
+> exactly as anticipated: the azure-blue prebuilt CSS has been removed and
+> replaced by the **Instruments design system** (see `DESIGN.md`). Theming is
+> now custom M3 Sass: tonal palettes are generated from seed colors via the
+> `@angular/material:theme-color` schematic, and a multi-brand token
+> architecture lives in `libs/reporting/theme` (component-facing `--app-*`
+> token contract plus a two-mixin brand contract), with the demo app shipping
+> additional example brands. See `docs/THEMING.md` for the full architecture.
 
 ## ADR-010 — Phased delivery model with clean-room review gates
 
@@ -201,12 +227,21 @@ along "while we're here."
 
 ## ADR-011 — Storybook 8.6 on the Material lib (dev-only tooling)
 
-**Status:** Accepted
+**Status:** Accepted (amended 2026-06-11)
 
 **Decision:** Storybook 8.6 was added via `@nx/storybook` on the
 `reporting-material` project. The stories glob is widened to include the demo
 app's components, and the Material `azure-blue` theme plus the app styles are
 loaded in the Storybook target so components render as they do in the app.
+
+> **Amendment note (2026-06-11):** With ADR-009 superseded, Storybook no
+> longer loads the azure-blue prebuilt theme. Instead,
+> `libs/reporting/material/.storybook/storybook-theme.scss` consumes the same
+> shared brand aggregator the app uses, registering all four brands
+> (Instruments, Terminal, Ledger, Field Guide); brand and light/dark mode are
+> selected via Storybook toolbar globals. The single-Storybook architecture is
+> reaffirmed: stray per-project Storybook configs that had accumulated were
+> removed, leaving `reporting-material` as the one Storybook host.
 
 Storybook is development-only tooling and is **not part of the copy-in
 deliverable**: adopters may delete `.storybook/` and `*.stories.ts` files when
@@ -217,6 +252,28 @@ Hosting it on the Material lib (with the app's stories pulled into the same
 instance) gives one place to review every visual component without adding a
 second Storybook project, and keeping it explicitly out of the adoption
 contract preserves the minimal copy-in surface from ADR-003/ADR-005.
+
+## ADR-012 — Runtime web-font and icon-font loading from Google Fonts
+
+**Status:** Accepted (2026-06-11)
+
+**Decision:** Brand typefaces and the Material Icons font are loaded at runtime
+from the Google Fonts CDN via `<link>` tags — in
+`apps/demo-reporting/src/index.html` for the app and
+`libs/reporting/material/.storybook/preview-head.html` for Storybook. The
+families loaded (Instrument Sans, DM Serif Display, JetBrains Mono, Archivo,
+IBM Plex Mono, Fraunces, Source Sans 3, Outfit, DM Mono) are all licensed
+under the SIL Open Font License; Material Icons is Apache-2.0. No font binaries
+are vendored into the repository.
+
+**Rationale:** For a public reference, CDN loading keeps the repo free of
+binary assets, makes the font provenance trivially auditable (one URL per
+document, all OFL/Apache-licensed families), and keeps brand-font swaps a
+one-line change. Adopters with offline, privacy, or supply-chain requirements
+may self-host instead — download the same OFL/Apache-licensed families, serve
+them from their own infrastructure, and replace the `<link>` tags with
+`@font-face` rules. `docs/THEMING.md` notes this self-hosting option in its
+fonts section.
 
 ## Verification record — scaffold phase (2026-06-11)
 

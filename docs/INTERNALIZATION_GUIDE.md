@@ -99,12 +99,18 @@ violation, watching lint fail, and reverting. **Repeat that proof in your worksp
 after the import, because your tag names and ESLint config are now different and the
 proof does not transfer — only the method does.
 
-1. Confirm your `@nx/enforce-module-boundaries` `depConstraints` express the four
+1. Confirm your `@nx/enforce-module-boundaries` `depConstraints` express the
    rules (in your tag vocabulary):
    - core/contracts lib → depends on no internal project
    - material/ui lib → may depend only on core
    - testing lib → may depend only on core
-   - consuming apps → may depend on all three
+   - dashboard lib → may depend only on core
+   - forms lib → may depend only on core
+   - consuming apps → may depend on all of the libs
+
+   (The theme lib is SCSS-only and has no TypeScript entry point, so it sits
+   outside the TS module-boundary graph — its coupling is via SCSS `@use` and
+   the builder's `stylePreprocessorOptions.includePaths`.)
 2. Introduce a deliberate violation: in the core lib, add a temporary import from the
    material lib, e.g.
    ```ts
@@ -156,7 +162,9 @@ merged into your copy, and no expectation that your improvements flow back.
 - [ ] `libs/reporting/*` source copied into the consumer workspace; `apps/demo-reporting`
       and the reference's root config/docs **not** copied.
 - [ ] Import paths renamed (`@m3kit/*` → your scope); zero remaining references to
-      `@m3kit/core|material|testing` in the workspace.
+      `@m3kit/core|material|testing|dashboard|forms` in the workspace, and no
+      remaining SCSS `@use 'm3kit-theme'` references under the old name if you
+      renamed the theme entry point.
 - [ ] Project names and tags renamed into your workspace's taxonomy.
 - [ ] Dependencies reconciled: Angular / Material / CDK / `@ngrx/signals` majors match
       the consumer workspace; CDK version equals Material version; no attempt to hold

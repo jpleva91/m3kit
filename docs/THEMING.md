@@ -238,6 +238,13 @@ documents):
   with your families (e.g. `&family=Space+Grotesk:wght@400;500;600`).
 - `libs/reporting/material/.storybook/preview-head.html` — same addition.
 
+Runtime loading from the Google Fonts CDN is this reference's accepted
+approach (see ADR-012 in [DECISIONS.md](./DECISIONS.md)); all families used
+are OFL-licensed (Material Icons is Apache-2.0). Adopters with offline,
+privacy, or supply-chain requirements can self-host instead: download the
+same families, serve them from your own infrastructure, and replace the
+`<link>` tags with `@font-face` rules in your global styles.
+
 ### 5. Add the brand to the Storybook toolbar
 
 In `libs/reporting/material/.storybook/preview.ts`, extend the `BRANDS` array

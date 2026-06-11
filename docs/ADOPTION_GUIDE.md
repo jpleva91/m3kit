@@ -118,7 +118,7 @@ These aliases are **the one rename adopters are expected to perform**. To move t
 own scope (say `@acme`):
 
 1. Copy the lib folders to your preferred location, e.g.
-   `libs/shared/reporting/{core,material,testing}`.
+   `libs/shared/reporting/{core,material,testing,dashboard,forms,theme}`.
 2. Add the aliases to *your* `tsconfig.base.json`:
    `"@acme/reporting-core": ["libs/shared/reporting/core/src/index.ts"]`, etc.
 3. Workspace-wide find-and-replace the import specifiers:
@@ -127,10 +127,12 @@ own scope (say `@acme`):
    `@m3kit/testing` → `@acme/reporting-testing`,
    `@m3kit/dashboard` → `@acme/reporting-dashboard`,
    `@m3kit/forms` → `@acme/reporting-forms`.
-   The only cross-lib imports are `material → core` and `testing → core`, so the
-   surface is small and entirely via the `index.ts` barrels.
+   The only cross-lib TypeScript imports are `material → core`, `testing → core`,
+   `dashboard → core`, and `forms → core`, so the surface is small and entirely
+   via the `index.ts` barrels. (`theme` is SCSS-only and has no tsconfig alias;
+   see "Bringing the theming layer across" below.)
 4. Update each copied lib's `project.json` (project names, tags) and per-lib
-   `eslint.config.mjs` / `jest.config.ts` paths to match your workspace conventions.
+   `eslint.config.mjs` / `vite.config.mts` paths to match your workspace conventions.
 5. Run your lint/test/build to confirm nothing still references `@m3kit/*`.
 
 There is no other magic: no custom executors, no generators, no path resolution outside
