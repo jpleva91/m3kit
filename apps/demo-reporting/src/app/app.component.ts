@@ -1,4 +1,7 @@
 import { Component, inject } from '@angular/core';
+import { toSignal } from '@angular/core/rxjs-interop';
+import { BreakpointObserver } from '@angular/cdk/layout';
+import { map } from 'rxjs';
 import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatSidenavModule } from '@angular/material/sidenav';
@@ -26,6 +29,14 @@ import { ThemeBrand, ThemeService } from './core/theme.service';
 })
 export class AppComponent {
   protected readonly themeService = inject(ThemeService);
+
+  /** Below this width the sidenav overlays instead of docking. */
+  protected readonly isHandset = toSignal(
+    inject(BreakpointObserver)
+      .observe('(max-width: 959px)')
+      .pipe(map((state) => state.matches)),
+    { initialValue: false },
+  );
 
   protected readonly brands: readonly { value: ThemeBrand; label: string }[] = [
     { value: 'instruments', label: 'Instruments' },
