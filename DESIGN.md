@@ -56,7 +56,7 @@ All fonts are OFL-licensed and served from Google Fonts (license-compatible with
 - **Duration:** micro(50–100ms) short(150–250ms); nothing longer without a reason.
 
 ## Multi-brand themes
-**Instruments** (this document) is the default brand. Three alternate brand themes are selectable at runtime — a brand-switcher in the app toolbar and a Storybook toolbar apply a `theme-<brand>` class (plus `dark`) to the root element, and each brand re-emits the full token set (`--mat-sys-*`, `--app-status-*`, `--app-radius-*`) from its own module in `apps/demo-reporting/src/styles/themes/`. Every brand ships light and dark. Layout signatures (navigation shape, page composition) are out of token scope — brands differ in tokens only.
+**Instruments** (this document) is the default brand. Three alternate brand themes are selectable at runtime — a brand-switcher in the app toolbar and a Storybook toolbar apply a `theme-<brand>` class (plus `dark`) to the root element, and each brand re-emits the full token set (`--mat-sys-*`, `--app-status-*`, `--app-radius-*`) from its own module — Instruments ships in `libs/reporting/theme` (the rethemable kit's contract + default brand), the three alternates live in `apps/demo-reporting/src/styles/themes/` as example consumers. Every brand ships light and dark. Layout signatures (navigation shape, page composition) are out of token scope — brands differ in tokens only.
 
 - **Terminal** — operations-console energy: phosphor green on charcoal, dark-first, utilitarian and dense; the dashboard should read like a monitoring console that happens to have a light mode.
 - **Ledger** — bookkeeper's heirloom: oxblood and gold on warm paper, serif-led and unhurried; financial gravitas without nostalgia kitsch.
@@ -69,7 +69,7 @@ All fonts are OFL-licensed and served from Google Fonts (license-compatible with
 | Ledger | `#6B1F2A` oxblood | `#B08D3E` gold | warm paper | Fraunces / Source Sans 3 |
 | Field Guide | `#1E9E5A` kelly | `#E8604C` coral | warm white | Outfit / DM Mono |
 
-Brand modules implement the mixin contract documented in `themes/_instruments.scss`: `brand-light()` emits `mat.theme` color+typography+density plus status and radius tokens; `brand-dark()` re-emits color and status tokens only.
+Brand modules implement the mixin contract documented in `@reporting/theme` (`libs/reporting/theme/src/reporting-theme/_contract.scss`, resolved via the `libs/reporting/theme/src` style includePath as `@use 'reporting-theme'`): `brand-light()` emits `mat.theme` color+typography+density plus status and radius tokens; `brand-dark()` re-emits color and status tokens only.
 
 ## Anti-patterns (binding)
 No gradients as brand. No glassmorphism. No purple bias. No shadow-on-everything. No rainbow status pills. No skeleton-shimmer theater in stories. No oversized icons (Material Symbols, small optical sizes, light weights). No hero/landing composition in the demo app.
@@ -80,3 +80,4 @@ No gradients as brand. No glassmorphism. No purple bias. No shadow-on-everything
 | 2026-06-11 | Initial "Instruments" system | Three-voice design consultation (two independent model proposals + research synthesis); unanimous on density split, mono numerics, cool neutrals; serif KPI numerals and cobalt+sienna chosen as deliberate risks; validated in a rendered light/dark preview before adoption. |
 | 2026-06-11 | Commercial font substitution | An outside proposal suggested Söhne; rejected (commercial license). Instrument Sans substituted — OFL, Google Fonts. |
 | 2026-06-11 | Multi-brand architecture | Owner decision after design exploration: four runtime-switchable brands (Instruments default + Terminal, Ledger, Field Guide), each light+dark, as token-only re-emissions behind `theme-<brand>`/`dark` classes; layout signatures stay out of token scope. |
+| 2026-06-11 | Token contract extracted to `libs/reporting/theme` | The `--app-*` custom-prop API, the `brand-light()`/`brand-dark()` mixin contract, and the default Instruments brand now live in the copy-in deliverable (`libs/reporting/theme/src/reporting-theme/_contract.scss`) rather than app styles, so adopters get the theming machinery with the components. Terminal/Ledger/Field Guide stay app-side as example consumer brands. Adopter walkthrough: `docs/THEMING.md`. |

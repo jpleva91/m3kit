@@ -2,8 +2,11 @@
  * Reuses the demo app theme aggregator
  * (apps/demo-reporting/src/styles/_theme.scss) so Storybook and the app
  * share one token source: every brand module emits the M3 system tokens
- * (--mat-sys-*) plus the --app-status-* and --app-radius-* tokens, scoped
- * by the `theme-<brand>` and `dark` classes on the root element. */
+ * (--mat-sys-*) plus the --app-status-* and --app-radius-* tokens (contract
+ * in @reporting/theme), scoped by the `theme-<brand>` and `dark` classes on
+ * the root element. The aggregator resolves `reporting-theme` through the
+ * stylePreprocessorOptions includePath `libs/reporting/theme/src` set on
+ * the storybook/build-storybook targets. */
 @use '../../../../apps/demo-reporting/src/styles/theme';
 
 @include theme.app-theme();

@@ -1,5 +1,6 @@
 @use 'sass:map';
 @use '@angular/material' as mat;
+@use 'reporting-theme' as contract;
 @use './field-guide-colors' as palettes;
 
 /// "Field Guide" — alternate brand: naturalist's notebook. Kelly green +
@@ -9,8 +10,8 @@
 ///
 /// Palettes generated from primary `#1E9E5A` (kelly green), tertiary
 /// `#E8604C` (soft coral), neutral `#8C8A82` (warm gray) — see
-/// `_field-guide-colors.scss`. Implements the brand mixin contract
-/// documented in `_instruments.scss`.
+/// `_field-guide-colors.scss`. Implements the brand mixin contract from
+/// `@reporting/theme` (`@use 'reporting-theme'`).
 ///
 /// Note: Field Guide's data-cell tone is DM Mono, but the component layer
 /// currently hardcodes its mono stack (`report-table.component.scss`), so
@@ -96,39 +97,51 @@ $_tertiary-palette-dark: map.merge(
 ///
 /// Seeds — draft warm sand `#B8A77E`, sent sky blue `#3B82C4`, paid kelly
 /// green `#1E9E5A`, overdue soft coral `#E8604C`, void cool gray `#707887`.
-@mixin status-tokens-light() {
-  --app-status-draft-bg: #f4e1b4;
-  --app-status-draft-fg: #3a2f10;
-  --app-status-sent-bg: #d1e4ff;
-  --app-status-sent-fg: #001d35;
-  --app-status-paid-bg: #85faac;
-  --app-status-paid-fg: #00210e;
-  --app-status-overdue-bg: #ffdad4;
-  --app-status-overdue-fg: #400100;
-  --app-status-void-bg: #dbe3f4;
-  --app-status-void-fg: #29313e;
-}
+$_status-light: (
+  draft: (
+    bg: #f4e1b4,
+    fg: #3a2f10,
+  ),
+  sent: (
+    bg: #d1e4ff,
+    fg: #001d35,
+  ),
+  paid: (
+    bg: #85faac,
+    fg: #00210e,
+  ),
+  overdue: (
+    bg: #ffdad4,
+    fg: #400100,
+  ),
+  void: (
+    bg: #dbe3f4,
+    fg: #29313e,
+  ),
+);
 
-@mixin status-tokens-dark() {
-  --app-status-draft-bg: #524624;
-  --app-status-draft-fg: #f4e1b4;
-  --app-status-sent-bg: #00497b;
-  --app-status-sent-fg: #d1e4ff;
-  --app-status-paid-bg: #00522a;
-  --app-status-paid-fg: #85faac;
-  --app-status-overdue-bg: #8a1c10;
-  --app-status-overdue-fg: #ffdad4;
-  --app-status-void-bg: #3f4755;
-  --app-status-void-fg: #dbe3f4;
-}
-
-/// Shape tokens: rounded, approachable notebook chrome — cards 16px,
-/// controls 12px, badges full pills.
-@mixin radius-tokens() {
-  --app-radius-card: 16px;
-  --app-radius-control: 12px;
-  --app-radius-badge: 999px;
-}
+$_status-dark: (
+  draft: (
+    bg: #524624,
+    fg: #f4e1b4,
+  ),
+  sent: (
+    bg: #00497b,
+    fg: #d1e4ff,
+  ),
+  paid: (
+    bg: #00522a,
+    fg: #85faac,
+  ),
+  overdue: (
+    bg: #8a1c10,
+    fg: #ffdad4,
+  ),
+  void: (
+    bg: #3f4755,
+    fg: #dbe3f4,
+  ),
+);
 
 /// Emits the full light theme: color, typography, density, status,
 /// and radius tokens.
@@ -144,8 +157,10 @@ $_tertiary-palette-dark: map.merge(
       density: 0,
     )
   );
-  @include status-tokens-light();
-  @include radius-tokens();
+  @include contract.status-tokens($_status-light);
+  // Shape: rounded, approachable notebook chrome — cards 16px,
+  // controls 12px, badges full pills.
+  @include contract.radius-tokens($card: 16px, $control: 12px, $badge: 999px);
   color-scheme: light;
 }
 
@@ -162,6 +177,6 @@ $_tertiary-palette-dark: map.merge(
       ),
     )
   );
-  @include status-tokens-dark();
+  @include contract.status-tokens($_status-dark);
   color-scheme: dark;
 }

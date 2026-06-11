@@ -1,0 +1,106 @@
+@use '@angular/material' as mat;
+@use '../../contract';
+@use './colors' as palettes;
+
+/// "Instruments" — the default brand. Industrial-editorial instrument panel:
+/// cobalt + burnt sienna on cool slate, Instrument Sans / DM Serif Display /
+/// JetBrains Mono. See DESIGN.md for the binding spec.
+///
+/// Implements the brand mixin contract documented in `../../_contract.scss`
+/// (`@use 'reporting-theme'`): `brand-light()` emits the full light theme,
+/// `brand-dark()` re-emits only the dark-mode color tokens.
+
+/// Typography per DESIGN.md: Instrument Sans for body/UI/labels,
+/// DM Serif Display for the brand (display/headline) roles.
+$_typography: (
+  plain-family: 'Instrument Sans',
+  brand-family: 'DM Serif Display',
+  bold-weight: 600,
+);
+
+/// Status badge tokens (container / on-container pairs) derived from the
+/// DESIGN.md status seeds.
+///
+/// Seeds — draft `#7B7B8F`, sent `#1B4FD8`, paid `#1A6B3A`,
+/// overdue `#B91C1C`, void `#3D1A5C`.
+$_status-light: (
+  draft: (
+    bg: #e2e1ec,
+    fg: #303039,
+  ),
+  sent: (
+    bg: #dce1ff,
+    fg: #001550,
+  ),
+  paid: (
+    bg: #a5f2bb,
+    fg: #00210d,
+  ),
+  overdue: (
+    bg: #ffdad6,
+    fg: #410002,
+  ),
+  void: (
+    bg: #efdbff,
+    fg: #300a52,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #45464f,
+    fg: #e2e1ec,
+  ),
+  sent: (
+    bg: #003ab3,
+    fg: #dce1ff,
+  ),
+  paid: (
+    bg: #00522a,
+    fg: #a5f2bb,
+  ),
+  overdue: (
+    bg: #93000a,
+    fg: #ffdad6,
+  ),
+  void: (
+    bg: #543579,
+    fg: #efdbff,
+  ),
+);
+
+/// Emits the full light theme: color, typography, density, status,
+/// and radius tokens. Shape per DESIGN.md: cards md (10px), controls sm
+/// (6px), badges full (999px) — the contract defaults.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  @include contract.radius-tokens();
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  color-scheme: dark;
+}

@@ -34,8 +34,8 @@ Quickstart:
 ```bash
 git clone <this-repo> && cd angular-reporting-reference
 pnpm install --frozen-lockfile
-npx nx run-many -t lint test build   # all four projects must be green
-npx nx serve demo-reporting          # Material shell + /reports route
+npx nx run-many -t lint test build   # every project must be green
+npx nx serve demo-reporting          # dashboard + reports demo, brand/mode switcher
 ```
 
 ## What to copy, what to delete
@@ -45,6 +45,9 @@ npx nx serve demo-reporting          # Material shell + /reports route
 | `libs/reporting/core` | **Copy** | The reporting contracts (report/column definitions, query/filter/sort/pagination models, datasource interfaces). UI-free; the most durable asset. |
 | `libs/reporting/material` | **Copy** (optional) | Material/CDK presentation layer. Skip or replace it if you use a different design system or grid — it depends only on `core`. |
 | `libs/reporting/testing` | **Copy** (recommended) | Synthetic data factories/fixtures and test harnesses. Depends only on `core`. Useful even if you replace the UI layer. |
+| `libs/reporting/dashboard` | **Copy** (optional) | Dashboard primitives (KPI cards, detail cards, grid). Depends only on `core`; consumes the theme token contract. |
+| `libs/reporting/forms` | **Copy** (optional) | Typed form components and definition-driven filter forms. Depends only on `core`; consumes the theme token contract. |
+| `libs/reporting/theme` | **Copy** (if you take `material`) | The SCSS-only theming SDK: the component-facing token contract (`_contract.scss`), the brand mixin contract, and the default "Instruments" brand. The `material` components consume its `--app-*` tokens; see [THEMING.md](./THEMING.md). |
 | `apps/demo-reporting` | **Delete / do not copy** | Demo-only. It exists as living documentation of how the libs wire together. Everything reusable lives in the libs; the app is disposable by design. |
 | `docs/` | Do not copy (read it) | Governance/provenance docs for *this* repo. Keep the license attribution (see below), not the docs themselves. |
 | Root config (`nx.json`, `eslint.config.mjs`, `tsconfig.base.json`, …) | Do not copy wholesale | Your workspace already has its own. Merge the two relevant pieces: the tsconfig path aliases and the boundary `depConstraints` (both covered below). |
@@ -65,16 +68,21 @@ This repo's projects are tagged:
 | `libs/reporting/core` | `type:lib`, `scope:reporting-core` |
 | `libs/reporting/material` | `type:lib`, `scope:reporting-material` |
 | `libs/reporting/testing` | `type:lib`, `scope:reporting-testing` |
+| `libs/reporting/dashboard` | `type:lib`, `scope:reporting-dashboard` |
+| `libs/reporting/forms` | `type:lib`, `scope:reporting-forms` |
+| `libs/reporting/theme` | `type:lib`, `scope:reporting-theme` |
 
 and `@nx/enforce-module-boundaries` (in the root `eslint.config.mjs`) enforces:
 
 - `core` → depends on **no** internal project
 - `material` → may depend only on `core`
 - `testing` → may depend only on `core`
-- the app → may depend on all three libs
+- `dashboard` → may depend on `core` only
+- `forms` → may depend on `core` only
+- the app → may depend on all libs
 
 **The dependency semantics are the contract; the tag names are not.** When you import
-the libs, rename the tags to fit your existing taxonomy and re-express the same four
+the libs, rename the tags to fit your existing taxonomy and re-express the same
 rules in your scheme. Examples:
 
 - If your workspace uses `scope:<domain>` + `type:<layer>` (e.g. `type:util`,
@@ -100,7 +108,9 @@ The libs are addressed via tsconfig path aliases in `tsconfig.base.json`:
 "paths": {
   "@reporting/core":     ["libs/reporting/core/src/index.ts"],
   "@reporting/material": ["libs/reporting/material/src/index.ts"],
-  "@reporting/testing":  ["libs/reporting/testing/src/index.ts"]
+  "@reporting/testing":  ["libs/reporting/testing/src/index.ts"],
+  "@reporting/dashboard": ["libs/reporting/dashboard/src/index.ts"],
+  "@reporting/forms":     ["libs/reporting/forms/src/index.ts"]
 }
 ```
 
@@ -114,7 +124,9 @@ own scope (say `@acme`):
 3. Workspace-wide find-and-replace the import specifiers:
    `@reporting/core` → `@acme/reporting-core`,
    `@reporting/material` → `@acme/reporting-material`,
-   `@reporting/testing` → `@acme/reporting-testing`.
+   `@reporting/testing` → `@acme/reporting-testing`,
+   `@reporting/dashboard` → `@acme/reporting-dashboard`,
+   `@reporting/forms` → `@acme/reporting-forms`.
    The only cross-lib imports are `material → core` and `testing → core`, so the
    surface is small and entirely via the `index.ts` barrels.
 4. Update each copied lib's `project.json` (project names, tags) and per-lib
@@ -123,6 +135,32 @@ own scope (say `@acme`):
 
 There is no other magic: no custom executors, no generators, no path resolution outside
 the standard Nx/tsconfig mechanism.
+
+## Bringing the theming layer across
+
+`libs/reporting/theme` is SCSS-only, so it sits outside the tsconfig alias mechanism.
+Its resolution goes through the builder instead — after copying the folder, wire an
+includePath on your app's build target (and on Storybook targets, if you take the
+Storybook):
+
+```jsonc
+"stylePreprocessorOptions": { "includePaths": ["libs/reporting/theme/src"] }
+```
+
+That makes `@use 'reporting-theme'` (the token/brand-mixin contract) and
+`@use 'reporting-theme/themes/instruments'` (the default brand) resolve from any
+stylesheet. Then bring your brand modules across — or author new ones for your own
+design system. Brand modules are small app-side SCSS partials that
+`@use 'reporting-theme' as contract` and implement the two-mixin contract
+(`brand-light()` / `brand-dark()`); the demo app's
+`apps/demo-reporting/src/styles/themes/` modules are the worked examples. The full
+"bring your own brand" walkthrough — token API table, palette generation, root-class
+registration, fonts, Storybook toolbar — is in [THEMING.md](./THEMING.md).
+
+One wiring detail worth keeping: the demo app and the `reporting-material` Storybook
+declare `implicitDependencies: ["reporting-theme"]` in their `project.json` so the Nx
+cache invalidates when theme SCSS changes (the project graph cannot see SCSS imports);
+re-create the equivalent in your workspace if you cache builds.
 
 ## Dependency reconciliation
 

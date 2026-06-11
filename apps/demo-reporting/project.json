@@ -8,6 +8,9 @@
     "type:app",
     "scope:demo"
   ],
+  "implicitDependencies": [
+    "reporting-theme"
+  ],
   "targets": {
     "build": {
       "executor": "@angular-devkit/build-angular:application",
@@ -32,6 +35,11 @@
         "styles": [
           "apps/demo-reporting/src/styles.scss"
         ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/reporting/theme/src"
+          ]
+        },
         "scripts": []
       },
       "configurations": {

@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use 'reporting-theme' as contract;
 @use './ledger-colors' as palettes;
 
 /// "Ledger" — alternate brand: private-bank editorial heirloom. Oxblood +
@@ -8,8 +9,8 @@
 ///
 /// Palettes generated from primary `#6B1F2A` (oxblood), tertiary `#B08D3E`
 /// (gold leaf), neutral `#8A8275` (warm stone — carries the paper warmth) —
-/// see `_ledger-colors.scss`. Implements the brand mixin contract
-/// documented in `_instruments.scss`.
+/// see `_ledger-colors.scss`. Implements the brand mixin contract from
+/// `@reporting/theme` (`@use 'reporting-theme'`).
 
 /// Typography per DESIGN.md: Source Sans 3 for body/UI/labels, Fraunces
 /// for the brand (display/headline) roles.
@@ -23,39 +24,51 @@ $_typography: (
 ///
 /// Seeds — draft warm stone `#8A8275`, sent gold `#B08D3E`, paid ink
 /// green `#2D5A3D`, overdue oxblood `#8C2332`, void faded plum `#6F5664`.
-@mixin status-tokens-light() {
-  --app-status-draft-bg: #ece1d2;
-  --app-status-draft-fg: #4c463b;
-  --app-status-sent-bg: #ffdf9e;
-  --app-status-sent-fg: #261a00;
-  --app-status-paid-bg: #bceec8;
-  --app-status-paid-fg: #00210f;
-  --app-status-overdue-bg: #ffdada;
-  --app-status-overdue-fg: #40000c;
-  --app-status-void-bg: #fbd9ea;
-  --app-status-void-fg: #281621;
-}
+$_status-light: (
+  draft: (
+    bg: #ece1d2,
+    fg: #4c463b,
+  ),
+  sent: (
+    bg: #ffdf9e,
+    fg: #261a00,
+  ),
+  paid: (
+    bg: #bceec8,
+    fg: #00210f,
+  ),
+  overdue: (
+    bg: #ffdada,
+    fg: #40000c,
+  ),
+  void: (
+    bg: #fbd9ea,
+    fg: #281621,
+  ),
+);
 
-@mixin status-tokens-dark() {
-  --app-status-draft-bg: #4c463b;
-  --app-status-draft-fg: #ece1d2;
-  --app-status-sent-bg: #5b4300;
-  --app-status-sent-fg: #ffdf9e;
-  --app-status-paid-bg: #224f33;
-  --app-status-paid-fg: #bceec8;
-  --app-status-overdue-bg: #861f2e;
-  --app-status-overdue-fg: #ffdada;
-  --app-status-void-bg: #57404d;
-  --app-status-void-fg: #fbd9ea;
-}
-
-/// Shape tokens: square editorial print — cards 2px, controls 2px,
-/// badges 0 (rules and stamps, not pills).
-@mixin radius-tokens() {
-  --app-radius-card: 2px;
-  --app-radius-control: 2px;
-  --app-radius-badge: 0px;
-}
+$_status-dark: (
+  draft: (
+    bg: #4c463b,
+    fg: #ece1d2,
+  ),
+  sent: (
+    bg: #5b4300,
+    fg: #ffdf9e,
+  ),
+  paid: (
+    bg: #224f33,
+    fg: #bceec8,
+  ),
+  overdue: (
+    bg: #861f2e,
+    fg: #ffdada,
+  ),
+  void: (
+    bg: #57404d,
+    fg: #fbd9ea,
+  ),
+);
 
 /// Emits the full light theme: color, typography, density, status,
 /// and radius tokens.
@@ -71,8 +84,10 @@ $_typography: (
       density: 0,
     )
   );
-  @include status-tokens-light();
-  @include radius-tokens();
+  @include contract.status-tokens($_status-light);
+  // Shape: square editorial print — cards 2px, controls 2px,
+  // badges 0 (rules and stamps, not pills).
+  @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 0px);
   color-scheme: light;
 }
 
@@ -88,6 +103,6 @@ $_typography: (
       ),
     )
   );
-  @include status-tokens-dark();
+  @include contract.status-tokens($_status-dark);
   color-scheme: dark;
 }

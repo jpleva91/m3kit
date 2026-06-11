@@ -1,8 +1,12 @@
 # angular-reporting-reference
 
-A clean-room Angular/Nx reference implementation of generic enterprise reporting
-patterns — report definitions, tabular display, filtering, sorting, and pagination —
-demonstrated with synthetic data in a small Angular Material demo app.
+A clean-room Angular/Nx reference implementation of a reusable, **rethemable**
+Material 3 component kit, demonstrated through a generic enterprise reporting
+domain — report definitions, tabular display, filtering, sorting, pagination,
+and dashboard primitives — with synthetic data in a small Angular Material demo
+app. Components consume design tokens only; brands are token re-emissions, so
+the entire kit reskins (four demo brands, each light + dark) without touching
+component code.
 
 This is a **reference to be read and copied, not a dependency to be installed**.
 The intended adoption model is source internalization: evaluate the repository,
@@ -49,7 +53,7 @@ Rationale for the pins and other choices is recorded in `docs/DECISIONS.md`.
 ```sh
 pnpm install
 npx nx serve demo-reporting        # http://localhost:4200
-npx nx run-many -t lint test build # verify all six projects
+npx nx run-many -t lint test build # verify every project
 ```
 
 For a reproducible install from a fresh clone, use
@@ -59,18 +63,33 @@ For a reproducible install from a fresh clone, use
 
 | Path | What it is |
 |---|---|
-| `apps/demo-reporting` | Angular 19 standalone demo app: Material toolbar + sidenav shell, lazy `/reports` placeholder route. Disposable during adoption. |
+| `apps/demo-reporting` | Angular 19 standalone demo app: Material shell with dashboard, invoices, and customers pages, plus the brand/mode switcher. Disposable during adoption. |
 | `libs/reporting/core` (`@reporting/core`) | Reporting contracts. No Material/CDK, no internal dependencies. |
 | `libs/reporting/material` (`@reporting/material`) | Material/CDK UI layer. May depend on core only. |
 | `libs/reporting/testing` (`@reporting/testing`) | Test harnesses and synthetic data factories. May depend on core only. |
 | `libs/reporting/dashboard` (`@reporting/dashboard`) | Dashboard primitives: KPI cards, detail cards, grid. May depend on core only. |
 | `libs/reporting/forms` (`@reporting/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
-| `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `DECISIONS.md`. |
+| `libs/reporting/theme` (`@reporting/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
+| `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `THEMING.md`, `DECISIONS.md`. |
 | `LICENSE` | Apache License 2.0 full text. |
 
 Library dependency rules (core depends on nothing internal; material, testing,
 dashboard, and forms each depend on core only; the app may use all five) are
 machine-enforced via `@nx/enforce-module-boundaries` in `eslint.config.mjs`.
+The SCSS-only theme lib sits outside the TypeScript import graph; its consumers
+resolve it through a `stylePreprocessorOptions` includePath instead (see
+`docs/THEMING.md`).
+
+## Theming
+
+The component libraries are styled exclusively through tokens: Material 3
+system tokens (`--mat-sys-*`) plus a small `--app-*` contract defined in
+`libs/reporting/theme`. A brand implements two mixins (`brand-light()` /
+`brand-dark()`) and is registered under a root class; the demo app ships four
+runtime-switchable brands as proof. To bring your own brand — generated M3
+palettes, status badge colors, shape radii, fonts, Storybook toolbar — follow
+`docs/THEMING.md`. The visual system itself (the binding design spec for the
+demo brands) is in `DESIGN.md`.
 
 ## Adopting this reference
 

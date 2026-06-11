@@ -20,21 +20,39 @@ export default [
               sourceTag: 'scope:reporting-core',
               onlyDependOnLibsWithTags: [],
             },
+            // SCSS-only theming contract + default brand; depends on
+            // nothing, anything may depend on it (styles-level only).
+            {
+              sourceTag: 'scope:reporting-theme',
+              onlyDependOnLibsWithTags: [],
+            },
             {
               sourceTag: 'scope:reporting-material',
-              onlyDependOnLibsWithTags: ['scope:reporting-core'],
+              onlyDependOnLibsWithTags: [
+                'scope:reporting-core',
+                'scope:reporting-theme',
+              ],
             },
             {
               sourceTag: 'scope:reporting-testing',
-              onlyDependOnLibsWithTags: ['scope:reporting-core'],
+              onlyDependOnLibsWithTags: [
+                'scope:reporting-core',
+                'scope:reporting-theme',
+              ],
             },
             {
               sourceTag: 'scope:reporting-dashboard',
-              onlyDependOnLibsWithTags: ['scope:reporting-core'],
+              onlyDependOnLibsWithTags: [
+                'scope:reporting-core',
+                'scope:reporting-theme',
+              ],
             },
             {
               sourceTag: 'scope:reporting-forms',
-              onlyDependOnLibsWithTags: ['scope:reporting-core'],
+              onlyDependOnLibsWithTags: [
+                'scope:reporting-core',
+                'scope:reporting-theme',
+              ],
             },
             {
               sourceTag: 'type:app',
@@ -44,6 +62,7 @@ export default [
                 'scope:reporting-testing',
                 'scope:reporting-dashboard',
                 'scope:reporting-forms',
+                'scope:reporting-theme',
               ],
             },
           ],

@@ -1,4 +1,5 @@
 @use '@angular/material' as mat;
+@use 'reporting-theme' as contract;
 @use './terminal-colors' as palettes;
 
 /// "Terminal" — alternate brand: retro-futuristic ops console. Phosphor
@@ -8,8 +9,8 @@
 ///
 /// Palettes generated from primary `#2FD584` (phosphor green), tertiary
 /// `#F59E0B` (amber signal), neutral `#232830` (charcoal) — see
-/// `_terminal-colors.scss`. Implements the brand mixin contract documented
-/// in `_instruments.scss`.
+/// `_terminal-colors.scss`. Implements the brand mixin contract from
+/// `@reporting/theme` (`@use 'reporting-theme'`).
 ///
 /// Note: Terminal's data-cell tone is IBM Plex Mono, but the component
 /// layer currently hardcodes its mono stack (`report-table.component.scss`),
@@ -30,39 +31,51 @@ $_typography: (
 ///
 /// Seeds — draft cool gray `#727781`, sent cyan `#22B8CF`, paid phosphor
 /// green `#2FD584`, overdue signal red `#EF4444`, void dim violet `#6B5B95`.
-@mixin status-tokens-light() {
-  --app-status-draft-bg: #dee2ed;
-  --app-status-draft-fg: #2c3139;
-  --app-status-sent-bg: #aaedfb;
-  --app-status-sent-fg: #001f26;
-  --app-status-paid-bg: #64fea8;
-  --app-status-paid-fg: #00210f;
-  --app-status-overdue-bg: #ffdad6;
-  --app-status-overdue-fg: #410002;
-  --app-status-void-bg: #e7def8;
-  --app-status-void-fg: #211934;
-}
+$_status-light: (
+  draft: (
+    bg: #dee2ed,
+    fg: #2c3139,
+  ),
+  sent: (
+    bg: #aaedfb,
+    fg: #001f26,
+  ),
+  paid: (
+    bg: #64fea8,
+    fg: #00210f,
+  ),
+  overdue: (
+    bg: #ffdad6,
+    fg: #410002,
+  ),
+  void: (
+    bg: #e7def8,
+    fg: #211934,
+  ),
+);
 
-@mixin status-tokens-dark() {
-  --app-status-draft-bg: #424750;
-  --app-status-draft-fg: #dee2ed;
-  --app-status-sent-bg: #004e5b;
-  --app-status-sent-fg: #aaedfb;
-  --app-status-paid-bg: #00522e;
-  --app-status-paid-fg: #64fea8;
-  --app-status-overdue-bg: #93000a;
-  --app-status-overdue-fg: #ffdad6;
-  --app-status-void-bg: #483f60;
-  --app-status-void-fg: #e7def8;
-}
-
-/// Shape tokens: near-square console chrome — cards 4px, controls 3px,
-/// badges 3px (no pill silhouettes in Terminal).
-@mixin radius-tokens() {
-  --app-radius-card: 4px;
-  --app-radius-control: 3px;
-  --app-radius-badge: 3px;
-}
+$_status-dark: (
+  draft: (
+    bg: #424750,
+    fg: #dee2ed,
+  ),
+  sent: (
+    bg: #004e5b,
+    fg: #aaedfb,
+  ),
+  paid: (
+    bg: #00522e,
+    fg: #64fea8,
+  ),
+  overdue: (
+    bg: #93000a,
+    fg: #ffdad6,
+  ),
+  void: (
+    bg: #483f60,
+    fg: #e7def8,
+  ),
+);
 
 /// Emits the full light theme: color, typography, density, status,
 /// and radius tokens.
@@ -78,8 +91,10 @@ $_typography: (
       density: 0,
     )
   );
-  @include status-tokens-light();
-  @include radius-tokens();
+  @include contract.status-tokens($_status-light);
+  // Shape: near-square console chrome — cards 4px, controls 3px,
+  // badges 3px (no pill silhouettes in Terminal).
+  @include contract.radius-tokens($card: 4px, $control: 3px, $badge: 3px);
   color-scheme: light;
 }
 
@@ -95,6 +110,6 @@ $_typography: (
       ),
     )
   );
-  @include status-tokens-dark();
+  @include contract.status-tokens($_status-dark);
   color-scheme: dark;
 }

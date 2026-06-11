@@ -4,11 +4,19 @@
   "sourceRoot": "libs/reporting/material/src",
   "prefix": "lib",
   "projectType": "library",
-  "tags": ["type:lib", "scope:reporting-material"],
+  "tags": [
+    "type:lib",
+    "scope:reporting-material"
+  ],
+  "implicitDependencies": [
+    "reporting-theme"
+  ],
   "targets": {
     "test": {
       "executor": "@nx/vite:test",
-      "outputs": ["{options.reportsDirectory}"],
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
       "options": {
         "reportsDirectory": "../../../coverage/libs/reporting/material"
       }
@@ -23,7 +31,14 @@
         "configDir": "libs/reporting/material/.storybook",
         "browserTarget": "reporting-material:build-storybook",
         "compodoc": false,
-        "styles": ["libs/reporting/material/.storybook/storybook-theme.scss"]
+        "styles": [
+          "libs/reporting/material/.storybook/storybook-theme.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/reporting/theme/src"
+          ]
+        }
       },
       "configurations": {
         "ci": {
@@ -33,13 +48,22 @@
     },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
-      "outputs": ["{options.outputDir}"],
+      "outputs": [
+        "{options.outputDir}"
+      ],
       "options": {
         "outputDir": "dist/storybook/reporting-material",
         "configDir": "libs/reporting/material/.storybook",
         "browserTarget": "reporting-material:build-storybook",
         "compodoc": false,
-        "styles": ["libs/reporting/material/.storybook/storybook-theme.scss"]
+        "styles": [
+          "libs/reporting/material/.storybook/storybook-theme.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/reporting/theme/src"
+          ]
+        }
       },
       "configurations": {
         "ci": {
@@ -55,7 +79,9 @@
     },
     "static-storybook": {
       "executor": "@nx/web:file-server",
-      "dependsOn": ["build-storybook"],
+      "dependsOn": [
+        "build-storybook"
+      ],
       "options": {
         "buildTarget": "reporting-material:build-storybook",
         "staticFilePath": "dist/storybook/reporting-material",
