@@ -91,7 +91,7 @@ in any brand module for worked values).
 
 | Token | Consumed by | Light/dark notes |
 |---|---|---|
-| `--app-font-data` | **Optional / not yet consumed.** The data-cell (tabular figures / mono) stack. The component layer currently hardcodes its mono stack in `report-table.component.scss`; brands emit this token only once that hook exists. The `font-data()` helper is ready in the contract. | Light-only emission; dark inherits. |
+| `--app-font-data` | **Optional / consumed by report-table data cells, kpi-card/kpi-strip values, and chart axis labels (with 'JetBrains Mono' fallback).** The data-cell (tabular figures / mono) stack. The component layer currently hardcodes its mono stack in `report-table.component.scss`; brands emit this token only once that hook exists. The `font-data()` helper is ready in the contract. | Light-only emission; dark inherits. |
 
 ### Chart series tokens
 
