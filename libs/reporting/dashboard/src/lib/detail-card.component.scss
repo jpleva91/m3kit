@@ -4,6 +4,8 @@
 
 .rpt-detail-card {
   height: 100%;
+  // Brand shape contract: cards take the brand's card radius.
+  border-radius: var(--app-radius-card, 12px);
 
   &__header {
     position: relative;
