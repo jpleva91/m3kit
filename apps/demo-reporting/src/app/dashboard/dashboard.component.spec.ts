@@ -33,6 +33,13 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
   }
 
+  it('renders the page title as the rpt-page-header h1', () => {
+    const heading = element.querySelector('rpt-page-header h1');
+    expect(heading?.textContent?.trim()).toBe('Dashboard');
+    // The shell page header carries the page's single h1.
+    expect(element.querySelectorAll('h1').length).toBe(1);
+  });
+
   it('renders four KPI cards inside the dashboard grid', () => {
     const labels = Array.from(
       element.querySelectorAll('rpt-dashboard-grid rpt-kpi-card .rpt-kpi-card__label'),
@@ -103,7 +110,7 @@ describe('DashboardComponent', () => {
 
   it('renders the latest-invoice and top-customer detail cards', () => {
     const titles = Array.from(
-      element.querySelectorAll('rpt-detail-card mat-card-title'),
+      element.querySelectorAll('rpt-detail-card [mat-card-title]'),
     ).map((title) => title.textContent?.trim());
     expect(titles).toEqual(['Latest invoice', 'Top customer']);
 

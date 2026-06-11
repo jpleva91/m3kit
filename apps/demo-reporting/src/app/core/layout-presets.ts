@@ -1,22 +1,15 @@
+import { ShellPreset } from '@m3kit/shell';
 import { ThemeBrand } from './theme.service';
 
 /**
- * Shell layout presets the app can render. Layout stays brand-agnostic in
- * the libs; the app layer merely picks a default shell per brand.
- *
- * - `sidenav`        toolbar + responsive side navigation (default shell)
- * - `command-bar`    single top command bar with inline nav + status footline
- * - `contents-rail`  editorial left rail with a contents-style nav list
- * - `pill-tabs`      top toolbar with centered pill-shaped tab navigation
+ * The shell's preset union, re-exported under the app's historical name.
+ * Layout stays brand-agnostic in the libs (`@m3kit/shell` owns the presets);
+ * the app layer merely picks a default shell per brand.
  */
-export type LayoutPreset =
-  | 'sidenav'
-  | 'command-bar'
-  | 'contents-rail'
-  | 'pill-tabs';
+export type LayoutPreset = ShellPreset;
 
 /** Default shell layout for each brand theme. */
-export const BRAND_LAYOUT_PRESETS: Record<ThemeBrand, LayoutPreset> = {
+export const BRAND_LAYOUT_PRESETS: Record<ThemeBrand, ShellPreset> = {
   instruments: 'sidenav',
   terminal: 'command-bar',
   ledger: 'contents-rail',

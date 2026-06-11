@@ -20,6 +20,7 @@
       "@m3kit/dashboard": ["libs/reporting/dashboard/src/index.ts"],
       "@m3kit/forms": ["libs/reporting/forms/src/index.ts"],
       "@m3kit/material": ["libs/reporting/material/src/index.ts"],
+      "@m3kit/shell": ["libs/reporting/shell/src/index.ts"],
       "@m3kit/testing": ["libs/reporting/testing/src/index.ts"]
     }
   },

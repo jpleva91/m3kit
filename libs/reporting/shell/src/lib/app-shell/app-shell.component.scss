@@ -1,3 +1,7 @@
+// Promoted verbatim from apps/demo-reporting/src/app/app.component.scss —
+// class names and the 959px handset query are unchanged to preserve pixel
+// parity. Token-only: var(--mat-sys-*) + the closed --app-* contract.
+
 :host {
   display: flex;
   flex-direction: column;
@@ -285,7 +289,7 @@
   flex: 1;
   overflow: auto;
   width: 100%;
-    margin: 0 auto;
+  margin: 0 auto;
   padding: 16px;
   box-sizing: border-box;
 }

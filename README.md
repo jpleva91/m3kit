@@ -69,12 +69,14 @@ For a reproducible install from a fresh clone, use
 | `libs/reporting/testing` (`@m3kit/testing`) | Test harnesses and synthetic data factories. May depend on core only. |
 | `libs/reporting/dashboard` (`@m3kit/dashboard`) | Dashboard primitives: KPI cards, detail cards, grid. May depend on core only. |
 | `libs/reporting/forms` (`@m3kit/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
+| `libs/reporting/shell` (`@m3kit/shell`) | App shell presets and page chrome: `rpt-app-shell` (four chrome presets), page header, breadcrumbs, content layout. May depend on core only. |
 | `libs/reporting/theme` (`@m3kit/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
 | `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `THEMING.md`, `DECISIONS.md`. |
 | `LICENSE` | Apache License 2.0 full text. |
 
 Library dependency rules (core depends on nothing internal; material, testing,
-dashboard, and forms each depend on core only; the app may use all five) are
+dashboard, forms, and shell each depend on core only; the app may use all of
+them) are
 machine-enforced via `@nx/enforce-module-boundaries` in `eslint.config.mjs`.
 The SCSS-only theme lib sits outside the TypeScript import graph; its consumers
 resolve it through a `stylePreprocessorOptions` includePath instead (see

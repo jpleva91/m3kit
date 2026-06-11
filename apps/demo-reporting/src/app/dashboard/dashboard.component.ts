@@ -15,6 +15,7 @@ import {
   KpiStripComponent,
   KpiStripItem,
 } from '@m3kit/dashboard';
+import { PageHeaderComponent } from '@m3kit/shell';
 import { Invoice, makeInvoices, makeSupportTickets } from '@m3kit/testing';
 
 import { BRAND_LAYOUT_PRESETS } from '../core/layout-presets';
@@ -59,6 +60,7 @@ const PERIOD_MIDPOINT = '2026-03-17T00:00:00.000Z';
     KpiCardComponent,
     KpiStripComponent,
     LineChartComponent,
+    PageHeaderComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',

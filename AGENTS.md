@@ -26,6 +26,7 @@ component code.
 | `libs/reporting/dashboard` | `@m3kit/dashboard` | core, theme |
 | `libs/reporting/charts` | `@m3kit/charts` | core, theme |
 | `libs/reporting/forms` | `@m3kit/forms` | core, theme |
+| `libs/reporting/shell` | `@m3kit/shell` | core, theme |
 | `apps/demo-reporting` | — | all of the above |
 
 Rules are machine-enforced by `@nx/enforce-module-boundaries` in the root
@@ -42,6 +43,9 @@ material — `report-table`, `report-filter-bar`, `report-toolbar`;
 dashboard — `dashboard-grid`, `kpi-card`, `kpi-strip`, `detail-card`;
 charts — `line-chart`, `bar-chart`, `donut-chart`, `chart-legend`,
 `chart-card`; forms — `form-field`, `form-section`, `filter-form`;
+shell — `app-shell` (four chrome presets), `page-header`, `breadcrumbs`,
+`content-layout`, plus the `ShellToolbarActionsDirective` /
+`ShellRailFooterDirective` template slots;
 testing — `seeded-random`, factories, report definitions.
 
 ## THE CONTRACT (binding)
@@ -75,9 +79,9 @@ Every exported component ships three artifacts beside it in `src/lib/`:
 - `*.spec.ts` — Vitest unit spec (`@nx/vite:test`)
 - `*.stories.ts` — Storybook story (collected by the single Storybook host,
   `libs/reporting/material/.storybook/main.ts`, which globs material, charts,
-  dashboard, forms, and the demo app)
+  dashboard, forms, shell, and the demo app)
 - `*.cy.ts` — Cypress component test (`component-test` target on material,
-  charts, dashboard, forms)
+  charts, dashboard, forms, shell)
 
 Commands (verified against `project.json` targets):
 

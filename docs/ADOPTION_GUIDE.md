@@ -47,6 +47,7 @@ npx nx serve demo-reporting          # dashboard + reports demo, brand/mode swit
 | `libs/reporting/testing` | **Copy** (recommended) | Synthetic data factories/fixtures and test harnesses. Depends only on `core`. Useful even if you replace the UI layer. |
 | `libs/reporting/dashboard` | **Copy** (optional) | Dashboard primitives (KPI cards, detail cards, grid). Depends only on `core`; consumes the theme token contract. |
 | `libs/reporting/forms` | **Copy** (optional) | Typed form components and definition-driven filter forms. Depends only on `core`; consumes the theme token contract. |
+| `libs/reporting/shell` | **Copy** (optional) | App chrome: the four-preset `rpt-app-shell` plus page header, breadcrumbs, and content layout. Depends only on `core`; consumes the theme token contract. Brand→preset mapping stays app policy — bring your own. |
 | `libs/reporting/theme` | **Copy** (if you take `material`) | The SCSS-only theming SDK: the component-facing token contract (`_contract.scss`), the brand mixin contract, and the default "Instruments" brand. The `material` components consume its `--app-*` tokens; see [THEMING.md](./THEMING.md). |
 | `apps/demo-reporting` | **Delete / do not copy** | Demo-only. It exists as living documentation of how the libs wire together. Everything reusable lives in the libs; the app is disposable by design. |
 | `docs/` | Do not copy (read it) | Governance/provenance docs for *this* repo. Keep the license attribution (see below), not the docs themselves. |

@@ -7,6 +7,7 @@ const config: StorybookConfig = {
     '../../charts/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../dashboard/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../forms/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+    '../../shell/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../../../apps/demo-reporting/src/app/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
   ],
   addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],

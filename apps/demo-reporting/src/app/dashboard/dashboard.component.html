@@ -7,7 +7,7 @@
   <!-- Terminal: hairline KPI strip, tight three-up chart row, compact details. -->
   @case ('command-bar') {
     <section class="dashboard dashboard--command-bar">
-      <h1 class="dashboard__title">Dashboard</h1>
+      <rpt-page-header class="dashboard__header" title="Dashboard" />
 
       <rpt-kpi-strip class="dashboard__strip" [items]="kpiStripItems" />
 
@@ -54,7 +54,7 @@
   <!-- Ledger: typeset figure rail; charts stack single-column in the broadsheet. -->
   @case ('contents-rail') {
     <section class="dashboard dashboard--contents-rail">
-      <h1 class="dashboard__title">Dashboard</h1>
+      <rpt-page-header class="dashboard__header" title="Dashboard" />
 
       <div class="dashboard__columns">
         <section class="dashboard__figures" aria-label="Principal figures">
@@ -129,7 +129,7 @@
   <!-- Field Guide: the default composition with sentiment corner accents. -->
   @case ('pill-tabs') {
     <section class="dashboard">
-      <h1 class="dashboard__title">Dashboard</h1>
+      <rpt-page-header class="dashboard__header" title="Dashboard" />
 
       <rpt-dashboard-grid minColumnWidth="14rem" gap="1rem">
         <rpt-kpi-card
@@ -214,7 +214,7 @@
   <!-- Instruments (sidenav): KPI grid, two-up charts, full-width bars, details. -->
   @default {
     <section class="dashboard">
-      <h1 class="dashboard__title">Dashboard</h1>
+      <rpt-page-header class="dashboard__header" title="Dashboard" />
 
       <rpt-dashboard-grid minColumnWidth="14rem" gap="1rem">
         <rpt-kpi-card

@@ -66,6 +66,13 @@ export default [
               ],
             },
             {
+              sourceTag: 'scope:reporting-shell',
+              onlyDependOnLibsWithTags: [
+                'scope:reporting-core',
+                'scope:reporting-theme',
+              ],
+            },
+            {
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
                 'scope:reporting-core',
@@ -74,6 +81,7 @@ export default [
                 'scope:reporting-charts',
                 'scope:reporting-dashboard',
                 'scope:reporting-forms',
+                'scope:reporting-shell',
                 'scope:reporting-theme',
               ],
             },

@@ -275,6 +275,37 @@ them from their own infrastructure, and replace the `<link>` tags with
 `@font-face` rules. `docs/THEMING.md` notes this self-hosting option in its
 fonts section.
 
+## ADR-013 — Shell library: app chrome promoted from the demo app to `@m3kit/shell`
+
+**Status:** Accepted (2026-06-11)
+
+**Decision:** The application shell — the four chrome presets (`sidenav`,
+`command-bar`, `contents-rail`, `pill-tabs`), page header, breadcrumbs, and
+content layout — is promoted out of `apps/demo-reporting` into a new library,
+`libs/reporting/shell` (`@m3kit/shell`, tags `type:lib, scope:reporting-shell`).
+The preset markup/styles were relocated (not redesigned) from the app's
+`AppComponent` into `rpt-app-shell`, with consumer content injected through
+projected `ng-content` plus template-slot directives
+(`ShellToolbarActionsDirective`, `ShellRailFooterDirective`). The
+brand→preset mapping (`BRAND_LAYOUT_PRESETS`) deliberately stays in the demo
+app: the shell exposes the brand-agnostic `ShellPreset` union, and which brand
+gets which chrome remains app policy. The boundary follows the sibling libs —
+`scope:reporting-shell` may depend on `core` (and the SCSS-only theme token
+contract) only, never on `material`/`dashboard`/`charts`/`forms`/`testing`;
+the constraint is enforced in `eslint.config.mjs` and was proven with a
+deliberate violation (logged in `BOUNDARY_LOG.md`).
+
+**Rationale:** The demo app carried the most reusable chrome in the repo as
+private app code, which contradicted the adoption model (libs are the asset,
+the app is disposable). Promoting it makes the shell copyable per
+`ADOPTION_GUIDE.md` and puts it under the full coverage bar (spec, story,
+Cypress CT per exported component). Keeping brand→preset selection out of the
+lib keeps layout orthogonal to theming — adopters with one brand, or different
+chrome-per-brand opinions, take the presets without inheriting demo policy.
+Template-slot directives (rather than `@Input` templates or subclassing) keep
+the consumer surface declarative and let each preset stamp the same projected
+controls at its own preset-appropriate position.
+
 ## Verification record — scaffold phase (2026-06-11)
 
 - In-workspace gate: `npx nx run-many -t lint test build` green for all four

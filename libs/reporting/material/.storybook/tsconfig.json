@@ -16,6 +16,8 @@
     "../../dashboard/src/**/*.component.ts",
     "../../forms/src/**/*.stories.ts",
     "../../forms/src/**/*.component.ts",
+    "../../shell/src/**/*.stories.ts",
+    "../../shell/src/**/*.component.ts",
     "../../../../apps/demo-reporting/src/app/**/*.stories.ts",
     "../../../../apps/demo-reporting/src/app/**/*.component.ts",
     "*.js",

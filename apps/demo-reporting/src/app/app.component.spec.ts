@@ -98,21 +98,28 @@ describe('AppComponent', () => {
     ).toEqual({ brand: 'terminal', mode: 'light' });
   });
 
-  it('should switch to the command-bar layout preset for the terminal brand', () => {
+  it('should switch the shell to the command-bar preset for the terminal brand', () => {
     const fixture = TestBed.createComponent(AppComponent);
     fixture.detectChanges();
     const compiled = fixture.nativeElement as HTMLElement;
 
+    // All chrome renders inside the @m3kit/shell app shell.
+    const shell = compiled.querySelector<HTMLElement>('rpt-app-shell');
+    expect(shell).toBeTruthy();
+
     // Default brand (instruments) renders the sidenav shell.
-    expect(compiled.querySelector('mat-sidenav-container')).toBeTruthy();
-    expect(compiled.querySelector('header.command-bar')).toBeNull();
+    expect(shell?.querySelector('mat-sidenav-container')).toBeTruthy();
+    expect(shell?.querySelector('header.command-bar')).toBeNull();
 
     TestBed.inject(ThemeService).setBrand('terminal');
     fixture.detectChanges();
 
-    expect(compiled.querySelector('mat-sidenav-container')).toBeNull();
-    expect(compiled.querySelector('header.command-bar')).toBeTruthy();
-    expect(compiled.querySelector('footer.command-footline')).toBeTruthy();
+    expect(shell?.querySelector('mat-sidenav-container')).toBeNull();
+    expect(shell?.querySelector('header.command-bar')).toBeTruthy();
+    expect(shell?.querySelector('footer.command-footline')).toBeTruthy();
+
+    // The app's routed view stays projected through the preset change.
+    expect(shell?.querySelector('main.command-content router-outlet')).toBeTruthy();
   });
 
   it('should toggle dark mode on the root element and persist it', () => {

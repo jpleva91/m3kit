@@ -1,206 +1,50 @@
-<!-- Brand/dark controls shared by every layout preset. -->
-<ng-template #toolbarControls>
-  <button
-    mat-icon-button
-    type="button"
-    class="brand-switcher"
-    aria-label="Choose brand theme"
-    [matMenuTriggerFor]="brandMenu"
-  >
-    <mat-icon>palette</mat-icon>
-  </button>
-  <mat-menu #brandMenu="matMenu">
-    @for (brand of brands; track brand.value) {
-      <button
-        mat-menu-item
-        type="button"
-        role="menuitemradio"
-        [attr.aria-checked]="themeService.brand() === brand.value"
-        (click)="themeService.setBrand(brand.value)"
-      >
-        @if (themeService.brand() === brand.value) {
-          <mat-icon>check</mat-icon>
-        }
-        <span>{{ brand.label }}</span>
-      </button>
-    }
-  </mat-menu>
-  <button
-    mat-icon-button
-    type="button"
-    class="theme-toggle"
-    [attr.aria-label]="
-      themeService.mode() === 'dark'
-        ? 'Switch to light mode'
-        : 'Switch to dark mode'
-    "
-    (click)="themeService.toggleMode()"
-  >
-    <mat-icon>{{
-      themeService.mode() === 'dark' ? 'light_mode' : 'dark_mode'
-    }}</mat-icon>
-  </button>
-</ng-template>
-
-<!-- The single routed view, stamped into whichever shell is active. -->
-<ng-template #content>
-  <router-outlet />
-</ng-template>
-
-@switch (layoutPreset()) {
-  <!-- 'command-bar': single top bar, inline nav, status footline. -->
-  @case ('command-bar') {
-    <header class="command-bar">
-      <div class="command-prompt">
-        <span class="command-caret">~$</span>
-        <span class="command-title">{{ title }}</span>
-        <span class="command-cursor"></span>
-      </div>
-      <nav class="command-nav">
-        @for (link of navLinks; track link.path) {
-          <a
-            [routerLink]="link.path"
-            routerLinkActive="active"
-            ariaCurrentWhenActive="page"
-            [routerLinkActiveOptions]="{ exact: link.exact }"
-          >
-            <span class="command-pre">./</span>{{ link.label }}
-          </a>
-        }
-      </nav>
-      <span class="toolbar-spacer"></span>
-      <div class="command-controls">
-        <ng-container [ngTemplateOutlet]="toolbarControls" />
-      </div>
-    </header>
-    <main class="command-content">
-      <ng-container [ngTemplateOutlet]="content" />
-    </main>
-    <footer class="command-footline">
-      <span class="footline-cell"
-        ><span class="footline-ok">●</span> sync ok</span
-      >
-      <span class="toolbar-spacer"></span>
-      <span class="footline-cell">region us-east-1</span>
-    </footer>
-  }
-
-  <!-- 'contents-rail': editorial left rail with contents-style nav. -->
-  @case ('contents-rail') {
-    <mat-sidenav-container class="rail-container">
-      <mat-sidenav
-        #rail
-        class="rail"
-        [mode]="isHandset() ? 'over' : 'side'"
-        [opened]="!isHandset()"
-      >
-        <div class="rail-body">
-          <div class="rail-masthead">{{ title }}</div>
-          <nav class="rail-nav">
-            @for (link of navLinks; track link.path) {
-              <a
-                [routerLink]="link.path"
-                routerLinkActive="active"
-            ariaCurrentWhenActive="page"
-                [routerLinkActiveOptions]="{ exact: link.exact }"
-                (click)="isHandset() && rail.close()"
-              >
-                <span>{{ link.label }}</span>
-                <!-- Folio-style contents number (single digit per nav size). -->
-                <span class="rail-folio">0{{ $index + 1 }}</span>
-              </a>
-            }
-          </nav>
-          <div class="rail-foot">
-            <ng-container [ngTemplateOutlet]="toolbarControls" />
-          </div>
-        </div>
-      </mat-sidenav>
-      <mat-sidenav-content class="rail-content">
-        @if (isHandset()) {
-          <button
-            mat-icon-button
-            type="button"
-            class="nav-toggle"
-            aria-label="Toggle navigation"
-            (click)="rail.toggle()"
-          >
-            <mat-icon>menu</mat-icon>
-          </button>
-        }
-        <ng-container [ngTemplateOutlet]="content" />
-      </mat-sidenav-content>
-    </mat-sidenav-container>
-  }
-
-  <!-- 'pill-tabs': toolbar with centered pill-shaped tab navigation. -->
-  @case ('pill-tabs') {
-    <mat-toolbar class="pill-toolbar">
-      <span class="pill-title">{{ title }}</span>
-      <nav class="pill-nav">
-        @for (link of navLinks; track link.path) {
-          <a
-            [routerLink]="link.path"
-            routerLinkActive="active"
-            ariaCurrentWhenActive="page"
-            [routerLinkActiveOptions]="{ exact: link.exact }"
-            >{{ link.label }}</a
-          >
-        }
-      </nav>
-      <div class="pill-controls">
-        <ng-container [ngTemplateOutlet]="toolbarControls" />
-      </div>
-    </mat-toolbar>
-    <main class="pill-content">
-      <ng-container [ngTemplateOutlet]="content" />
-    </main>
-  }
-
-  <!-- 'sidenav' (default): toolbar + responsive side navigation. -->
-  @default {
-    <mat-toolbar color="primary">
-      @if (isHandset()) {
+<!-- All chrome (presets, nav, handset behavior) lives in @m3kit/shell;
+     the app projects its theme controls and its router-outlet. -->
+<rpt-app-shell [preset]="layoutPreset()" [nav]="navLinks" [title]="title">
+  <!-- Brand/dark controls stamped at every preset's controls position. -->
+  <ng-template rptShellToolbarActions>
+    <button
+      mat-icon-button
+      type="button"
+      class="brand-switcher"
+      aria-label="Choose brand theme"
+      [matMenuTriggerFor]="brandMenu"
+    >
+      <mat-icon>palette</mat-icon>
+    </button>
+    <mat-menu #brandMenu="matMenu">
+      @for (brand of brands; track brand.value) {
         <button
-          mat-icon-button
+          mat-menu-item
           type="button"
-          class="nav-toggle"
-          aria-label="Toggle navigation"
-          (click)="sidenav.toggle()"
+          role="menuitemradio"
+          [attr.aria-checked]="themeService.brand() === brand.value"
+          (click)="themeService.setBrand(brand.value)"
         >
-          <mat-icon>menu</mat-icon>
+          @if (themeService.brand() === brand.value) {
+            <mat-icon>check</mat-icon>
+          }
+          <span>{{ brand.label }}</span>
         </button>
       }
-      <span>{{ title }}</span>
-      <span class="toolbar-spacer"></span>
-      <ng-container [ngTemplateOutlet]="toolbarControls" />
-    </mat-toolbar>
+    </mat-menu>
+    <button
+      mat-icon-button
+      type="button"
+      class="theme-toggle"
+      [attr.aria-label]="
+        themeService.mode() === 'dark'
+          ? 'Switch to light mode'
+          : 'Switch to dark mode'
+      "
+      (click)="themeService.toggleMode()"
+    >
+      <mat-icon>{{
+        themeService.mode() === 'dark' ? 'light_mode' : 'dark_mode'
+      }}</mat-icon>
+    </button>
+  </ng-template>
 
-    <mat-sidenav-container class="app-container">
-      <mat-sidenav
-        #sidenav
-        [mode]="isHandset() ? 'over' : 'side'"
-        [opened]="!isHandset()"
-      >
-        <mat-nav-list (click)="isHandset() && sidenav.close()">
-          @for (link of navLinks; track link.path) {
-            <a
-              mat-list-item
-              [routerLink]="link.path"
-              routerLinkActive="active-link"
-              ariaCurrentWhenActive="page"
-              [routerLinkActiveOptions]="{ exact: link.exact }"
-            >
-              <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
-              <span matListItemTitle>{{ link.label }}</span>
-            </a>
-          }
-        </mat-nav-list>
-      </mat-sidenav>
-
-      <mat-sidenav-content class="app-content">
-        <ng-container [ngTemplateOutlet]="content" />
-      </mat-sidenav-content>
-    </mat-sidenav-container>
-  }
-}
+  <!-- The single routed view, stamped into whichever shell is active. -->
+  <router-outlet />
+</rpt-app-shell>

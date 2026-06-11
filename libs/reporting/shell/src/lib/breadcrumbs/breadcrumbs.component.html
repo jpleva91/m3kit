@@ -1,0 +1,22 @@
+<nav class="rpt-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="rpt-breadcrumbs__list">
+    @for (item of items(); track $index; let last = $last) {
+      <li class="rpt-breadcrumbs__item">
+        @if (!last && item.path) {
+          <a class="rpt-breadcrumbs__link" [routerLink]="item.path">{{
+            item.label
+          }}</a>
+        } @else if (!last) {
+          <span class="rpt-breadcrumbs__text">{{ item.label }}</span>
+        } @else {
+          <span class="rpt-breadcrumbs__current" aria-current="page">{{
+            item.label
+          }}</span>
+        }
+        @if (!last) {
+          <span class="rpt-breadcrumbs__separator" aria-hidden="true">/</span>
+        }
+      </li>
+    }
+  </ol>
+</nav>
