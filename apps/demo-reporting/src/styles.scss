@@ -4,6 +4,10 @@
 @include theme.app-theme();
 
 html,
+html {
+  font-family: var(--mat-sys-body-large-font, 'Instrument Sans'), sans-serif;
+}
+
 body {
   height: 100%;
 }
