@@ -234,16 +234,23 @@ export const ButtonToggle: Story = {
   },
 };
 
+// Reactive form instances are cyclic objects; building them inside render()
+// keeps them out of Storybook's serialized args.
 export const DateRange: Story = {
   args: {
     label: 'Billing period',
     type: 'date-range',
-    range: new FormGroup({
-      start: new FormControl<Date | null>(new Date(2026, 0, 1)),
-      end: new FormControl<Date | null>(new Date(2026, 0, 31)),
-    }),
     hint: 'Both dates are inclusive.',
   },
+  render: (args) => ({
+    props: {
+      ...args,
+      range: new FormGroup({
+        start: new FormControl<Date | null>(new Date(2026, 0, 1)),
+        end: new FormControl<Date | null>(new Date(2026, 0, 31)),
+      }),
+    },
+  }),
 };
 
 export const DateRangeRequiredError: Story = {
@@ -251,13 +258,13 @@ export const DateRangeRequiredError: Story = {
     label: 'Billing period',
     type: 'date-range',
     required: true,
-    range: (() => {
-      const range = new FormGroup({
-        start: new FormControl<Date | null>(null, Validators.required),
-        end: new FormControl<Date | null>(null, Validators.required),
-      });
-      range.markAllAsTouched();
-      return range;
-    })(),
+  },
+  render: (args) => {
+    const range = new FormGroup({
+      start: new FormControl<Date | null>(null, Validators.required),
+      end: new FormControl<Date | null>(null, Validators.required),
+    });
+    range.markAllAsTouched();
+    return { props: { ...args, range } };
   },
 };
