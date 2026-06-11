@@ -29,8 +29,8 @@
   &__value {
     margin-top: 0.5rem;
     // DESIGN.md signature move: large KPI values render in the brand
-    // serif (DM Serif Display ships regular weight only).
-    font-family: 'DM Serif Display', serif;
+    // display family (Instruments: DM Serif Display; other brands theirs).
+    font-family: var(--mat-sys-display-large-font, 'DM Serif Display'), serif;
     font-size: 1.75rem;
     font-weight: 400;
     line-height: 1.2;
