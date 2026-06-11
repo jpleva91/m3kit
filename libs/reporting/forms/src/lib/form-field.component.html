@@ -1,0 +1,66 @@
+<mat-form-field class="rpt-form-field__field" appearance="outline">
+  <mat-label>{{ label() }}</mat-label>
+
+  @switch (type()) {
+    @case ('select') {
+      <mat-select [formControl]="control()" [required]="required()">
+        <mat-option [value]="null">—</mat-option>
+        @for (option of options(); track option.value) {
+          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+        }
+      </mat-select>
+    }
+    @case ('date') {
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [formControl]="control()"
+        [required]="required()"
+        [attr.aria-label]="label()"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker" />
+      <mat-datepicker #picker />
+    }
+    @case ('number') {
+      <input
+        matInput
+        type="number"
+        [formControl]="control()"
+        [required]="required()"
+        [attr.aria-label]="label()"
+      />
+    }
+    @case ('currency') {
+      <input
+        matInput
+        type="number"
+        inputmode="decimal"
+        step="0.01"
+        [formControl]="control()"
+        [required]="required()"
+        [attr.aria-label]="label()"
+      />
+    }
+    @default {
+      <input
+        matInput
+        type="text"
+        [formControl]="control()"
+        [required]="required()"
+        [attr.aria-label]="label()"
+      />
+    }
+  }
+
+  @if (hint()) {
+    <mat-hint>{{ hint() }}</mat-hint>
+  }
+
+  @if (control().hasError('required')) {
+    <mat-error>{{ label() }} is required.</mat-error>
+  } @else if (control().hasError('min')) {
+    <mat-error>{{ label() }} must be at least {{ minBound() }}.</mat-error>
+  } @else if (control().hasError('max')) {
+    <mat-error>{{ label() }} must be at most {{ maxBound() }}.</mat-error>
+  }
+</mat-form-field>

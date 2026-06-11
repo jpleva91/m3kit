@@ -1,0 +1,10 @@
+.dashboard {
+  padding: 1.5rem;
+
+  &__title {
+    margin: 0 0 1rem;
+    font-size: 1.375rem;
+    font-weight: 500;
+    color: var(--mat-sys-on-surface);
+  }
+}

@@ -1,13 +1,42 @@
 <mat-toolbar color="primary">
   <span>{{ title }}</span>
+  <span class="toolbar-spacer"></span>
+  <button
+    mat-icon-button
+    type="button"
+    class="theme-toggle"
+    [attr.aria-label]="
+      themeService.theme() === 'dark'
+        ? 'Switch to light mode'
+        : 'Switch to dark mode'
+    "
+    (click)="themeService.toggle()"
+  >
+    <mat-icon>{{
+      themeService.theme() === 'dark' ? 'light_mode' : 'dark_mode'
+    }}</mat-icon>
+  </button>
 </mat-toolbar>
 
 <mat-sidenav-container class="app-container">
   <mat-sidenav mode="side" opened>
     <mat-nav-list>
-      <a mat-list-item routerLink="/reports" routerLinkActive="active-link">
+      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>dashboard</mat-icon>
+        <span matListItemTitle>Dashboard</span>
+      </a>
+      <a
+        mat-list-item
+        routerLink="/reports"
+        routerLinkActive="active-link"
+        [routerLinkActiveOptions]="{ exact: true }"
+      >
         <mat-icon matListItemIcon>table_chart</mat-icon>
-        <span matListItemTitle>Reports</span>
+        <span matListItemTitle>Invoices</span>
+      </a>
+      <a mat-list-item routerLink="/reports/customers" routerLinkActive="active-link">
+        <mat-icon matListItemIcon>group</mat-icon>
+        <span matListItemTitle>Customers</span>
       </a>
     </mat-nav-list>
   </mat-sidenav>

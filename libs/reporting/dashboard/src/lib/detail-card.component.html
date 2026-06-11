@@ -1,0 +1,30 @@
+<mat-card appearance="outlined" class="rpt-detail-card">
+  <mat-card-header class="rpt-detail-card__header">
+    <mat-card-title>{{ title() }}</mat-card-title>
+    @if (subtitle(); as sub) {
+      <mat-card-subtitle>{{ sub }}</mat-card-subtitle>
+    }
+    <div class="rpt-detail-card__actions">
+      <ng-content select="[rptDetailCardActions]" />
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (rows().length > 0) {
+      <dl class="rpt-detail-card__rows">
+        @for (row of rows(); track row.label) {
+          <div class="rpt-detail-card__row">
+            <dt class="rpt-detail-card__row-label">{{ row.label }}</dt>
+            <dd class="rpt-detail-card__row-value">{{ row.value }}</dd>
+          </div>
+        }
+      </dl>
+    } @else {
+      <p class="rpt-detail-card__empty">No details available.</p>
+    }
+  </mat-card-content>
+
+  <mat-card-footer class="rpt-detail-card__footer">
+    <ng-content select="[rptDetailCardFooter]" />
+  </mat-card-footer>
+</mat-card>

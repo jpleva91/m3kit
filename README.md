@@ -19,11 +19,12 @@ tooling rather than convention. All example content uses synthetic domains only
 (customers, orders, invoices, support tickets, products); see `docs/CLEAN_ROOM.md`
 for the provenance policy.
 
-**Status:** scaffold phase complete and verified — initial commit landed and
-the fresh-clone check passed (lockfile-driven install, then lint/test/build
-green for all four projects; see `docs/DECISIONS.md`). Workspace, libraries,
-enforced boundaries, and a placeholder Material shell are in place. Reporting
-features land in later phases, behind the clean-room review gate.
+**Status:** feature phase — scaffold verified (see `docs/DECISIONS.md`), then
+the reporting feature set landed behind the clean-room review gate: core
+contracts and query engine, the Material report table/filter/toolbar suite,
+dashboard primitives, definition-driven filter forms, synthetic data factories,
+and a Storybook covering every component. Unit tests run on Vitest; component
+tests on Cypress.
 
 ## Pinned stack
 
@@ -48,7 +49,7 @@ Rationale for the pins and other choices is recorded in `docs/DECISIONS.md`.
 ```sh
 pnpm install
 npx nx serve demo-reporting        # http://localhost:4200
-npx nx run-many -t lint test build # verify all four projects
+npx nx run-many -t lint test build # verify all six projects
 ```
 
 For a reproducible install from a fresh clone, use
@@ -62,12 +63,14 @@ For a reproducible install from a fresh clone, use
 | `libs/reporting/core` (`@reporting/core`) | Reporting contracts. No Material/CDK, no internal dependencies. |
 | `libs/reporting/material` (`@reporting/material`) | Material/CDK UI layer. May depend on core only. |
 | `libs/reporting/testing` (`@reporting/testing`) | Test harnesses and synthetic data factories. May depend on core only. |
+| `libs/reporting/dashboard` (`@reporting/dashboard`) | Dashboard primitives: KPI cards, detail cards, grid. May depend on core only. |
+| `libs/reporting/forms` (`@reporting/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
 | `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `DECISIONS.md`. |
 | `LICENSE` | Apache License 2.0 full text. |
 
-Library dependency rules (core depends on nothing internal; material → core;
-testing → core; the app may use all three) are machine-enforced via
-`@nx/enforce-module-boundaries` in `eslint.config.mjs`.
+Library dependency rules (core depends on nothing internal; material, testing,
+dashboard, and forms each depend on core only; the app may use all five) are
+machine-enforced via `@nx/enforce-module-boundaries` in `eslint.config.mjs`.
 
 ## Adopting this reference
 

@@ -1,0 +1,8 @@
+<mat-toolbar class="rpt-report-toolbar">
+  <span class="rpt-report-toolbar__title">{{ title() }}</span>
+  @if (rowCount() !== null) {
+    <span class="rpt-report-toolbar__count">{{ rowCount() }} rows</span>
+  }
+  <span class="rpt-report-toolbar__spacer"></span>
+  <ng-content />
+</mat-toolbar>

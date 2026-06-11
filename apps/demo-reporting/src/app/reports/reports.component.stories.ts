@@ -1,11 +1,16 @@
 import type { Meta, StoryObj } from '@storybook/angular';
+import { expect, within } from '@storybook/test';
+import { applicationConfig } from '@storybook/angular';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { ReportsComponent } from './reports.component';
-import { within } from '@storybook/testing-library';
-import { expect } from '@storybook/jest';
 
 const meta: Meta<ReportsComponent> = {
   component: ReportsComponent,
-  title: 'ReportsComponent',
+  title: 'App/ReportsComponent',
+  decorators: [
+    applicationConfig({ providers: [provideNoopAnimations(), provideNativeDateAdapter()] }),
+  ],
 };
 export default meta;
 type Story = StoryObj<ReportsComponent>;
@@ -18,6 +23,7 @@ export const Heading: Story = {
   args: {},
   play: async ({ canvasElement }) => {
     const canvas = within(canvasElement);
-    expect(canvas.getByText(/reports works!/gi)).toBeTruthy();
+    expect(canvas.getAllByText(/Invoices/i).length).toBeGreaterThan(0);
+    expect(canvas.getAllByText(/INV-2026-/i).length).toBeGreaterThan(0);
   },
 };

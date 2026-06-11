@@ -1,0 +1,39 @@
+<mat-card appearance="outlined" class="rpt-kpi-card">
+  <mat-card-content>
+    <div class="rpt-kpi-card__header">
+      @if (icon(); as iconName) {
+        <mat-icon class="rpt-kpi-card__icon" aria-hidden="true">{{ iconName }}</mat-icon>
+      }
+      <span class="rpt-kpi-card__label">{{ label() }}</span>
+    </div>
+
+    <div class="rpt-kpi-card__value">{{ formattedValue() }}</div>
+
+    @if (delta() !== null) {
+      <div
+        class="rpt-kpi-card__delta"
+        [class.rpt-kpi-card__delta--up]="delta()! > 0"
+        [class.rpt-kpi-card__delta--down]="delta()! < 0"
+      >
+        @if (delta()! > 0) {
+          <mat-icon class="rpt-kpi-card__delta-icon" aria-hidden="true">arrow_upward</mat-icon>
+        } @else if (delta()! < 0) {
+          <mat-icon class="rpt-kpi-card__delta-icon" aria-hidden="true">arrow_downward</mat-icon>
+        }
+        <span>{{ formattedDelta() }}</span>
+      </div>
+    }
+
+    @if (sparklinePoints(); as points) {
+      <svg
+        class="rpt-kpi-card__sparkline"
+        [attr.viewBox]="sparklineViewBox"
+        preserveAspectRatio="none"
+        role="img"
+        aria-label="Trend sparkline"
+      >
+        <polyline [attr.points]="points" fill="none" stroke-width="2" />
+      </svg>
+    }
+  </mat-card-content>
+</mat-card>

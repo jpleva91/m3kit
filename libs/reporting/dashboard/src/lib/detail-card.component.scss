@@ -1,0 +1,62 @@
+:host {
+  display: block;
+}
+
+.rpt-detail-card {
+  height: 100%;
+
+  &__header {
+    position: relative;
+    padding-right: 3rem;
+  }
+
+  &__actions {
+    position: absolute;
+    top: 0.75rem;
+    right: 0.75rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__rows {
+    margin: 0;
+  }
+
+  &__row {
+    display: flex;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: 0.5rem 0;
+
+    & + & {
+      border-top: 1px solid var(--mat-sys-outline-variant);
+    }
+  }
+
+  &__row-label {
+    font-size: 0.8125rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__row-value {
+    margin: 0;
+    font-size: 0.875rem;
+    font-weight: 500;
+    text-align: right;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__empty {
+    margin: 0;
+    font-size: 0.875rem;
+    font-style: italic;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__footer {
+    &:not(:empty) {
+      padding: 0 1rem 1rem;
+    }
+  }
+}

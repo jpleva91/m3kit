@@ -1,0 +1,19 @@
+<section class="report-page">
+  <rpt-report-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
+
+  <rpt-report-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
+
+  <rpt-report-table
+    #table
+    [definition]="definition"
+    [dataSource]="dataSource"
+    [textFilter]="filterText()"
+    (rowClicked)="onRowClicked($event)"
+  />
+
+  @if (selectedCustomer(); as customer) {
+    <p class="selection-hint">
+      Selected customer: {{ customer.customerName }} ({{ customer.companyName }})
+    </p>
+  }
+</section>

@@ -1,0 +1,8 @@
+:host {
+  display: grid;
+  grid-template-columns: repeat(
+    auto-fill,
+    minmax(min(var(--rpt-dashboard-grid-min-column-width, 16rem), 100%), 1fr)
+  );
+  align-items: stretch;
+}

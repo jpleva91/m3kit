@@ -49,7 +49,8 @@ then reverted.
 
 **Generator choice:** all three libraries, including `core`, were generated with
 `@nx/angular` rather than `@nx/js`. This keeps tooling consistent across the three
-libs (same generator, same lint/Jest wiring) and gives `core` an Angular-compatible
+libs (same generator, same lint/test wiring — Jest at generation time, Vitest
+since the ADR-005 amendment of 2026-06-11) and gives `core` an Angular-compatible
 test setup out of the box. `core` nonetheless stays free of Angular Material/CDK
 imports — that freedom is enforced by the boundary rule, not by the generator.
 
@@ -84,28 +85,40 @@ See `docs/ADOPTION_GUIDE.md` and `docs/INTERNALIZATION_GUIDE.md`.
 **Status:** Accepted
 
 **Decision:** The workspace was generated with `--e2eTestRunner=none`. No e2e
-project exists. Unit testing is Jest via Nx defaults, with at least one passing
-spec per project.
+project exists. Unit testing is Vitest (originally Jest; see the ADR-005
+amendment of 2026-06-11), with at least one passing spec per project.
 
 **Rationale:** In a scaffold with placeholder code only, e2e tests would assert
 nothing meaningful while adding tooling weight that adopters would have to strip
 or reconcile. The decision is a deferral, not a rejection: revisit once the
 Material reporting shell exists and there are real user flows to cover.
 
-## ADR-005 — Tooling: esbuild application builder, Jest, ESLint flat config
+## ADR-005 — Tooling: esbuild application builder, Vitest, ESLint flat config
 
-**Status:** Accepted
+**Status:** Accepted (amended 2026-06-11)
 
-**Decision:** Use the Nx 20 / Angular 19 defaults unmodified: the esbuild
-`@angular/build` application builder, Jest via `@nx/jest` +
-`jest-preset-angular`, and ESLint flat config exactly as Nx generates it. The
+**Decision (as amended 2026-06-11):** Use the esbuild `@angular/build`
+application builder and ESLint flat config exactly as Nx generates them; the
 only lint addition is the module-boundary `depConstraints` block (ADR-002).
+Unit testing is **Vitest** via `@nx/vite:test` with
+`@analogjs/vite-plugin-angular` (one `vite.config.mts` and `src/test-setup.ts`
+per project), and component testing for the UI libraries is **Cypress component
+testing** via `@nx/cypress` with the stock `nxComponentTestingPreset`.
 No webpack, no custom builders, no bespoke plugin stack.
+
+> **Amendment note (2026-06-11):** As originally accepted, this ADR specified
+> Jest via `@nx/jest` + `jest-preset-angular` (the Nx generator default at
+> scaffold time). The workspace was migrated from Jest to Vitest + Cypress CT;
+> every project's `test` target now runs `@nx/vite:test`, and the Jest configs
+> were removed. The esbuild and ESLint portions of the original decision are
+> unchanged.
 
 **Rationale:** Stock tooling is the most copy-in-friendly tooling. Every
 deviation from generator defaults is something an adopting team must understand,
 reproduce, or undo; the defaults are documented upstream and familiar to any
-current Angular/Nx team.
+current Angular/Nx team. Vitest keeps the test runner on the same Vite/esbuild
+toolchain as the builder, which is faster and has a smaller config surface than
+the Jest setup it replaces.
 
 ## ADR-006 — Package manager: pnpm
 

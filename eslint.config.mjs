@@ -29,11 +29,21 @@ export default [
               onlyDependOnLibsWithTags: ['scope:reporting-core'],
             },
             {
+              sourceTag: 'scope:reporting-dashboard',
+              onlyDependOnLibsWithTags: ['scope:reporting-core'],
+            },
+            {
+              sourceTag: 'scope:reporting-forms',
+              onlyDependOnLibsWithTags: ['scope:reporting-core'],
+            },
+            {
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
                 'scope:reporting-core',
                 'scope:reporting-material',
                 'scope:reporting-testing',
+                'scope:reporting-dashboard',
+                'scope:reporting-forms',
               ],
             },
           ],

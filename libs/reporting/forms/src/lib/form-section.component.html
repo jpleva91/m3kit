@@ -1,0 +1,11 @@
+<section class="rpt-form-section">
+  <header class="rpt-form-section__header">
+    <h3 class="rpt-form-section__title">{{ title() }}</h3>
+    @if (description()) {
+      <p class="rpt-form-section__description">{{ description() }}</p>
+    }
+  </header>
+  <div class="rpt-form-section__content">
+    <ng-content />
+  </div>
+</section>

@@ -7,10 +7,10 @@
   "tags": ["type:lib", "scope:reporting-core"],
   "targets": {
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "jestConfig": "libs/reporting/core/jest.config.ts"
+        "reportsDirectory": "../../../coverage/libs/reporting/core"
       }
     },
     "lint": {

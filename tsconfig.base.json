@@ -16,6 +16,8 @@
     "baseUrl": ".",
     "paths": {
       "@reporting/core": ["libs/reporting/core/src/index.ts"],
+      "@reporting/dashboard": ["libs/reporting/dashboard/src/index.ts"],
+      "@reporting/forms": ["libs/reporting/forms/src/index.ts"],
       "@reporting/material": ["libs/reporting/material/src/index.ts"],
       "@reporting/testing": ["libs/reporting/testing/src/index.ts"]
     }

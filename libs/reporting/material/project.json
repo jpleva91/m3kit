@@ -4,18 +4,13 @@
   "sourceRoot": "libs/reporting/material/src",
   "prefix": "lib",
   "projectType": "library",
-  "tags": [
-    "type:lib",
-    "scope:reporting-material"
-  ],
+  "tags": ["type:lib", "scope:reporting-material"],
   "targets": {
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": [
-        "{workspaceRoot}/coverage/{projectRoot}"
-      ],
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "jestConfig": "libs/reporting/material/jest.config.ts"
+        "reportsDirectory": "../../../coverage/libs/reporting/material"
       }
     },
     "lint": {
@@ -28,10 +23,7 @@
         "configDir": "libs/reporting/material/.storybook",
         "browserTarget": "reporting-material:build-storybook",
         "compodoc": false,
-        "styles": [
-          "node_modules/@angular/material/prebuilt-themes/azure-blue.css",
-          "apps/demo-reporting/src/styles.scss"
-        ]
+        "styles": ["libs/reporting/material/.storybook/storybook-theme.scss"]
       },
       "configurations": {
         "ci": {
@@ -41,14 +33,13 @@
     },
     "build-storybook": {
       "executor": "@storybook/angular:build-storybook",
-      "outputs": [
-        "{options.outputDir}"
-      ],
+      "outputs": ["{options.outputDir}"],
       "options": {
         "outputDir": "dist/storybook/reporting-material",
         "configDir": "libs/reporting/material/.storybook",
         "browserTarget": "reporting-material:build-storybook",
-        "compodoc": false
+        "compodoc": false,
+        "styles": ["libs/reporting/material/.storybook/storybook-theme.scss"]
       },
       "configurations": {
         "ci": {
@@ -64,9 +55,7 @@
     },
     "static-storybook": {
       "executor": "@nx/web:file-server",
-      "dependsOn": [
-        "build-storybook"
-      ],
+      "dependsOn": ["build-storybook"],
       "options": {
         "buildTarget": "reporting-material:build-storybook",
         "staticFilePath": "dist/storybook/reporting-material",
@@ -76,6 +65,15 @@
         "ci": {
           "buildTarget": "reporting-material:build-storybook:ci"
         }
+      }
+    },
+    "component-test": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "libs/reporting/material/cypress.config.ts",
+        "testingType": "component",
+        "skipServe": true,
+        "devServerTarget": "demo-reporting:build"
       }
     }
   }

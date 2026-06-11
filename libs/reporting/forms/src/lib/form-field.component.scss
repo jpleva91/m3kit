@@ -1,0 +1,18 @@
+@use '@angular/material' as mat;
+
+// DESIGN.md density: forms/filter panels are -1 (roomier than tables,
+// deliberately). Re-emitting the density tokens scoped to the host keeps
+// the override local to this component's form field.
+:host {
+  display: block;
+
+  @include mat.theme(
+    (
+      density: -1,
+    )
+  );
+}
+
+.rpt-form-field__field {
+  width: 100%;
+}

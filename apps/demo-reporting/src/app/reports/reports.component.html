@@ -1,0 +1,34 @@
+<section class="report-page">
+  <rpt-report-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
+
+  <rpt-report-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
+
+  <mat-accordion class="report-page__filters">
+    <mat-expansion-panel>
+      <mat-expansion-panel-header>
+        <mat-panel-title>Field filters</mat-panel-title>
+        <mat-panel-description>Filter by individual columns</mat-panel-description>
+      </mat-expansion-panel-header>
+      <rpt-filter-form
+        [definition]="definition"
+        [options]="filterOptions"
+        (filtersChange)="onFiltersChange($event)"
+      />
+    </mat-expansion-panel>
+  </mat-accordion>
+
+  <rpt-report-table
+    #table
+    [definition]="definition"
+    [dataSource]="dataSource"
+    [textFilter]="filterText()"
+    [fieldFilters]="fieldFilters()"
+    (rowClicked)="onRowClicked($event)"
+  />
+
+  @if (selectedInvoice(); as invoice) {
+    <p class="selection-hint">
+      Selected invoice: {{ invoice.number }} ({{ invoice.customerName }})
+    </p>
+  }
+</section>

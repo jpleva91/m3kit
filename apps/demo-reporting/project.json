@@ -22,10 +22,7 @@
             "input": "apps/demo-reporting/public"
           }
         ],
-        "styles": [
-          "@angular/material/prebuilt-themes/azure-blue.css",
-          "apps/demo-reporting/src/styles.scss"
-        ],
+        "styles": ["apps/demo-reporting/src/styles.scss"],
         "scripts": []
       },
       "configurations": {
@@ -74,10 +71,10 @@
       "executor": "@nx/eslint:lint"
     },
     "test": {
-      "executor": "@nx/jest:jest",
-      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "executor": "@nx/vite:test",
+      "outputs": ["{options.reportsDirectory}"],
       "options": {
-        "jestConfig": "apps/demo-reporting/jest.config.ts"
+        "reportsDirectory": "../../coverage/apps/demo-reporting"
       }
     },
     "serve-static": {
