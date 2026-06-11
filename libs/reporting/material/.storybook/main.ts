@@ -4,6 +4,7 @@ const config: StorybookConfig = {
   stories: [
     './Introduction.mdx',
     '../**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+    '../../charts/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../dashboard/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../forms/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../../../apps/demo-reporting/src/app/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',

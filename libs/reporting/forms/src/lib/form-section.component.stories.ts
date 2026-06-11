@@ -17,6 +17,9 @@ const meta: Meta<FormSectionComponent> = {
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [FormFieldComponent] }),
   ],
+  argTypes: {
+    headingLevel: { control: 'inline-radio', options: [2, 3, 4] },
+  },
 };
 export default meta;
 type Story = StoryObj<FormSectionComponent>;
@@ -25,6 +28,7 @@ export const Default: Story = {
   args: {
     title: 'Customer details',
     description: 'Contact and billing information for the customer record.',
+    headingLevel: 3,
   },
   render: (args) => ({
     props: {
@@ -33,7 +37,7 @@ export const Default: Story = {
       emailControl: new FormControl<string | null>('customer0042@example.com'),
     },
     template: `
-      <rpt-form-section [title]="title" [description]="description">
+      <rpt-form-section [title]="title" [description]="description" [headingLevel]="headingLevel">
         <rpt-form-field label="Customer name" type="text" [control]="nameControl" />
         <rpt-form-field label="Email" type="text" [control]="emailControl" />
       </rpt-form-section>

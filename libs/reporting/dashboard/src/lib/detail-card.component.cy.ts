@@ -32,7 +32,7 @@ function mountDetailCard(rows: readonly DetailCardRow[] = INVOICE_ROWS) {
 describe(DetailCardComponent.name, () => {
   it('renders the title, subtitle, and one row per entry', () => {
     mountDetailCard();
-    cy.get('mat-card-title').should('have.text', 'Latest invoice');
+    cy.get('h2[mat-card-title]').should('have.text', 'Latest invoice');
     cy.get('mat-card-subtitle').should('have.text', 'INV-2026-0042');
     cy.get('.rpt-detail-card__row').should('have.length', 3);
     cy.get('.rpt-detail-card__row-label').first().should('have.text', 'Customer');

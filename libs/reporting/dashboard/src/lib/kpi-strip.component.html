@@ -1,4 +1,4 @@
-@for (readout of readouts(); track readout.label) {
+@for (readout of readouts(); track $index) {
   <div class="rpt-kpi-strip__readout">
     <span class="rpt-kpi-strip__label">{{ readout.label }}</span>
 
@@ -28,7 +28,7 @@
           [attr.height]="sparklineHeight"
           preserveAspectRatio="none"
           role="img"
-          aria-label="Trend sparkline"
+          [attr.aria-label]="readout.label + ' trend'"
         >
           <polyline [attr.points]="points" fill="none" stroke-width="1.5" />
         </svg>

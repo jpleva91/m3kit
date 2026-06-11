@@ -16,3 +16,53 @@
 .rpt-form-field__field {
   width: 100%;
 }
+
+// Wrapper chrome for control types that do not fit mat-form-field
+// (checkbox/toggle/radio/slider/button-toggle): same label, hint, and
+// error treatment as the Material subscript, token-only.
+.rpt-form-field__control {
+  display: flex;
+  flex-direction: column;
+  gap: 4px;
+  // Mirror mat-form-field's reserved subscript area so wrapper-rendered
+  // controls align with sibling outlined fields in a form row.
+  padding-block: 8px 4px;
+  font: var(--mat-sys-body-large);
+  color: var(--mat-sys-on-surface);
+}
+
+.rpt-form-field__label {
+  font: var(--mat-sys-body-small);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.rpt-form-field__label--required::after,
+.rpt-form-field__inline-label--required::after {
+  content: ' *';
+  color: var(--mat-sys-error);
+}
+
+.rpt-form-field__radio-group {
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 12px;
+}
+
+.rpt-form-field__slider {
+  // mat-slider ships outer margins that break alignment with the label
+  // column; the wrapper's gap provides the spacing instead.
+  margin-inline: 0;
+}
+
+.rpt-form-field__hint,
+.rpt-form-field__error {
+  font: var(--mat-sys-body-small);
+}
+
+.rpt-form-field__hint {
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.rpt-form-field__error {
+  color: var(--mat-sys-error);
+}

@@ -1,6 +1,6 @@
 <mat-card appearance="outlined" class="rpt-detail-card">
   <mat-card-header class="rpt-detail-card__header">
-    <mat-card-title>{{ title() }}</mat-card-title>
+    <h2 mat-card-title class="rpt-detail-card__title">{{ title() }}</h2>
     @if (subtitle(); as sub) {
       <mat-card-subtitle>{{ sub }}</mat-card-subtitle>
     }
@@ -12,7 +12,7 @@
   <mat-card-content>
     @if (rows().length > 0) {
       <dl class="rpt-detail-card__rows">
-        @for (row of rows(); track row.label) {
+        @for (row of rows(); track $index) {
           <div class="rpt-detail-card__row">
             <dt class="rpt-detail-card__row-label">{{ row.label }}</dt>
             <dd class="rpt-detail-card__row-value">{{ row.value }}</dd>

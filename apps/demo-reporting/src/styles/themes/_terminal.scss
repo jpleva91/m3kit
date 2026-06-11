@@ -76,6 +76,14 @@ $_status-dark: (
   ),
 );
 
+/// Chart series palette (`--app-chart-1..6`): console channel set —
+/// phosphor green, cyan, amber, console blue, magenta, signal red (the
+/// classic terminal channels, minus default-foreground). Light mode runs
+/// the channels at ink depth for the pale-graphite console; dark mode is
+/// the primary expression — full phosphor intensity on near-black.
+$_chart-light: #0e7a4a, #0b7285, #b45309, #1e5fbf, #a23072, #b42318;
+$_chart-dark: #2fd584, #22b8cf, #f59e0b, #5ea0ef, #e06bb7, #ef4444;
+
 /// Emits the full light theme: color, typography, density, status,
 /// and radius tokens.
 @mixin brand-light() {
@@ -95,6 +103,7 @@ $_status-dark: (
   // badges 3px (no pill silhouettes in Terminal).
   @include contract.radius-tokens($card: 4px, $control: 3px, $badge: 3px);
   @include contract.font-data("'IBM Plex Mono'");
+  @include contract.chart-tokens($_chart-light...);
   color-scheme: light;
 }
 
@@ -111,5 +120,6 @@ $_status-dark: (
     )
   );
   @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
   color-scheme: dark;
 }

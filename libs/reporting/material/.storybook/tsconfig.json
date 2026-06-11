@@ -10,6 +10,8 @@
     "../src/**/*.stories.jsx",
     "../src/**/*.stories.tsx",
     "../src/**/*.stories.mdx",
+    "../../charts/src/**/*.stories.ts",
+    "../../charts/src/**/*.component.ts",
     "../../dashboard/src/**/*.stories.ts",
     "../../dashboard/src/**/*.component.ts",
     "../../forms/src/**/*.stories.ts",

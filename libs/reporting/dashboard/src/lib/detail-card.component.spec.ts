@@ -37,8 +37,10 @@ describe('DetailCardComponent', () => {
     fixture.detectChanges();
   });
 
-  it('renders the title and hides the subtitle when null', () => {
-    expect(element().querySelector('mat-card-title')?.textContent).toBe('Latest invoice');
+  it('renders the title as an h2 and hides the subtitle when null', () => {
+    const title = element().querySelector('h2[mat-card-title]');
+    expect(title?.textContent).toBe('Latest invoice');
+    expect(title?.classList).toContain('rpt-detail-card__title');
     expect(element().querySelector('mat-card-subtitle')).toBeNull();
   });
 

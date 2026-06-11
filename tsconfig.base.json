@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@m3kit/charts": ["libs/reporting/charts/src/index.ts"],
       "@m3kit/core": ["libs/reporting/core/src/index.ts"],
       "@m3kit/dashboard": ["libs/reporting/dashboard/src/index.ts"],
       "@m3kit/forms": ["libs/reporting/forms/src/index.ts"],

@@ -1,12 +1,12 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { FormSectionComponent } from './form-section.component';
+import { FormSectionComponent, FormSectionHeadingLevel } from './form-section.component';
 
 @Component({
   imports: [FormSectionComponent],
   template: `
-    <rpt-form-section [title]="title" [description]="description">
+    <rpt-form-section [title]="title" [description]="description" [headingLevel]="headingLevel">
       <p class="projected">Projected fields</p>
     </rpt-form-section>
   `,
@@ -14,6 +14,7 @@ import { FormSectionComponent } from './form-section.component';
 class HostComponent {
   title = 'Shipping address';
   description = '';
+  headingLevel: FormSectionHeadingLevel = 3;
 }
 
 describe('FormSectionComponent', () => {
@@ -32,9 +33,20 @@ describe('FormSectionComponent', () => {
     fixture.detectChanges();
   });
 
-  it('renders the heading', () => {
+  it('renders the heading at level 3 by default', () => {
     const heading = element.querySelector('.rpt-form-section__title');
     expect(heading?.textContent).toContain('Shipping address');
+    expect(heading?.getAttribute('role')).toBe('heading');
+    expect(heading?.getAttribute('aria-level')).toBe('3');
+  });
+
+  it('renders the configured heading level', () => {
+    host.headingLevel = 2;
+    fixture.detectChanges();
+
+    expect(
+      element.querySelector('.rpt-form-section__title')?.getAttribute('aria-level'),
+    ).toBe('2');
   });
 
   it('hides the description until one is provided', () => {

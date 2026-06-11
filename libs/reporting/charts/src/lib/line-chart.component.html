@@ -1,0 +1,76 @@
+<svg
+  class="rpt-line-chart"
+  [attr.viewBox]="viewBox()"
+  preserveAspectRatio="none"
+  [style.height.px]="height()"
+  role="img"
+  [attr.aria-label]="ariaLabel()"
+>
+  @if (view(); as v) {
+    @if (showGrid()) {
+      @for (tick of v.yTicks; track tick.pos) {
+        <line
+          class="rpt-line-chart__grid-line"
+          [attr.x1]="v.left"
+          [attr.x2]="v.right"
+          [attr.y1]="tick.pos"
+          [attr.y2]="tick.pos"
+        />
+      }
+    }
+
+    @if (showAxes()) {
+      <line
+        class="rpt-line-chart__axis"
+        [attr.x1]="v.left"
+        [attr.x2]="v.left"
+        [attr.y1]="v.top"
+        [attr.y2]="v.bottom"
+      />
+      <line
+        class="rpt-line-chart__axis"
+        [attr.x1]="v.left"
+        [attr.x2]="v.right"
+        [attr.y1]="v.bottom"
+        [attr.y2]="v.bottom"
+      />
+      @for (tick of v.yTicks; track tick.pos) {
+        <text
+          class="rpt-line-chart__tick rpt-line-chart__tick--y"
+          [attr.x]="v.left - 6"
+          [attr.y]="tick.pos"
+          text-anchor="end"
+          dominant-baseline="middle"
+        >
+          {{ tick.label }}
+        </text>
+      }
+      @for (tick of v.xTicks; track tick.pos) {
+        <text
+          class="rpt-line-chart__tick rpt-line-chart__tick--x"
+          [attr.x]="tick.pos"
+          [attr.y]="v.bottom + 16"
+          text-anchor="middle"
+        >
+          {{ tick.label }}
+        </text>
+      }
+    }
+
+    @for (s of v.series; track s.name) {
+      @if (area()) {
+        <path class="rpt-line-chart__area" [attr.d]="s.areaPath" [attr.fill]="s.fill" />
+      }
+      <path class="rpt-line-chart__line" [attr.d]="s.path" [attr.stroke]="s.color" fill="none" />
+      @if (s.marker; as marker) {
+        <circle
+          class="rpt-line-chart__point"
+          [attr.cx]="marker.x"
+          [attr.cy]="marker.y"
+          [attr.r]="pointRadius"
+          [attr.fill]="s.color"
+        />
+      }
+    }
+  }
+</svg>

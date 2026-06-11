@@ -104,6 +104,15 @@ describe('KpiCardComponent', () => {
     expect(polyline?.getAttribute('points')).toBe('0,30 50,2 100,16');
   });
 
+  it('labels the sparkline after the metric', () => {
+    host.sparkline = [0, 10, 5];
+    fixture.detectChanges();
+
+    expect(element().querySelector('.rpt-kpi-card__sparkline')?.getAttribute('aria-label')).toBe(
+      'Total revenue trend',
+    );
+  });
+
   it('hides the sparkline for missing or single-point series', () => {
     expect(element().querySelector('.rpt-kpi-card__sparkline')).toBeNull();
 

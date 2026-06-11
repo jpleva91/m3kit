@@ -69,9 +69,16 @@ $_status-dark: (
   ),
 );
 
+/// Chart series palette (`--app-chart-1..6`): cobalt-led cool analytical
+/// set — cobalt, burnt sienna (the single warm voice), deep teal, violet,
+/// forest, raspberry. Dark variants lift tone toward the electric-periwinkle
+/// register so series hold up on deep charcoal surfaces.
+$_chart-light: #1b4fd8, #c45f1a, #0e7490, #6b46c1, #1a6b3a, #9d174d;
+$_chart-dark: #8fa9ff, #f0a36b, #5ec8e0, #b79cff, #6fcf8f, #f286b2;
+
 /// Emits the full light theme: color, typography, density, status,
-/// and radius tokens. Shape per DESIGN.md: cards md (10px), controls sm
-/// (6px), badges full (999px) — the contract defaults.
+/// radius, and chart-series tokens. Shape per DESIGN.md: cards md (10px),
+/// controls sm (6px), badges full (999px) — the contract defaults.
 @mixin brand-light() {
   @include mat.theme(
     (
@@ -87,6 +94,7 @@ $_status-dark: (
   @include contract.status-tokens($_status-light);
   @include contract.radius-tokens();
   @include contract.font-data("'JetBrains Mono'");
+  @include contract.chart-tokens($_chart-light...);
   color-scheme: light;
 }
 
@@ -103,5 +111,6 @@ $_status-dark: (
     )
   );
   @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
   color-scheme: dark;
 }

@@ -64,6 +64,43 @@ describe('DashboardComponent', () => {
     expect(kpiCards[0].querySelector('.rpt-kpi-card__sparkline polyline')).toBeTruthy();
   });
 
+  it('renders the two-up chart row and the full-width stacked bars', () => {
+    const titles = Array.from(element.querySelectorAll('rpt-chart-card h2')).map((title) =>
+      title.textContent?.trim(),
+    );
+    expect(titles).toEqual([
+      'Revenue by month',
+      'Invoices by status',
+      'Monthly invoices by status',
+    ]);
+
+    expect(element.querySelector('.dashboard__chart-row rpt-line-chart svg')).toBeTruthy();
+    expect(element.querySelector('.dashboard__chart-row rpt-donut-chart svg')).toBeTruthy();
+    expect(element.querySelector('.dashboard__chart-wide rpt-bar-chart svg')).toBeTruthy();
+  });
+
+  it('labels every chart for assistive tech', () => {
+    const labels = Array.from(element.querySelectorAll('rpt-chart-card svg[role="img"]')).map(
+      (svg) => svg.getAttribute('aria-label'),
+    );
+    expect(labels).toEqual([
+      'Paid revenue by month, trailing twelve months',
+      'Invoice count by status',
+      'Monthly invoice counts stacked by status',
+    ]);
+  });
+
+  it('shares one status legend across the donut and the stacked bars', () => {
+    const legends = element.querySelectorAll('rpt-chart-legend');
+    expect(legends.length).toBe(2);
+    for (const legend of Array.from(legends)) {
+      const labels = Array.from(legend.querySelectorAll('.rpt-chart-legend__label')).map(
+        (label) => label.textContent?.trim(),
+      );
+      expect(labels).toEqual(['Draft', 'Sent', 'Paid', 'Overdue', 'Void']);
+    }
+  });
+
   it('renders the latest-invoice and top-customer detail cards', () => {
     const titles = Array.from(
       element.querySelectorAll('rpt-detail-card mat-card-title'),
@@ -90,6 +127,13 @@ describe('DashboardComponent', () => {
     expect(element.querySelector('rpt-kpi-strip .rpt-kpi-strip__sparkline polyline')).toBeTruthy();
     expect(element.querySelector('rpt-kpi-card')).toBeNull();
     expect(element.querySelectorAll('.dashboard__detail-row rpt-detail-card').length).toBe(2);
+
+    // Charts run as a tight three-up row between the strip and the details.
+    const strip = element.querySelector('.dashboard__chart-strip');
+    expect(strip?.querySelectorAll('rpt-chart-card').length).toBe(3);
+    expect(strip?.querySelector('rpt-line-chart svg')).toBeTruthy();
+    expect(strip?.querySelector('rpt-bar-chart svg')).toBeTruthy();
+    expect(strip?.querySelector('rpt-donut-chart svg')).toBeTruthy();
   });
 
   it('composes the contents-rail preset as a typeset figure stack with details beside', () => {
@@ -103,6 +147,18 @@ describe('DashboardComponent', () => {
     expect(element.querySelectorAll('.dashboard__figure-value').length).toBe(4);
     expect(element.querySelector('rpt-kpi-card')).toBeNull();
     expect(element.querySelectorAll('.dashboard__details rpt-detail-card').length).toBe(2);
+
+    // Charts stack single-column in the broadsheet with editorial titles.
+    const broadsheet = element.querySelector('.dashboard__broadsheet');
+    expect(broadsheet?.querySelectorAll('rpt-chart-card').length).toBe(3);
+    const titles = Array.from(broadsheet?.querySelectorAll('rpt-chart-card h2') ?? []).map(
+      (title) => title.textContent?.trim(),
+    );
+    expect(titles).toEqual([
+      'Receipts across the year',
+      'Composition of the book',
+      'The monthly account',
+    ]);
   });
 
   it('keeps the card grid with sentiment corner accents for the pill-tabs preset', () => {
@@ -121,5 +177,9 @@ describe('DashboardComponent', () => {
       'rpt-kpi-card--accent-negative',
       'rpt-kpi-card--accent-neutral',
     ]);
+
+    // The default chart composition carries over: two-up row + wide bars.
+    expect(element.querySelectorAll('.dashboard__chart-row rpt-chart-card').length).toBe(2);
+    expect(element.querySelector('.dashboard__chart-wide rpt-bar-chart svg')).toBeTruthy();
   });
 });

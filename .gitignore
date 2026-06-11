@@ -43,3 +43,6 @@ Thumbs.db
 
 .angular
 .gstack/
+
+vite.config.*.timestamp*
+vitest.config.*.timestamp*

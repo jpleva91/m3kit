@@ -1,14 +1,44 @@
 <!--
   Composition varies with the active shell preset (core/layout-presets.ts).
   The lib components stay brand-agnostic; the page only re-arranges them.
+  Chart-card titles render as h2, keeping heading order under the page h1.
 -->
 @switch (layoutPreset()) {
-  <!-- Terminal: hairline KPI strip, compact detail row — the data is the page. -->
+  <!-- Terminal: hairline KPI strip, tight three-up chart row, compact details. -->
   @case ('command-bar') {
     <section class="dashboard dashboard--command-bar">
       <h1 class="dashboard__title">Dashboard</h1>
 
       <rpt-kpi-strip class="dashboard__strip" [items]="kpiStripItems" />
+
+      <div class="dashboard__chart-strip">
+        <rpt-chart-card title="Revenue" subtitle="Paid, trailing 12 months">
+          <rpt-line-chart
+            [series]="revenueSeries"
+            [height]="180"
+            ariaLabel="Paid revenue by month, trailing twelve months"
+          />
+        </rpt-chart-card>
+        <rpt-chart-card title="Monthly volume" subtitle="Invoices by status">
+          <rpt-bar-chart
+            [categories]="monthlyStatus.categories"
+            [series]="monthlyStatus.series"
+            mode="stacked"
+            [height]="180"
+            ariaLabel="Monthly invoice counts stacked by status"
+          />
+        </rpt-chart-card>
+        <rpt-chart-card title="Status mix" subtitle="All invoices">
+          <rpt-donut-chart
+            [slices]="statusSlices"
+            centerLabel="Invoices"
+            [centerValue]="invoiceCount"
+            [height]="180"
+            ariaLabel="Invoice count by status"
+          />
+          <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
+        </rpt-chart-card>
+      </div>
 
       <div class="dashboard__detail-row">
         <rpt-detail-card
@@ -21,7 +51,7 @@
     </section>
   }
 
-  <!-- Ledger: typeset figure stack in the page's left column, details beside. -->
+  <!-- Ledger: typeset figure rail; charts stack single-column in the broadsheet. -->
   @case ('contents-rail') {
     <section class="dashboard dashboard--contents-rail">
       <h1 class="dashboard__title">Dashboard</h1>
@@ -52,23 +82,51 @@
           }
         </section>
 
-        <div class="dashboard__details">
-          <rpt-detail-card
-            title="Latest invoice"
-            [subtitle]="latestInvoice.number"
-            [rows]="latestInvoiceRows"
-          />
-          <rpt-detail-card
-            title="Top customer"
-            subtitle="By total billed"
-            [rows]="topCustomerRows"
-          />
+        <div class="dashboard__broadsheet">
+          <rpt-chart-card title="Receipts across the year" subtitle="Paid invoices, by month">
+            <rpt-line-chart
+              [series]="revenueSeries"
+              [area]="true"
+              ariaLabel="Paid revenue by month, trailing twelve months"
+            />
+          </rpt-chart-card>
+          <rpt-chart-card title="Composition of the book" subtitle="Invoices by status">
+            <rpt-donut-chart
+              [slices]="statusSlices"
+              centerLabel="Invoices"
+              [centerValue]="invoiceCount"
+              ariaLabel="Invoice count by status"
+            />
+            <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
+          </rpt-chart-card>
+          <rpt-chart-card title="The monthly account" subtitle="Invoice counts by status">
+            <rpt-bar-chart
+              [categories]="monthlyStatus.categories"
+              [series]="monthlyStatus.series"
+              mode="stacked"
+              ariaLabel="Monthly invoice counts stacked by status"
+            />
+            <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
+          </rpt-chart-card>
+
+          <div class="dashboard__details">
+            <rpt-detail-card
+              title="Latest invoice"
+              [subtitle]="latestInvoice.number"
+              [rows]="latestInvoiceRows"
+            />
+            <rpt-detail-card
+              title="Top customer"
+              subtitle="By total billed"
+              [rows]="topCustomerRows"
+            />
+          </div>
         </div>
       </div>
     </section>
   }
 
-  <!-- Field Guide: the default card grid with sentiment corner accents. -->
+  <!-- Field Guide: the default composition with sentiment corner accents. -->
   @case ('pill-tabs') {
     <section class="dashboard">
       <h1 class="dashboard__title">Dashboard</h1>
@@ -107,24 +165,53 @@
           icon="support_agent"
           cornerAccent="neutral"
         />
+      </rpt-dashboard-grid>
 
+      <div class="dashboard__chart-row">
+        <rpt-chart-card title="Revenue by month" subtitle="Paid, trailing 12 months">
+          <rpt-line-chart
+            [series]="revenueSeries"
+            [area]="true"
+            ariaLabel="Paid revenue by month, trailing twelve months"
+          />
+        </rpt-chart-card>
+        <rpt-chart-card title="Invoices by status" subtitle="All invoices">
+          <rpt-donut-chart
+            [slices]="statusSlices"
+            centerLabel="Invoices"
+            [centerValue]="invoiceCount"
+            ariaLabel="Invoice count by status"
+          />
+          <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
+        </rpt-chart-card>
+      </div>
+
+      <rpt-chart-card
+        class="dashboard__chart-wide"
+        title="Monthly invoices by status"
+        subtitle="Counts per issue month"
+      >
+        <rpt-bar-chart
+          [categories]="monthlyStatus.categories"
+          [series]="monthlyStatus.series"
+          mode="stacked"
+          ariaLabel="Monthly invoice counts stacked by status"
+        />
+        <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
+      </rpt-chart-card>
+
+      <div class="dashboard__detail-grid">
         <rpt-detail-card
-          [rptGridSpan]="2"
           title="Latest invoice"
           [subtitle]="latestInvoice.number"
           [rows]="latestInvoiceRows"
         />
-        <rpt-detail-card
-          [rptGridSpan]="2"
-          title="Top customer"
-          subtitle="By total billed"
-          [rows]="topCustomerRows"
-        />
-      </rpt-dashboard-grid>
+        <rpt-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
+      </div>
     </section>
   }
 
-  <!-- Instruments (sidenav): the original composition, unchanged. -->
+  <!-- Instruments (sidenav): KPI grid, two-up charts, full-width bars, details. -->
   @default {
     <section class="dashboard">
       <h1 class="dashboard__title">Dashboard</h1>
@@ -159,20 +246,49 @@
           [delta]="openTicketsDelta"
           icon="support_agent"
         />
+      </rpt-dashboard-grid>
 
+      <div class="dashboard__chart-row">
+        <rpt-chart-card title="Revenue by month" subtitle="Paid, trailing 12 months">
+          <rpt-line-chart
+            [series]="revenueSeries"
+            [area]="true"
+            ariaLabel="Paid revenue by month, trailing twelve months"
+          />
+        </rpt-chart-card>
+        <rpt-chart-card title="Invoices by status" subtitle="All invoices">
+          <rpt-donut-chart
+            [slices]="statusSlices"
+            centerLabel="Invoices"
+            [centerValue]="invoiceCount"
+            ariaLabel="Invoice count by status"
+          />
+          <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
+        </rpt-chart-card>
+      </div>
+
+      <rpt-chart-card
+        class="dashboard__chart-wide"
+        title="Monthly invoices by status"
+        subtitle="Counts per issue month"
+      >
+        <rpt-bar-chart
+          [categories]="monthlyStatus.categories"
+          [series]="monthlyStatus.series"
+          mode="stacked"
+          ariaLabel="Monthly invoice counts stacked by status"
+        />
+        <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
+      </rpt-chart-card>
+
+      <div class="dashboard__detail-grid">
         <rpt-detail-card
-          [rptGridSpan]="2"
           title="Latest invoice"
           [subtitle]="latestInvoice.number"
           [rows]="latestInvoiceRows"
         />
-        <rpt-detail-card
-          [rptGridSpan]="2"
-          title="Top customer"
-          subtitle="By total billed"
-          [rows]="topCustomerRows"
-        />
-      </rpt-dashboard-grid>
+        <rpt-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
+      </div>
     </section>
   }
 }

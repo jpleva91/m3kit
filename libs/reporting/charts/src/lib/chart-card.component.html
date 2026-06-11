@@ -1,0 +1,25 @@
+<mat-card appearance="outlined" class="rpt-chart-card">
+  <mat-card-header class="rpt-chart-card__header">
+    <h2 mat-card-title class="rpt-chart-card__title">{{ title() }}</h2>
+    @if (subtitle(); as sub) {
+      <div mat-card-subtitle class="rpt-chart-card__subtitle">{{ sub }}</div>
+    }
+  </mat-card-header>
+
+  <mat-card-content class="rpt-chart-card__content">
+    @if (loading()) {
+      <mat-progress-bar
+        class="rpt-chart-card__progress"
+        mode="indeterminate"
+        aria-label="Loading chart data"
+      />
+    } @else if (empty()) {
+      <p class="rpt-chart-card__empty">{{ emptyMessage() }}</p>
+    } @else {
+      <ng-content />
+      <div class="rpt-chart-card__legend">
+        <ng-content select="[rptChartCardLegend]" />
+      </div>
+    }
+  </mat-card-content>
+</mat-card>

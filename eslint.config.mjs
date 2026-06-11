@@ -5,7 +5,11 @@ export default [
   ...nx.configs['flat/typescript'],
   ...nx.configs['flat/javascript'],
   {
-    ignores: ['**/dist'],
+    ignores: [
+      '**/dist',
+      '**/vite.config.*.timestamp*',
+      '**/vitest.config.*.timestamp*',
+    ],
   },
   {
     files: ['**/*.ts', '**/*.tsx', '**/*.js', '**/*.jsx'],
@@ -48,6 +52,13 @@ export default [
               ],
             },
             {
+              sourceTag: 'scope:reporting-charts',
+              onlyDependOnLibsWithTags: [
+                'scope:reporting-core',
+                'scope:reporting-theme',
+              ],
+            },
+            {
               sourceTag: 'scope:reporting-forms',
               onlyDependOnLibsWithTags: [
                 'scope:reporting-core',
@@ -60,6 +71,7 @@ export default [
                 'scope:reporting-core',
                 'scope:reporting-material',
                 'scope:reporting-testing',
+                'scope:reporting-charts',
                 'scope:reporting-dashboard',
                 'scope:reporting-forms',
                 'scope:reporting-theme',

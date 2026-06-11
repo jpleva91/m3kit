@@ -24,6 +24,12 @@
 ///                          brands emit it only once the component layer
 ///                          exposes a hook for it.
 ///
+/// Chart series tokens — categorical data-series palette:
+///   --app-chart-{1..6}     six distinct series colors per brand; consumers
+///                          cycle through them in order (series 7 wraps to
+///                          --app-chart-1). Brands provide separate light and
+///                          dark lists; `brand-dark()` re-emits all six.
+///
 /// The theme is the token source: components must consume these via
 /// `var()`, never raw hex.
 ///
@@ -35,11 +41,13 @@
 ///
 /// - `brand-light()` emits the full light theme: `mat.theme` color +
 ///   typography + density tokens, `status-tokens()`, `radius-tokens()`,
-///   and `color-scheme: light`.
+///   `chart-tokens()`, and `color-scheme: light`.
 /// - `brand-dark()` re-emits only what changes in dark mode: `mat.theme`
-///   color tokens, `status-tokens()`, and `color-scheme: dark`.
+///   color tokens, `status-tokens()`, `chart-tokens()` (tones adjusted for
+///   dark surfaces), and `color-scheme: dark`.
 ///   Typography, density, and radius are inherited from the light emission
 ///   (the brand's light selector always also matches in dark mode).
+@use 'sass:list';
 @use 'sass:map';
 
 /// Status kinds, in emission order. `status-tokens()` requires an entry
@@ -71,4 +79,26 @@ $status-kinds: draft, sent, paid, overdue, void;
 /// Emits `--app-font-data`, the data-cell (tabular figures / mono) stack.
 @mixin font-data($family) {
   --app-font-data: #{$family};
+}
+
+/// Number of categorical chart-series slots every brand must fill.
+$chart-series-count: 6;
+
+/// Emits the `--app-chart-1`..`--app-chart-6` categorical series palette
+/// from exactly `$chart-series-count` colors, in series order.
+///
+/// This is the data-visualization counterpart to the status pairs: a
+/// closed set of six distinct, accessible hues per brand. Consumers
+/// (chart components) cycle through the tokens in order — series 1 takes
+/// `--app-chart-1`, series 7 wraps back to `--app-chart-1` — and never
+/// pick colors themselves. Brands provide separate light and dark lists
+/// (dark tones are lightened/desaturated for dark surfaces) and re-emit
+/// all six from `brand-dark()`.
+@mixin chart-tokens($colors...) {
+  @if list.length($colors) != $chart-series-count {
+    @error 'chart-tokens(): expected #{$chart-series-count} series colors, got #{list.length($colors)}.';
+  }
+  @for $i from 1 through $chart-series-count {
+    --app-chart-#{$i}: #{list.nth($colors, $i)};
+  }
 }

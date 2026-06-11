@@ -142,6 +142,14 @@ $_status-dark: (
   ),
 );
 
+/// Chart series palette (`--app-chart-1..6`): friendly naturalist set —
+/// kelly green, soft coral (slightly deepened for series weight), trail
+/// navy, goldenrod, pond teal, wildflower violet: specimen-plate colors
+/// that stay warm without losing distinction. Dark mode brightens each to
+/// a soft botanical tint for the ink-navy charcoal surfaces.
+$_chart-light: #1b8a50, #d9503c, #2c4a78, #b07d1a, #1a7f94, #7e5bb5;
+$_chart-dark: #57d38c, #ff9180, #93b4e8, #e8c26b, #5bc8de, #c5a6f2;
+
 /// Emits the full light theme: color, typography, density, status,
 /// and radius tokens.
 @mixin brand-light() {
@@ -161,6 +169,7 @@ $_status-dark: (
   // controls 12px, badges full pills.
   @include contract.radius-tokens($card: 16px, $control: 12px, $badge: 999px);
   @include contract.font-data("'DM Mono'");
+  @include contract.chart-tokens($_chart-light...);
   color-scheme: light;
 }
 
@@ -178,5 +187,6 @@ $_status-dark: (
     )
   );
   @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
   color-scheme: dark;
 }

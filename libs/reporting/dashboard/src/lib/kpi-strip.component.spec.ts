@@ -82,6 +82,15 @@ describe('KpiStripComponent', () => {
     expect(polyline?.getAttribute('points')).toBe('0,22 42,2 84,12');
   });
 
+  it('labels the sparkline after the metric', () => {
+    host.items = [{ label: 'Revenue', value: 7400, sparkline: [0, 10, 5] }];
+    fixture.detectChanges();
+
+    expect(
+      element().querySelector('.rpt-kpi-strip__sparkline')?.getAttribute('aria-label'),
+    ).toBe('Revenue trend');
+  });
+
   it('hides the sparkline for missing or single-point series', () => {
     expect(element().querySelector('.rpt-kpi-strip__sparkline')).toBeNull();
 

@@ -1,10 +1,16 @@
 import { ChangeDetectionStrategy, Component, LOCALE_ID, computed, inject } from '@angular/core';
 import { formatCurrency, formatDate, formatNumber, getCurrencySymbol } from '@angular/common';
 import {
+  BarChartComponent,
+  ChartCardComponent,
+  ChartLegendComponent,
+  DonutChartComponent,
+  LineChartComponent,
+} from '@m3kit/charts';
+import {
   DashboardGridComponent,
   DetailCardComponent,
   DetailCardRow,
-  GridSpanDirective,
   KpiCardComponent,
   KpiStripComponent,
   KpiStripItem,
@@ -13,6 +19,12 @@ import { Invoice, makeInvoices, makeSupportTickets } from '@m3kit/testing';
 
 import { BRAND_LAYOUT_PRESETS } from '../core/layout-presets';
 import { ThemeService } from '../core/theme.service';
+import {
+  invoiceStatusLegend,
+  invoiceStatusSlices,
+  monthlyRevenueSeries,
+  monthlyStatusBars,
+} from './dashboard-data';
 
 /** Seeds for the synthetic fixtures, so the dashboard is deterministic. */
 const INVOICE_SEED = 1;
@@ -25,23 +37,28 @@ const TICKET_SEED = 7;
 const PERIOD_MIDPOINT = '2026-03-17T00:00:00.000Z';
 
 /**
- * Dashboard demo: the same four KPI metrics and two detail cards, all
- * computed from deterministic synthetic invoices and support tickets,
- * composed differently per shell layout preset (see core/layout-presets):
+ * Dashboard demo: the same four KPI metrics, three charts, and two
+ * detail cards, all computed from deterministic synthetic invoices and
+ * support tickets, composed differently per shell layout preset (see
+ * core/layout-presets):
  *
- * - `sidenav` (default)  responsive grid of KPI tiles + detail cards
- * - `command-bar`        hairline KPI strip; data is the page, padding tightens
- * - `contents-rail`      editorial typeset figure stack beside the details
- * - `pill-tabs`          the default grid with sentiment corner accents
+ * - `sidenav` (default)  KPI grid, two-up chart row, full-width bars, details
+ * - `command-bar`        hairline KPI strip; tight three-up chart row; data is the page
+ * - `contents-rail`      typeset figure rail beside a single-column chart broadsheet
+ * - `pill-tabs`          the default composition with sentiment corner accents
  */
 @Component({
   selector: 'app-dashboard',
   imports: [
+    BarChartComponent,
+    ChartCardComponent,
+    ChartLegendComponent,
     DashboardGridComponent,
     DetailCardComponent,
-    GridSpanDirective,
+    DonutChartComponent,
     KpiCardComponent,
     KpiStripComponent,
+    LineChartComponent,
   ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
@@ -145,6 +162,21 @@ export class DashboardComponent {
       note: 'Service correspondence pending',
     },
   ];
+
+  /** Paid revenue per month over a trailing year, for the line chart. */
+  protected readonly revenueSeries = monthlyRevenueSeries();
+
+  /** Invoice counts by status, for the donut chart. */
+  protected readonly statusSlices = invoiceStatusSlices(this.invoices);
+
+  /** Shared status legend (same order/colors as donut and bars). */
+  protected readonly statusLegend = invoiceStatusLegend();
+
+  /** Invoice counts per issue month split by status (stacked bars). */
+  protected readonly monthlyStatus = monthlyStatusBars(this.invoices);
+
+  /** Total invoice count, formatted for the donut center. */
+  protected readonly invoiceCount = this.number(this.invoices.length);
 
   /** Most recently issued invoice. */
   protected readonly latestInvoice = this.invoices.reduce((latest, invoice) =>

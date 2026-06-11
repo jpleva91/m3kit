@@ -1,66 +1,245 @@
-<mat-form-field class="rpt-form-field__field" appearance="outline">
-  <mat-label>{{ label() }}</mat-label>
-
-  @switch (type()) {
-    @case ('select') {
-      <mat-select [formControl]="control()" [required]="required()">
-        <mat-option [value]="null">—</mat-option>
+@switch (type()) {
+  @case ('checkbox') {
+    <div class="rpt-form-field__control">
+      <mat-checkbox [formControl]="ctrl()" [required]="required()">
+        <span
+          class="rpt-form-field__inline-label"
+          [class.rpt-form-field__inline-label--required]="required()"
+        >
+          {{ label() }}
+        </span>
+      </mat-checkbox>
+      <ng-container [ngTemplateOutlet]="wrapperMeta" />
+    </div>
+  }
+  @case ('toggle') {
+    <div class="rpt-form-field__control">
+      <mat-slide-toggle [formControl]="ctrl()" [required]="required()">
+        <span
+          class="rpt-form-field__inline-label"
+          [class.rpt-form-field__inline-label--required]="required()"
+        >
+          {{ label() }}
+        </span>
+      </mat-slide-toggle>
+      <ng-container [ngTemplateOutlet]="wrapperMeta" />
+    </div>
+  }
+  @case ('radio') {
+    <div class="rpt-form-field__control">
+      <span
+        class="rpt-form-field__label"
+        [class.rpt-form-field__label--required]="required()"
+      >
+        {{ label() }}
+      </span>
+      <mat-radio-group
+        class="rpt-form-field__radio-group"
+        [formControl]="ctrl()"
+        [required]="required()"
+        [attr.aria-label]="label()"
+      >
         @for (option of options(); track option.value) {
-          <mat-option [value]="option.value">{{ option.label }}</mat-option>
+          <mat-radio-button [value]="option.value">{{ option.label }}</mat-radio-button>
         }
-      </mat-select>
-    }
-    @case ('date') {
-      <input
-        matInput
-        [matDatepicker]="picker"
-        [formControl]="control()"
-        [required]="required()"
-        [attr.aria-label]="label()"
-      />
-      <mat-datepicker-toggle matSuffix [for]="picker" />
-      <mat-datepicker #picker />
-    }
-    @case ('number') {
-      <input
-        matInput
-        type="number"
-        [formControl]="control()"
-        [required]="required()"
-        [attr.aria-label]="label()"
-      />
-    }
-    @case ('currency') {
-      <input
-        matInput
-        type="number"
-        inputmode="decimal"
-        step="0.01"
-        [formControl]="control()"
-        [required]="required()"
-        [attr.aria-label]="label()"
-      />
-    }
-    @default {
-      <input
-        matInput
-        type="text"
-        [formControl]="control()"
-        [required]="required()"
-        [attr.aria-label]="label()"
-      />
-    }
+      </mat-radio-group>
+      <ng-container [ngTemplateOutlet]="wrapperMeta" />
+    </div>
   }
+  @case ('slider') {
+    <div class="rpt-form-field__control">
+      <span
+        class="rpt-form-field__label"
+        [class.rpt-form-field__label--required]="required()"
+      >
+        {{ label() }}
+      </span>
+      <mat-slider class="rpt-form-field__slider" [min]="min()" [max]="max()" [step]="step()" discrete>
+        <input matSliderThumb [formControl]="ctrl()" [attr.aria-label]="label()" />
+      </mat-slider>
+      <ng-container [ngTemplateOutlet]="wrapperMeta" />
+    </div>
+  }
+  @case ('button-toggle') {
+    <div class="rpt-form-field__control">
+      <span
+        class="rpt-form-field__label"
+        [class.rpt-form-field__label--required]="required()"
+      >
+        {{ label() }}
+      </span>
+      <mat-button-toggle-group [formControl]="ctrl()" [attr.aria-label]="label()">
+        @for (option of options(); track option.value) {
+          <mat-button-toggle [value]="option.value">{{ option.label }}</mat-button-toggle>
+        }
+      </mat-button-toggle-group>
+      <ng-container [ngTemplateOutlet]="wrapperMeta" />
+    </div>
+  }
+  @case ('date-range') {
+    <!--
+      mat-date-range-input cannot sit in an embedded view inside an
+      already-rendered mat-form-field (its template reads the form
+      field's control before content queries refresh), so the range
+      field gets its own form field in its own switch case.
+    -->
+    <mat-form-field class="rpt-form-field__field" appearance="outline">
+      <mat-label>{{ label() }}</mat-label>
+      <mat-date-range-input [rangePicker]="rangePicker" [required]="required()">
+        <input
+          matStartDate
+          [formControl]="rangeGroup().controls.start"
+          placeholder="Start"
+          [attr.aria-label]="label() + ' start'"
+        />
+        <input
+          matEndDate
+          [formControl]="rangeGroup().controls.end"
+          placeholder="End"
+          [attr.aria-label]="label() + ' end'"
+        />
+      </mat-date-range-input>
+      <mat-datepicker-toggle matSuffix [for]="rangePicker" />
+      <mat-date-range-picker #rangePicker />
 
+      @if (hint()) {
+        <mat-hint>{{ hint() }}</mat-hint>
+      }
+
+      @if (errorMessage(); as message) {
+        <mat-error>{{ message }}</mat-error>
+      }
+    </mat-form-field>
+  }
+  @default {
+    <mat-form-field class="rpt-form-field__field" appearance="outline">
+      <mat-label>{{ label() }}</mat-label>
+
+      @switch (type()) {
+        @case ('select') {
+          <mat-select [formControl]="ctrl()" [required]="required()">
+            <!-- Visual dash; screen readers get a real name instead. -->
+            <mat-option [value]="null" aria-label="No filter">—</mat-option>
+            @for (option of options(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-select>
+        }
+        @case ('autocomplete') {
+          <input
+            matInput
+            type="text"
+            [formControl]="ctrl()"
+            [required]="required()"
+            [matAutocomplete]="auto"
+            [attr.aria-label]="label()"
+          />
+          <mat-autocomplete #auto="matAutocomplete" [displayWith]="displayOptionLabel">
+            @for (option of filteredOptions(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-autocomplete>
+        }
+        @case ('chips') {
+          <mat-chip-grid
+            #chipGrid
+            [formControl]="ctrl()"
+            [required]="required()"
+            [attr.aria-label]="label()"
+          >
+            @for (chip of selectedChips(); track chip) {
+              <mat-chip-row (removed)="removeChip(chip)">
+                {{ chip }}
+                <button matChipRemove type="button" [attr.aria-label]="'Remove ' + chip">
+                  <mat-icon>cancel</mat-icon>
+                </button>
+              </mat-chip-row>
+            }
+            <input
+              #chipInput
+              [matChipInputFor]="chipGrid"
+              [matAutocomplete]="chipAuto"
+              (input)="onChipQueryInput($event)"
+              (matChipInputTokenEnd)="addChip($event)"
+              [attr.aria-label]="label()"
+            />
+          </mat-chip-grid>
+          <mat-autocomplete
+            #chipAuto="matAutocomplete"
+            (optionSelected)="selectChip($event, chipInput)"
+          >
+            @for (option of chipOptions(); track option.value) {
+              <mat-option [value]="option.value">{{ option.label }}</mat-option>
+            }
+          </mat-autocomplete>
+        }
+        @case ('textarea') {
+          <textarea
+            matInput
+            [rows]="rows()"
+            [formControl]="ctrl()"
+            [required]="required()"
+            [attr.aria-label]="label()"
+          ></textarea>
+        }
+        @case ('date') {
+          <input
+            matInput
+            [matDatepicker]="picker"
+            [formControl]="ctrl()"
+            [required]="required()"
+            [attr.aria-label]="label()"
+          />
+          <mat-datepicker-toggle matSuffix [for]="picker" />
+          <mat-datepicker #picker />
+        }
+        @case ('number') {
+          <input
+            matInput
+            type="number"
+            [formControl]="ctrl()"
+            [required]="required()"
+            [attr.aria-label]="label()"
+          />
+        }
+        @case ('currency') {
+          <input
+            matInput
+            type="number"
+            inputmode="decimal"
+            step="0.01"
+            [formControl]="ctrl()"
+            [required]="required()"
+            [attr.aria-label]="label()"
+          />
+        }
+        @default {
+          <input
+            matInput
+            type="text"
+            [formControl]="ctrl()"
+            [required]="required()"
+            [attr.aria-label]="label()"
+          />
+        }
+      }
+
+      @if (hint()) {
+        <mat-hint>{{ hint() }}</mat-hint>
+      }
+
+      @if (errorMessage(); as message) {
+        <mat-error>{{ message }}</mat-error>
+      }
+    </mat-form-field>
+  }
+}
+
+<ng-template #wrapperMeta>
   @if (hint()) {
-    <mat-hint>{{ hint() }}</mat-hint>
+    <div class="rpt-form-field__hint">{{ hint() }}</div>
   }
-
-  @if (control().hasError('required')) {
-    <mat-error>{{ label() }} is required.</mat-error>
-  } @else if (control().hasError('min')) {
-    <mat-error>{{ label() }} must be at least {{ minBound() }}.</mat-error>
-  } @else if (control().hasError('max')) {
-    <mat-error>{{ label() }} must be at most {{ maxBound() }}.</mat-error>
+  @if (wrapperError(); as message) {
+    <div class="rpt-form-field__error" role="alert">{{ message }}</div>
   }
-</mat-form-field>
+</ng-template>

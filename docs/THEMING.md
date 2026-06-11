@@ -93,15 +93,33 @@ in any brand module for worked values).
 |---|---|---|
 | `--app-font-data` | **Optional / not yet consumed.** The data-cell (tabular figures / mono) stack. The component layer currently hardcodes its mono stack in `report-table.component.scss`; brands emit this token only once that hook exists. The `font-data()` helper is ready in the contract. | Light-only emission; dark inherits. |
 
+### Chart series tokens
+
+The categorical data-series palette. The slot count is closed: exactly six
+(`$chart-series-count` in `_contract.scss`); the `chart-tokens()` helper
+errors at compile time on any other count, so a partial series palette
+cannot ship.
+
+| Token | Consumed by | Light/dark notes |
+|---|---|---|
+| `--app-chart-1` … `--app-chart-6` | The chart component layer (series fills/strokes). Consumers cycle through the tokens in order — series *n* takes `--app-chart-((n − 1) mod 6 + 1)` — and never pick colors themselves. | Brands provide separate light and dark lists; `brand-dark()` re-emits all six with tones lifted/desaturated for dark surfaces. |
+
+Pick six **distinct, accessible** hues that carry the brand's identity (see
+the `$_chart-light` / `$_chart-dark` lists in any brand module for worked
+values): each color should be distinguishable from its neighbors and read
+clearly against the brand's surface color in that mode.
+
 ## The brand mixin contract
 
 A brand is one SCSS module exposing two **zero-argument** mixins:
 
 - **`brand-light()`** — emits the full theme: `mat.theme` with `color`
   (light), `typography`, and `density`; `contract.status-tokens($light-map)`;
-  `contract.radius-tokens(...)`; and `color-scheme: light`.
+  `contract.radius-tokens(...)`; `contract.chart-tokens($light-list...)`;
+  and `color-scheme: light`.
 - **`brand-dark()`** — re-emits **only what changes in dark mode**: `mat.theme`
-  with dark `color` only; `contract.status-tokens($dark-map)`; and
+  with dark `color` only; `contract.status-tokens($dark-map)`;
+  `contract.chart-tokens($dark-list...)`; and
   `color-scheme: dark`. Typography, density, and radius are *not* re-emitted —
   the brand's light selector always also matches in dark mode, so those tokens
   cascade through (see "Light/dark wiring").
@@ -114,6 +132,8 @@ The contract's emit helpers enforce the token names so brands cannot drift:
   the Instruments values; override per brand.
 - `font-data($family)` — emits `--app-font-data` (hold off until the
   component hook exists; see table above).
+- `chart-tokens($colors...)` — emits `--app-chart-1..6` from exactly six
+  series colors, in order; any other count is a compile error.
 
 Reference implementations:
 
