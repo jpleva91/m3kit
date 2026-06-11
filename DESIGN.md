@@ -35,13 +35,14 @@ All fonts are OFL-licensed and served from Google Fonts (license-compatible with
   | overdue | `#B91C1C` | error state, no hedging (crimson) |
   | void | `#3D1A5C` | cancelled, ghosted (deep violet) |
 - **Semantic:** success = paid family, error = overdue family, info = primary family, warning = tertiary family.
+- **Deltas (clarified 2026-06-11):** positive deltas use the tertiary role (the brand's warm accent — sienna in Instruments), negative deltas use the error role. "Sienna on deltas" in the Color approach means the tertiary role, not a literal color.
 - **Dark mode:** First-class. Re-emit color tokens with `theme-type: dark`; saturation softens via M3 tonal mapping; all status badges invert through their container pairs.
 - **Hard rule:** No hardcoded colors in components — `var(--mat-sys-*)` or status-palette tokens only.
 
 ## Spacing
 - **Base unit:** 8px.
 - **Density (M3 density scale):** data tables `-2` (compact, analytical — 12+ rows per viewport); forms/filter panels `-1` (roomier than tables, deliberately); cards/navigation `0` (landmarks breathe).
-- **Scale:** 2xs(2) xs(4) sm(8) md(16) lg(24) xl(32) 2xl(48).
+- **Scale:** 2xs(2) xs(4) sm(8) ms(12) md(16) lg(24) xl(32) 2xl(48). (12 added 2026-06-11: it was already the de facto step for intra-card rhythm across components; spec now matches code.)
 
 ## Layout
 - **Approach:** Grid-disciplined; strong horizontal structure — the dashboard reads like a briefing document, not card soup.
