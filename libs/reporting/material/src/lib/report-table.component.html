@@ -46,7 +46,10 @@
       mat-row
       class="rpt-report-table__row"
       *matRowDef="let row; columns: displayedColumns()"
+      tabindex="0"
       (click)="rowClicked.emit(row)"
+      (keydown.enter)="rowClicked.emit(row)"
+      (keydown.space)="$event.preventDefault(); rowClicked.emit(row)"
     ></tr>
 
     <tr class="rpt-report-table__empty-row" *matNoDataRow>
