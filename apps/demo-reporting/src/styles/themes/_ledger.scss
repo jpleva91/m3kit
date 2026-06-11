@@ -88,6 +88,7 @@ $_status-dark: (
   // Shape: square editorial print — cards 2px, controls 2px,
   // badges 0 (rules and stamps, not pills).
   @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 0px);
+  @include contract.font-data("'Source Sans 3'");
   color-scheme: light;
 }
 

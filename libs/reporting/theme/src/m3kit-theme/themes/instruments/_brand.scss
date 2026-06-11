@@ -86,6 +86,7 @@ $_status-dark: (
   );
   @include contract.status-tokens($_status-light);
   @include contract.radius-tokens();
+  @include contract.font-data("'JetBrains Mono'");
   color-scheme: light;
 }
 

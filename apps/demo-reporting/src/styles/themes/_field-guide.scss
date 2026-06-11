@@ -15,7 +15,6 @@
 ///
 /// Note: Field Guide's data-cell tone is DM Mono, but the component layer
 /// currently hardcodes its mono stack (`report-table.component.scss`), so
-/// no `--app-font-data` token is emitted until a hook exists there.
 
 /// Typography per DESIGN.md: Outfit for body/UI and display/headline —
 /// one geometric family keeps the notebook voice friendly and consistent.
@@ -161,6 +160,7 @@ $_status-dark: (
   // Shape: rounded, approachable notebook chrome — cards 16px,
   // controls 12px, badges full pills.
   @include contract.radius-tokens($card: 16px, $control: 12px, $badge: 999px);
+  @include contract.font-data("'DM Mono'");
   color-scheme: light;
 }
 

@@ -14,7 +14,6 @@
 ///
 /// Note: Terminal's data-cell tone is IBM Plex Mono, but the component
 /// layer currently hardcodes its mono stack (`report-table.component.scss`),
-/// so no `--app-font-data` token is emitted until a hook exists there.
 
 /// Typography per DESIGN.md: Archivo for body/UI and display/headline —
 /// a single utilitarian family keeps the console register. Weights match
@@ -95,6 +94,7 @@ $_status-dark: (
   // Shape: near-square console chrome — cards 4px, controls 3px,
   // badges 3px (no pill silhouettes in Terminal).
   @include contract.radius-tokens($card: 4px, $control: 3px, $badge: 3px);
+  @include contract.font-data("'IBM Plex Mono'");
   color-scheme: light;
 }
 
