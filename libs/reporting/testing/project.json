@@ -1,0 +1,20 @@
+{
+  "name": "reporting-testing",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/reporting/testing/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": ["type:lib", "scope:reporting-testing"],
+  "targets": {
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "libs/reporting/testing/jest.config.ts"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

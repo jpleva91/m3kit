@@ -1,0 +1,141 @@
+{
+  "name": "demo-reporting",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "app",
+  "sourceRoot": "apps/demo-reporting/src",
+  "tags": ["type:app", "scope:demo"],
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:application",
+      "outputs": ["{options.outputPath}"],
+      "options": {
+        "outputPath": "dist/apps/demo-reporting",
+        "index": "apps/demo-reporting/src/index.html",
+        "browser": "apps/demo-reporting/src/main.ts",
+        "polyfills": ["zone.js"],
+        "tsConfig": "apps/demo-reporting/tsconfig.app.json",
+        "inlineStyleLanguage": "scss",
+        "assets": [
+          {
+            "glob": "**/*",
+            "input": "apps/demo-reporting/public"
+          }
+        ],
+        "styles": [
+          "@angular/material/prebuilt-themes/azure-blue.css",
+          "apps/demo-reporting/src/styles.scss"
+        ],
+        "scripts": []
+      },
+      "configurations": {
+        "production": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "1mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "4kb",
+              "maximumError": "8kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "optimization": false,
+          "extractLicenses": false,
+          "sourceMap": true
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "buildTarget": "demo-reporting:build:production"
+        },
+        "development": {
+          "buildTarget": "demo-reporting:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "buildTarget": "demo-reporting:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": ["{workspaceRoot}/coverage/{projectRoot}"],
+      "options": {
+        "jestConfig": "apps/demo-reporting/jest.config.ts"
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "demo-reporting:build",
+        "staticFilePath": "dist/apps/demo-reporting/browser",
+        "spa": true
+      }
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "apps/demo-reporting/.storybook",
+        "browserTarget": "demo-reporting:build",
+        "compodoc": false
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": ["{options.outputDir}"],
+      "options": {
+        "outputDir": "dist/storybook/demo-reporting",
+        "configDir": "apps/demo-reporting/.storybook",
+        "browserTarget": "demo-reporting:build",
+        "compodoc": false
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "test-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "test-storybook -c apps/demo-reporting/.storybook --url=http://localhost:4400"
+      }
+    },
+    "static-storybook": {
+      "executor": "@nx/web:file-server",
+      "dependsOn": ["build-storybook"],
+      "options": {
+        "buildTarget": "demo-reporting:build-storybook",
+        "staticFilePath": "dist/storybook/demo-reporting",
+        "spa": true
+      },
+      "configurations": {
+        "ci": {
+          "buildTarget": "demo-reporting:build-storybook:ci"
+        }
+      }
+    }
+  }
+}
