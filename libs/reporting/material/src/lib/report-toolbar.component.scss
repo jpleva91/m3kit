@@ -15,7 +15,7 @@
     font-weight: 400;
     padding: 0.125rem 0.625rem;
     border-radius: var(--app-radius-badge, 999px);
-    background: rgba(0, 0, 0, 0.08);
+    background: var(--mat-sys-surface-container-high);
   }
 
   &__spacer {
