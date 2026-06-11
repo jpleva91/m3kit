@@ -6,8 +6,11 @@
   gap: 0.75rem;
 
   &__title {
-    font-size: 1.125rem;
-    font-weight: 500;
+    margin: 0;
+    // Page-level heading: brand display family per DESIGN.md.
+    font-family: var(--mat-sys-display-large-font, 'DM Serif Display'), serif;
+    font-size: 1.25rem;
+    font-weight: 400;
   }
 
   &__count {
