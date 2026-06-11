@@ -19,9 +19,11 @@ tooling rather than convention. All example content uses synthetic domains only
 (customers, orders, invoices, support tickets, products); see `docs/CLEAN_ROOM.md`
 for the provenance policy.
 
-**Status:** scaffold phase — pending final verification (initial commit +
-fresh-clone check). Workspace, libraries, enforced boundaries, and a placeholder
-Material shell are in place. Reporting features land in later phases.
+**Status:** scaffold phase complete and verified — initial commit landed and
+the fresh-clone check passed (lockfile-driven install, then lint/test/build
+green for all four projects; see `docs/DECISIONS.md`). Workspace, libraries,
+enforced boundaries, and a placeholder Material shell are in place. Reporting
+features land in later phases, behind the clean-room review gate.
 
 ## Pinned stack
 

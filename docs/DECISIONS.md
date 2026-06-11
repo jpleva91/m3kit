@@ -204,3 +204,14 @@ Hosting it on the Material lib (with the app's stories pulled into the same
 instance) gives one place to review every visual component without adding a
 second Storybook project, and keeping it explicitly out of the adoption
 contract preserves the minimal copy-in surface from ADR-003/ADR-005.
+
+## Verification record — scaffold phase (2026-06-11)
+
+- In-workspace gate: `npx nx run-many -t lint test build` green for all four
+  projects (also re-run independently with `--skip-nx-cache` during review).
+- Fresh-clone reproducibility (per ADR-006): repository cloned to a clean
+  directory, `pnpm install --frozen-lockfile`, then the same gate — green for
+  all four projects from the lockfile-driven install alone.
+- Module boundaries: a deliberate `@reporting/material` import in
+  `libs/reporting/core` failed lint with `@nx/enforce-module-boundaries`,
+  was reverted, and lint ran green (logged in `BOUNDARY_LOG.md`).

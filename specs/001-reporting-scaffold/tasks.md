@@ -87,9 +87,9 @@ description: "Task list for the reporting reference workspace scaffold"
 
 ### Implementation for User Story 3
 
-- [ ] T013 [P] [US3] Complete the remaining docs set: `docs/ADOPTION_GUIDE.md` (source import / internal fork flow; delete demo app; remap tags), `docs/INTERNALIZATION_GUIDE.md` (copy-in steps, dependency reconciliation, ownership transfer), `docs/DECISIONS.md` (ADRs: pinned stack, lib split, copy-in-over-npm, no e2e yet, non-publishable libs, tag-scheme choice, header-or-NOTICE policy); verify `docs/CLEAN_ROOM.md` and `docs/BOUNDARY_LOG.md` are current, including the T008 boundary-violation entry
-- [ ] T014 [P] [US3] Finalize the root `README.md`: purpose, clean-room statement, pinned-stack table, quickstart commands that work as written, repo map, links to `docs/`, and the actual resolved Node/Angular/Nx/TypeScript versions from `nx report`
-- [ ] T015 [US3] Finalize licensing: full Apache-2.0 text in `LICENSE`, `"license": "Apache-2.0"` in `package.json`, and the per-file-header-or-NOTICE policy decided, recorded in `docs/DECISIONS.md`, and applied consistently
+- [x] T013 [P] [US3] Complete the remaining docs set: `docs/ADOPTION_GUIDE.md` (source import / internal fork flow; delete demo app; remap tags), `docs/INTERNALIZATION_GUIDE.md` (copy-in steps, dependency reconciliation, ownership transfer), `docs/DECISIONS.md` (ADRs: pinned stack, lib split, copy-in-over-npm, no e2e yet, non-publishable libs, tag-scheme choice, header-or-NOTICE policy); verify `docs/CLEAN_ROOM.md` and `docs/BOUNDARY_LOG.md` are current, including the T008 boundary-violation entry
+- [x] T014 [P] [US3] Finalize the root `README.md`: purpose, clean-room statement, pinned-stack table, quickstart commands that work as written, repo map, links to `docs/`, and the actual resolved Node/Angular/Nx/TypeScript versions from `nx report`
+- [x] T015 [US3] Finalize licensing: full Apache-2.0 text in `LICENSE`, `"license": "Apache-2.0"` in `package.json`, and the per-file-header-or-NOTICE policy decided, recorded in `docs/DECISIONS.md`, and applied consistently
 
 **Checkpoint**: All user stories should now be independently functional
 
@@ -99,8 +99,8 @@ description: "Task list for the reporting reference workspace scaffold"
 
 **Purpose**: Provenance-safe publication of the scaffold
 
-- [ ] T016 Initial commit with clean-room pre-commit audit: re-walk the clean-room author checklist and record the outcome in `docs/BOUNDARY_LOG.md`; verify git author/committer identity is personal (`git config user.name` / `git config user.email` before committing, `git log --format='%ae %ce'` after); confirm the committed tree contains no internal identifiers or planning-tool references; commit the full scaffold including the lockfile, `LICENSE`, and `docs/`
-- [ ] T017 Fresh-clone verification: clone the repository to a clean directory, run a lockfile-driven install, and confirm `npx nx run-many -t lint test build` passes for all four projects from the install alone — proving the reproducibility claim in plan.md and spec SC-001; record the result in `docs/DECISIONS.md` or the PR description
+- [x] T016 Initial commit with clean-room pre-commit audit: re-walk the clean-room author checklist and record the outcome in `docs/BOUNDARY_LOG.md`; verify git author/committer identity is personal (`git config user.name` / `git config user.email` before committing, `git log --format='%ae %ce'` after); confirm the committed tree contains no internal identifiers or planning-tool references; commit the full scaffold including the lockfile, `LICENSE`, and `docs/`
+- [x] T017 Fresh-clone verification: clone the repository to a clean directory, run a lockfile-driven install, and confirm `npx nx run-many -t lint test build` passes for all four projects from the install alone — proving the reproducibility claim in plan.md and spec SC-001; record the result in `docs/DECISIONS.md` or the PR description
 
 ---
 
@@ -172,3 +172,13 @@ Blocked behind the clean-room compliance review gate. Listed only so nobody star
 - Clean-room rules apply to every task: public sources only, every consultation logged in `docs/BOUNDARY_LOG.md` as it happens, synthetic domains only (customers, orders, invoices, support tickets, products)
 - Checked tasks reflect work already completed and verified in this workspace
 - Commit after each task or logical group; stop at any checkpoint to validate independently
+
+---
+
+**Completion evidence (2026-06-11):** all tasks verified by the in-workspace
+gate and the fresh-clone gate recorded in `docs/DECISIONS.md` (Verification
+record), the boundary-violation proof and pre-commit audit rows in
+`docs/BOUNDARY_LOG.md`, and the single neutral initial commit on `main`.
+Generated library placeholder components were replaced post-review with
+named placeholder token exports (`REPORTING_*_PLACEHOLDER`) and trivial
+passing specs, per the minimal-placeholder-export requirement.

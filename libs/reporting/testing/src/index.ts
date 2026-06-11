@@ -1,1 +1,1 @@
-export * from './lib/reporting-testing/reporting-testing.component';
+export * from './lib/placeholder';
