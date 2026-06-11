@@ -13,6 +13,9 @@ import { MatIconModule } from '@angular/material/icon';
 /** Display format applied to numeric KPI values. */
 export type KpiValueFormat = 'number' | 'currency' | 'percent';
 
+/** Sentiment of the optional decorative corner accent. */
+export type KpiCornerAccent = 'positive' | 'negative' | 'neutral';
+
 /** Sparkline drawing area; the SVG scales to the card width. */
 const SPARKLINE_WIDTH = 100;
 const SPARKLINE_HEIGHT = 32;
@@ -66,6 +69,14 @@ export class KpiCardComponent {
 
   /** Optional Material icon name shown next to the label. */
   readonly icon = input<string | null>(null);
+
+  /**
+   * Optional decorative rotated-square accent clipped to the card's
+   * top-right corner, tinted by sentiment: `positive` (paid family),
+   * `negative` (overdue family), `neutral` (primary family). `null`
+   * (the default) renders no accent.
+   */
+  readonly cornerAccent = input<KpiCornerAccent | null>(null);
 
   private readonly locale = inject(LOCALE_ID);
 

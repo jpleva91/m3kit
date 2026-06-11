@@ -1,17 +1,5 @@
-<mat-toolbar color="primary">
-  @if (isHandset()) {
-    <button
-      mat-icon-button
-      type="button"
-      class="nav-toggle"
-      aria-label="Toggle navigation"
-      (click)="sidenav.toggle()"
-    >
-      <mat-icon>menu</mat-icon>
-    </button>
-  }
-  <span>{{ title }}</span>
-  <span class="toolbar-spacer"></span>
+<!-- Brand/dark controls shared by every layout preset. -->
+<ng-template #toolbarControls>
   <button
     mat-icon-button
     type="button"
@@ -52,36 +40,167 @@
       themeService.mode() === 'dark' ? 'light_mode' : 'dark_mode'
     }}</mat-icon>
   </button>
-</mat-toolbar>
+</ng-template>
 
-<mat-sidenav-container class="app-container">
-  <mat-sidenav
-    #sidenav
-    [mode]="isHandset() ? 'over' : 'side'"
-    [opened]="!isHandset()"
-  >
-    <mat-nav-list (click)="isHandset() && sidenav.close()">
-      <a mat-list-item routerLink="/dashboard" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>dashboard</mat-icon>
-        <span matListItemTitle>Dashboard</span>
-      </a>
-      <a
-        mat-list-item
-        routerLink="/reports"
-        routerLinkActive="active-link"
-        [routerLinkActiveOptions]="{ exact: true }"
+<!-- The single routed view, stamped into whichever shell is active. -->
+<ng-template #content>
+  <router-outlet />
+</ng-template>
+
+@switch (layoutPreset()) {
+  <!-- 'command-bar': single top bar, inline nav, status footline. -->
+  @case ('command-bar') {
+    <header class="command-bar">
+      <div class="command-prompt">
+        <span class="command-caret">~$</span>
+        <span class="command-title">{{ title }}</span>
+        <span class="command-cursor"></span>
+      </div>
+      <nav class="command-nav">
+        @for (link of navLinks; track link.path) {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+          >
+            <span class="command-pre">./</span>{{ link.label }}
+          </a>
+        }
+      </nav>
+      <span class="toolbar-spacer"></span>
+      <div class="command-controls">
+        <ng-container [ngTemplateOutlet]="toolbarControls" />
+      </div>
+    </header>
+    <main class="command-content">
+      <ng-container [ngTemplateOutlet]="content" />
+    </main>
+    <footer class="command-footline">
+      <span class="footline-cell"
+        ><span class="footline-ok">●</span> sync ok</span
       >
-        <mat-icon matListItemIcon>table_chart</mat-icon>
-        <span matListItemTitle>Invoices</span>
-      </a>
-      <a mat-list-item routerLink="/reports/customers" routerLinkActive="active-link">
-        <mat-icon matListItemIcon>group</mat-icon>
-        <span matListItemTitle>Customers</span>
-      </a>
-    </mat-nav-list>
-  </mat-sidenav>
+      <span class="toolbar-spacer"></span>
+      <span class="footline-cell">region us-east-1</span>
+    </footer>
+  }
 
-  <mat-sidenav-content class="app-content">
-    <router-outlet />
-  </mat-sidenav-content>
-</mat-sidenav-container>
+  <!-- 'contents-rail': editorial left rail with contents-style nav. -->
+  @case ('contents-rail') {
+    <mat-sidenav-container class="rail-container">
+      <mat-sidenav
+        #rail
+        class="rail"
+        [mode]="isHandset() ? 'over' : 'side'"
+        [opened]="!isHandset()"
+      >
+        <div class="rail-body">
+          <div class="rail-masthead">{{ title }}</div>
+          <nav class="rail-nav">
+            @for (link of navLinks; track link.path) {
+              <a
+                [routerLink]="link.path"
+                routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+                [routerLinkActiveOptions]="{ exact: link.exact }"
+                (click)="isHandset() && rail.close()"
+              >
+                <span>{{ link.label }}</span>
+                <!-- Folio-style contents number (single digit per nav size). -->
+                <span class="rail-folio">0{{ $index + 1 }}</span>
+              </a>
+            }
+          </nav>
+          <div class="rail-foot">
+            <ng-container [ngTemplateOutlet]="toolbarControls" />
+          </div>
+        </div>
+      </mat-sidenav>
+      <mat-sidenav-content class="rail-content">
+        @if (isHandset()) {
+          <button
+            mat-icon-button
+            type="button"
+            class="nav-toggle"
+            aria-label="Toggle navigation"
+            (click)="rail.toggle()"
+          >
+            <mat-icon>menu</mat-icon>
+          </button>
+        }
+        <ng-container [ngTemplateOutlet]="content" />
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  }
+
+  <!-- 'pill-tabs': toolbar with centered pill-shaped tab navigation. -->
+  @case ('pill-tabs') {
+    <mat-toolbar class="pill-toolbar">
+      <span class="pill-title">{{ title }}</span>
+      <nav class="pill-nav">
+        @for (link of navLinks; track link.path) {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="active"
+            ariaCurrentWhenActive="page"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            >{{ link.label }}</a
+          >
+        }
+      </nav>
+      <div class="pill-controls">
+        <ng-container [ngTemplateOutlet]="toolbarControls" />
+      </div>
+    </mat-toolbar>
+    <main class="pill-content">
+      <ng-container [ngTemplateOutlet]="content" />
+    </main>
+  }
+
+  <!-- 'sidenav' (default): toolbar + responsive side navigation. -->
+  @default {
+    <mat-toolbar color="primary">
+      @if (isHandset()) {
+        <button
+          mat-icon-button
+          type="button"
+          class="nav-toggle"
+          aria-label="Toggle navigation"
+          (click)="sidenav.toggle()"
+        >
+          <mat-icon>menu</mat-icon>
+        </button>
+      }
+      <span>{{ title }}</span>
+      <span class="toolbar-spacer"></span>
+      <ng-container [ngTemplateOutlet]="toolbarControls" />
+    </mat-toolbar>
+
+    <mat-sidenav-container class="app-container">
+      <mat-sidenav
+        #sidenav
+        [mode]="isHandset() ? 'over' : 'side'"
+        [opened]="!isHandset()"
+      >
+        <mat-nav-list (click)="isHandset() && sidenav.close()">
+          @for (link of navLinks; track link.path) {
+            <a
+              mat-list-item
+              [routerLink]="link.path"
+              routerLinkActive="active-link"
+              ariaCurrentWhenActive="page"
+              [routerLinkActiveOptions]="{ exact: link.exact }"
+            >
+              <mat-icon matListItemIcon>{{ link.icon }}</mat-icon>
+              <span matListItemTitle>{{ link.label }}</span>
+            </a>
+          }
+        </mat-nav-list>
+      </mat-sidenav>
+
+      <mat-sidenav-content class="app-content">
+        <ng-container [ngTemplateOutlet]="content" />
+      </mat-sidenav-content>
+    </mat-sidenav-container>
+  }
+}

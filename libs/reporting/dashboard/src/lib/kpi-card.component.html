@@ -1,4 +1,14 @@
-<mat-card appearance="outlined" class="rpt-kpi-card">
+<mat-card
+  appearance="outlined"
+  class="rpt-kpi-card"
+  [class.rpt-kpi-card--with-accent]="cornerAccent() !== null"
+  [class.rpt-kpi-card--accent-positive]="cornerAccent() === 'positive'"
+  [class.rpt-kpi-card--accent-negative]="cornerAccent() === 'negative'"
+  [class.rpt-kpi-card--accent-neutral]="cornerAccent() === 'neutral'"
+>
+  @if (cornerAccent() !== null) {
+    <div class="rpt-kpi-card__corner-accent" aria-hidden="true"></div>
+  }
   <mat-card-content>
     <div class="rpt-kpi-card__header">
       @if (icon(); as iconName) {

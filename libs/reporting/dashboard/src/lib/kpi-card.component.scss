@@ -76,4 +76,59 @@
       vector-effect: non-scaling-stroke;
     }
   }
+
+  // The accent overhangs the corner, so the card must clip. Scoped to a
+  // modifier to leave accent-less cards untouched.
+  &--with-accent {
+    position: relative;
+    overflow: hidden;
+  }
+
+  // Decorative rotated rounded squares clipped to the top-right corner:
+  // a soft container-toned base with a denser offset layer behind it.
+  &__corner-accent {
+    position: absolute;
+    top: -1.625rem;
+    right: -1.625rem;
+    width: 5.25rem;
+    height: 5.25rem;
+    border-radius: calc(var(--app-radius-card, 12px) * 2);
+    transform: rotate(18deg);
+    pointer-events: none;
+
+    &::after {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      transform: translate(-0.875rem, 1rem) rotate(-12deg);
+      opacity: 0.25;
+    }
+  }
+
+  // Sentiment tints: container token for the base square, the matching
+  // foreground/role token (faded via opacity) for the offset layer.
+  &--accent-positive .rpt-kpi-card__corner-accent {
+    background: var(--app-status-paid-bg);
+
+    &::after {
+      background: var(--app-status-paid-fg);
+    }
+  }
+
+  &--accent-negative .rpt-kpi-card__corner-accent {
+    background: var(--app-status-overdue-bg);
+
+    &::after {
+      background: var(--app-status-overdue-fg);
+    }
+  }
+
+  &--accent-neutral .rpt-kpi-card__corner-accent {
+    background: var(--mat-sys-primary-container);
+
+    &::after {
+      background: var(--mat-sys-primary);
+    }
+  }
 }

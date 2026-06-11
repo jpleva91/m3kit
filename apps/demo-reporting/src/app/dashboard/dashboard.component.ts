@@ -1,13 +1,18 @@
-import { ChangeDetectionStrategy, Component, LOCALE_ID, inject } from '@angular/core';
-import { formatCurrency, formatDate, getCurrencySymbol } from '@angular/common';
+import { ChangeDetectionStrategy, Component, LOCALE_ID, computed, inject } from '@angular/core';
+import { formatCurrency, formatDate, formatNumber, getCurrencySymbol } from '@angular/common';
 import {
   DashboardGridComponent,
   DetailCardComponent,
   DetailCardRow,
   GridSpanDirective,
   KpiCardComponent,
+  KpiStripComponent,
+  KpiStripItem,
 } from '@m3kit/dashboard';
 import { Invoice, makeInvoices, makeSupportTickets } from '@m3kit/testing';
+
+import { BRAND_LAYOUT_PRESETS } from '../core/layout-presets';
+import { ThemeService } from '../core/theme.service';
 
 /** Seeds for the synthetic fixtures, so the dashboard is deterministic. */
 const INVOICE_SEED = 1;
@@ -20,19 +25,36 @@ const TICKET_SEED = 7;
 const PERIOD_MIDPOINT = '2026-03-17T00:00:00.000Z';
 
 /**
- * Dashboard demo: a responsive `rpt-dashboard-grid` of KPI tiles and
- * detail cards, all computed from deterministic synthetic invoices and
- * support tickets.
+ * Dashboard demo: the same four KPI metrics and two detail cards, all
+ * computed from deterministic synthetic invoices and support tickets,
+ * composed differently per shell layout preset (see core/layout-presets):
+ *
+ * - `sidenav` (default)  responsive grid of KPI tiles + detail cards
+ * - `command-bar`        hairline KPI strip; data is the page, padding tightens
+ * - `contents-rail`      editorial typeset figure stack beside the details
+ * - `pill-tabs`          the default grid with sentiment corner accents
  */
 @Component({
   selector: 'app-dashboard',
-  imports: [DashboardGridComponent, DetailCardComponent, GridSpanDirective, KpiCardComponent],
+  imports: [
+    DashboardGridComponent,
+    DetailCardComponent,
+    GridSpanDirective,
+    KpiCardComponent,
+    KpiStripComponent,
+  ],
   templateUrl: './dashboard.component.html',
   styleUrl: './dashboard.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class DashboardComponent {
   private readonly locale = inject(LOCALE_ID);
+  private readonly themeService = inject(ThemeService);
+
+  /** Shell layout for the active brand; drives the page composition. */
+  protected readonly layoutPreset = computed(
+    () => BRAND_LAYOUT_PRESETS[this.themeService.brand()],
+  );
 
   private readonly invoices = makeInvoices(120, INVOICE_SEED);
   private readonly tickets = makeSupportTickets(40, TICKET_SEED);
@@ -76,6 +98,54 @@ export class DashboardComponent {
     this.openTickets.map((ticket) => ticket.openedAt),
   );
 
+  /** The four metrics as `rpt-kpi-strip` readouts (command-bar preset). */
+  protected readonly kpiStripItems: readonly KpiStripItem[] = [
+    {
+      label: 'Total revenue',
+      value: this.totalRevenue,
+      format: 'currency',
+      delta: this.revenueDelta,
+      sparkline: this.revenueByMonth,
+    },
+    { label: 'Open invoices', value: this.openInvoiceCount, format: 'number', delta: this.openInvoicesDelta },
+    { label: 'Overdue', value: this.overdueCount, format: 'number', delta: this.overdueDelta },
+    { label: 'Open tickets', value: this.openTicketCount, format: 'number', delta: this.openTicketsDelta },
+  ];
+
+  /** The four metrics as typeset ledger figures (contents-rail preset). */
+  protected readonly figures: readonly DashboardFigure[] = [
+    {
+      label: 'Total revenue',
+      value: this.currency(this.totalRevenue),
+      delta: this.revenueDelta,
+      formattedDelta: `${this.signedNumber(this.revenueDelta)} on prior period`,
+      note: 'Receipts against the prior period',
+      lede: true,
+    },
+    {
+      label: 'Open invoices',
+      value: this.number(this.openInvoiceCount),
+      delta: this.openInvoicesDelta,
+      formattedDelta: this.signedNumber(this.openInvoicesDelta),
+      note: 'Awaiting settlement',
+    },
+    {
+      label: 'Overdue',
+      value: this.number(this.overdueCount),
+      delta: this.overdueDelta,
+      formattedDelta: this.signedNumber(this.overdueDelta),
+      note: 'Past terms; escalation advised',
+      negative: true,
+    },
+    {
+      label: 'Open tickets',
+      value: this.number(this.openTicketCount),
+      delta: this.openTicketsDelta,
+      formattedDelta: this.signedNumber(this.openTicketsDelta),
+      note: 'Service correspondence pending',
+    },
+  ];
+
   /** Most recently issued invoice. */
   protected readonly latestInvoice = this.invoices.reduce((latest, invoice) =>
     invoice.issuedAt > latest.issuedAt ? invoice : latest,
@@ -107,6 +177,29 @@ export class DashboardComponent {
   private date(iso: string): string {
     return formatDate(iso, 'mediumDate', this.locale);
   }
+
+  private number(value: number): string {
+    return formatNumber(value, this.locale);
+  }
+
+  /** Delta rendered with an explicit sign (`+12`, `-3.5`), as in the lib. */
+  private signedNumber(delta: number): string {
+    const formatted = formatNumber(Math.abs(delta), this.locale);
+    return delta < 0 ? `-${formatted}` : `+${formatted}`;
+  }
+}
+
+/** One row in the contents-rail "Principal figures" typeset stack. */
+interface DashboardFigure {
+  readonly label: string;
+  readonly value: string;
+  readonly delta: number;
+  readonly formattedDelta: string;
+  readonly note: string;
+  /** The lead figure renders one optical size up. */
+  readonly lede?: boolean;
+  /** Negative-status figures take the overdue status color. */
+  readonly negative?: boolean;
 }
 
 function sumAmounts(invoices: readonly Invoice[]): number {

@@ -9,4 +9,125 @@
     font-weight: 400;
     color: var(--mat-sys-on-surface);
   }
+
+  // ===== 'command-bar' preset (Terminal): the data is the page =====
+
+  &--command-bar {
+    // Padding tightens; the KPI strip runs edge to edge between hairlines.
+    padding: 0;
+
+    .dashboard__title {
+      margin: 0.75rem 1rem;
+    }
+  }
+
+  &__strip {
+    border-top: 1px solid var(--mat-sys-outline-variant);
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  &__detail-row {
+    // Compact two-column row beneath the strip.
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(18rem, 1fr));
+    gap: 0.75rem;
+    padding: 0.75rem 1rem;
+  }
+
+  // ===== 'contents-rail' preset (Ledger): typeset figure stack =====
+
+  &__columns {
+    display: grid;
+    grid-template-columns: minmax(15rem, 20rem) 1fr;
+    gap: 2.5rem;
+    align-items: start;
+
+    @media (max-width: 48rem) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__figures-heading {
+    margin: 0 0 0.25rem;
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.24em;
+    text-transform: uppercase;
+    color: var(--mat-sys-tertiary);
+  }
+
+  &__figure {
+    padding: 1.125rem 0 1rem;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+    // The stack opens on a heavy editorial rule.
+    &:first-of-type {
+      border-top: 2px solid var(--mat-sys-on-surface);
+    }
+  }
+
+  &__figure-label {
+    font-size: 0.71875rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__figure-row {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 0.75rem;
+    margin-top: 0.4375rem;
+  }
+
+  &__figure-value {
+    // Figures are typeset in the brand display (serif) family.
+    font-family: var(--mat-sys-display-large-font, 'DM Serif Display'), serif;
+    font-size: 1.9375rem;
+    font-weight: 600;
+    line-height: 1;
+    font-variant-numeric: tabular-nums lining-nums;
+    letter-spacing: -0.01em;
+    color: var(--mat-sys-on-surface);
+
+    &--lede {
+      font-size: 2.25rem;
+    }
+
+    &--negative {
+      color: var(--app-status-overdue-fg);
+    }
+  }
+
+  &__figure-delta {
+    font-family: var(--mat-sys-display-large-font, 'DM Serif Display'), serif;
+    font-style: italic;
+    font-size: 0.90625rem;
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+    color: var(--mat-sys-on-surface-variant);
+
+    // Sentiment roles per DESIGN.md: up = tertiary, down = error.
+    &--up {
+      color: var(--mat-sys-tertiary);
+    }
+
+    &--down {
+      color: var(--mat-sys-error);
+    }
+  }
+
+  &__figure-note {
+    margin: 0.375rem 0 0;
+    font-size: 0.78125rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__details {
+    display: grid;
+    gap: 1rem;
+    align-content: start;
+  }
 }

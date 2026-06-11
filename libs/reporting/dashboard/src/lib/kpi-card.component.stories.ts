@@ -58,6 +58,19 @@ export const StringValue: Story = {
   },
 };
 
+/** Decorative sentiment-tinted corner accents (Field Guide treatment). */
+export const CornerAccents: Story = {
+  render: () => ({
+    template: `
+      <div style="display: flex; gap: 1rem;">
+        <rpt-kpi-card label="Total revenue" [value]="1284902.44" format="currency" [delta]="4.2" cornerAccent="positive" />
+        <rpt-kpi-card label="Overdue" [value]="12" format="number" [delta]="-3" cornerAccent="negative" />
+        <rpt-kpi-card label="Open invoices" [value]="38" format="number" [delta]="6" cornerAccent="neutral" />
+      </div>
+    `,
+  }),
+};
+
 export const EdgeEmptySparkline: Story = {
   args: {
     label: 'No trend data',

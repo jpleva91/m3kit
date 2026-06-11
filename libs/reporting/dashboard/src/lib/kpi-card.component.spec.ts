@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 
-import { KpiCardComponent, KpiValueFormat } from './kpi-card.component';
+import { KpiCardComponent, KpiCornerAccent, KpiValueFormat } from './kpi-card.component';
 
 @Component({
   imports: [KpiCardComponent],
@@ -13,6 +13,7 @@ import { KpiCardComponent, KpiValueFormat } from './kpi-card.component';
       [delta]="delta"
       [sparkline]="sparkline"
       [icon]="icon"
+      [cornerAccent]="cornerAccent"
     />
   `,
 })
@@ -23,6 +24,7 @@ class HostComponent {
   delta: number | null = null;
   sparkline: readonly number[] | null = null;
   icon: string | null = null;
+  cornerAccent: KpiCornerAccent | null = null;
 }
 
 describe('KpiCardComponent', () => {
@@ -116,6 +118,32 @@ describe('KpiCardComponent', () => {
 
     const polyline = element().querySelector('.rpt-kpi-card__sparkline polyline');
     expect(polyline?.getAttribute('points')).toBe('0,16 100,16');
+  });
+
+  it('renders no corner accent by default', () => {
+    expect(element().querySelector('.rpt-kpi-card__corner-accent')).toBeNull();
+    expect(element().querySelector('.rpt-kpi-card--with-accent')).toBeNull();
+  });
+
+  it('renders an aria-hidden corner accent with the sentiment modifier', () => {
+    host.cornerAccent = 'positive';
+    fixture.detectChanges();
+
+    const card = element().querySelector('.rpt-kpi-card');
+    expect(card?.classList).toContain('rpt-kpi-card--with-accent');
+    expect(card?.classList).toContain('rpt-kpi-card--accent-positive');
+
+    const accent = element().querySelector('.rpt-kpi-card__corner-accent');
+    expect(accent?.getAttribute('aria-hidden')).toBe('true');
+
+    host.cornerAccent = 'negative';
+    fixture.detectChanges();
+    expect(card?.classList).toContain('rpt-kpi-card--accent-negative');
+    expect(card?.classList).not.toContain('rpt-kpi-card--accent-positive');
+
+    host.cornerAccent = 'neutral';
+    fixture.detectChanges();
+    expect(card?.classList).toContain('rpt-kpi-card--accent-neutral');
   });
 
   it('renders the optional icon', () => {

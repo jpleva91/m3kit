@@ -1,48 +1,178 @@
-<section class="dashboard">
-  <h1 class="dashboard__title">Dashboard</h1>
+<!--
+  Composition varies with the active shell preset (core/layout-presets.ts).
+  The lib components stay brand-agnostic; the page only re-arranges them.
+-->
+@switch (layoutPreset()) {
+  <!-- Terminal: hairline KPI strip, compact detail row — the data is the page. -->
+  @case ('command-bar') {
+    <section class="dashboard dashboard--command-bar">
+      <h1 class="dashboard__title">Dashboard</h1>
 
-  <rpt-dashboard-grid minColumnWidth="14rem" gap="1rem">
-    <rpt-kpi-card
-      label="Total revenue"
-      [value]="totalRevenue"
-      format="currency"
-      [delta]="revenueDelta"
-      [sparkline]="revenueByMonth"
-      icon="payments"
-    />
-    <rpt-kpi-card
-      label="Open invoices"
-      [value]="openInvoiceCount"
-      format="number"
-      [delta]="openInvoicesDelta"
-      icon="receipt_long"
-    />
-    <rpt-kpi-card
-      label="Overdue"
-      [value]="overdueCount"
-      format="number"
-      [delta]="overdueDelta"
-      icon="event_busy"
-    />
-    <rpt-kpi-card
-      label="Open tickets"
-      [value]="openTicketCount"
-      format="number"
-      [delta]="openTicketsDelta"
-      icon="support_agent"
-    />
+      <rpt-kpi-strip class="dashboard__strip" [items]="kpiStripItems" />
 
-    <rpt-detail-card
-      [rptGridSpan]="2"
-      title="Latest invoice"
-      [subtitle]="latestInvoice.number"
-      [rows]="latestInvoiceRows"
-    />
-    <rpt-detail-card
-      [rptGridSpan]="2"
-      title="Top customer"
-      subtitle="By total billed"
-      [rows]="topCustomerRows"
-    />
-  </rpt-dashboard-grid>
-</section>
+      <div class="dashboard__detail-row">
+        <rpt-detail-card
+          title="Latest invoice"
+          [subtitle]="latestInvoice.number"
+          [rows]="latestInvoiceRows"
+        />
+        <rpt-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
+      </div>
+    </section>
+  }
+
+  <!-- Ledger: typeset figure stack in the page's left column, details beside. -->
+  @case ('contents-rail') {
+    <section class="dashboard dashboard--contents-rail">
+      <h1 class="dashboard__title">Dashboard</h1>
+
+      <div class="dashboard__columns">
+        <section class="dashboard__figures" aria-label="Principal figures">
+          <h2 class="dashboard__figures-heading">Principal figures</h2>
+
+          @for (figure of figures; track figure.label) {
+            <div class="dashboard__figure">
+              <span class="dashboard__figure-label">{{ figure.label }}</span>
+              <div class="dashboard__figure-row">
+                <span
+                  class="dashboard__figure-value"
+                  [class.dashboard__figure-value--lede]="figure.lede"
+                  [class.dashboard__figure-value--negative]="figure.negative"
+                  >{{ figure.value }}</span
+                >
+                <span
+                  class="dashboard__figure-delta"
+                  [class.dashboard__figure-delta--up]="figure.delta > 0"
+                  [class.dashboard__figure-delta--down]="figure.delta < 0"
+                  >{{ figure.formattedDelta }}</span
+                >
+              </div>
+              <p class="dashboard__figure-note">{{ figure.note }}</p>
+            </div>
+          }
+        </section>
+
+        <div class="dashboard__details">
+          <rpt-detail-card
+            title="Latest invoice"
+            [subtitle]="latestInvoice.number"
+            [rows]="latestInvoiceRows"
+          />
+          <rpt-detail-card
+            title="Top customer"
+            subtitle="By total billed"
+            [rows]="topCustomerRows"
+          />
+        </div>
+      </div>
+    </section>
+  }
+
+  <!-- Field Guide: the default card grid with sentiment corner accents. -->
+  @case ('pill-tabs') {
+    <section class="dashboard">
+      <h1 class="dashboard__title">Dashboard</h1>
+
+      <rpt-dashboard-grid minColumnWidth="14rem" gap="1rem">
+        <rpt-kpi-card
+          label="Total revenue"
+          [value]="totalRevenue"
+          format="currency"
+          [delta]="revenueDelta"
+          [sparkline]="revenueByMonth"
+          icon="payments"
+          cornerAccent="positive"
+        />
+        <rpt-kpi-card
+          label="Open invoices"
+          [value]="openInvoiceCount"
+          format="number"
+          [delta]="openInvoicesDelta"
+          icon="receipt_long"
+          cornerAccent="neutral"
+        />
+        <rpt-kpi-card
+          label="Overdue"
+          [value]="overdueCount"
+          format="number"
+          [delta]="overdueDelta"
+          icon="event_busy"
+          cornerAccent="negative"
+        />
+        <rpt-kpi-card
+          label="Open tickets"
+          [value]="openTicketCount"
+          format="number"
+          [delta]="openTicketsDelta"
+          icon="support_agent"
+          cornerAccent="neutral"
+        />
+
+        <rpt-detail-card
+          [rptGridSpan]="2"
+          title="Latest invoice"
+          [subtitle]="latestInvoice.number"
+          [rows]="latestInvoiceRows"
+        />
+        <rpt-detail-card
+          [rptGridSpan]="2"
+          title="Top customer"
+          subtitle="By total billed"
+          [rows]="topCustomerRows"
+        />
+      </rpt-dashboard-grid>
+    </section>
+  }
+
+  <!-- Instruments (sidenav): the original composition, unchanged. -->
+  @default {
+    <section class="dashboard">
+      <h1 class="dashboard__title">Dashboard</h1>
+
+      <rpt-dashboard-grid minColumnWidth="14rem" gap="1rem">
+        <rpt-kpi-card
+          label="Total revenue"
+          [value]="totalRevenue"
+          format="currency"
+          [delta]="revenueDelta"
+          [sparkline]="revenueByMonth"
+          icon="payments"
+        />
+        <rpt-kpi-card
+          label="Open invoices"
+          [value]="openInvoiceCount"
+          format="number"
+          [delta]="openInvoicesDelta"
+          icon="receipt_long"
+        />
+        <rpt-kpi-card
+          label="Overdue"
+          [value]="overdueCount"
+          format="number"
+          [delta]="overdueDelta"
+          icon="event_busy"
+        />
+        <rpt-kpi-card
+          label="Open tickets"
+          [value]="openTicketCount"
+          format="number"
+          [delta]="openTicketsDelta"
+          icon="support_agent"
+        />
+
+        <rpt-detail-card
+          [rptGridSpan]="2"
+          title="Latest invoice"
+          [subtitle]="latestInvoice.number"
+          [rows]="latestInvoiceRows"
+        />
+        <rpt-detail-card
+          [rptGridSpan]="2"
+          title="Top customer"
+          subtitle="By total billed"
+          [rows]="topCustomerRows"
+        />
+      </rpt-dashboard-grid>
+    </section>
+  }
+}

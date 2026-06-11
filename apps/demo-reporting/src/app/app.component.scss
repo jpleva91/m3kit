@@ -8,14 +8,316 @@
   flex: 1 1 auto;
 }
 
+/* ===== 'sidenav' preset (default shell) ===== */
+
 .app-container {
   flex: 1;
-}
 
-mat-sidenav {
-  width: 220px;
+  mat-sidenav {
+    width: 220px;
+  }
 }
 
 .app-content {
   padding: 16px;
+}
+
+/* ===== 'command-bar' preset (Terminal) ===== */
+
+.command-bar {
+  flex: none;
+  display: flex;
+  align-items: stretch;
+  height: 54px;
+  background: var(--mat-sys-surface-container);
+  border-bottom: 1px solid var(--mat-sys-outline-variant);
+  font-family: var(--app-font-data);
+}
+
+.command-prompt {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 0 24px;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+.command-caret {
+  color: var(--mat-sys-primary);
+  font-weight: 600;
+}
+
+.command-title {
+  font: var(--mat-sys-title-medium);
+  color: var(--mat-sys-on-surface);
+}
+
+.command-cursor {
+  width: 8px;
+  height: 16px;
+  background: var(--mat-sys-primary);
+}
+
+.command-nav {
+  display: flex;
+  align-items: stretch;
+
+  a {
+    display: flex;
+    align-items: center;
+    padding: 0 22px;
+    text-decoration: none;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    border-right: 1px solid var(--mat-sys-outline-variant);
+    border-bottom: 2px solid transparent;
+
+    &:hover {
+      color: var(--mat-sys-on-surface);
+      background: var(--mat-sys-surface-container-high);
+    }
+
+    &.active {
+      color: var(--mat-sys-primary);
+      border-bottom-color: var(--mat-sys-primary);
+    }
+  }
+}
+
+.command-pre {
+  color: var(--mat-sys-outline);
+  margin-right: 6px;
+}
+
+.command-nav a.active .command-pre {
+  color: var(--mat-sys-primary);
+}
+
+.command-controls {
+  display: flex;
+  align-items: center;
+  padding: 0 16px;
+  border-left: 1px solid var(--mat-sys-outline-variant);
+}
+
+.command-content {
+  flex: 1;
+  overflow: auto;
+  padding: 16px;
+}
+
+.command-footline {
+  flex: none;
+  display: flex;
+  align-items: center;
+  height: 36px;
+  padding: 0 24px;
+  gap: 24px;
+  background: var(--mat-sys-surface-container);
+  border-top: 1px solid var(--mat-sys-outline-variant);
+  color: var(--mat-sys-on-surface-variant);
+  font-family: var(--app-font-data);
+  font-size: 11px;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+}
+
+.footline-cell {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.footline-ok {
+  color: var(--mat-sys-primary);
+}
+
+/* ===== 'contents-rail' preset (Ledger) ===== */
+
+.rail-container {
+  flex: 1;
+}
+
+.rail {
+  width: 280px;
+  border-right: 1px solid var(--mat-sys-outline-variant);
+}
+
+// Full-height flex column inside the sidenav so the controls can sit at
+// the rail bottom.
+.rail-body {
+  display: flex;
+  flex-direction: column;
+  min-height: 100%;
+  padding: 24px 20px;
+  box-sizing: border-box;
+}
+
+.rail-masthead {
+  font-family: var(--mat-sys-display-large-font);
+  font-size: 28px;
+  line-height: 1.1;
+  color: var(--mat-sys-on-surface);
+  padding-bottom: 14px;
+  border-bottom: 2px solid var(--mat-sys-on-surface);
+}
+
+.rail-nav {
+  a {
+    min-height: 44px;
+    align-items: center;
+  }
+
+  a.active {
+    font-weight: 600;
+    border-left: 2px solid var(--mat-sys-primary);
+  }
+
+  display: flex;
+  flex-direction: column;
+  margin-top: 28px;
+
+  a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    padding: 11px 2px 10px;
+    text-decoration: none;
+    color: var(--mat-sys-on-surface-variant);
+    font-size: 12.5px;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    font-variant: small-caps;
+    border-bottom: 1px solid var(--mat-sys-outline-variant);
+
+    &:hover {
+      color: var(--mat-sys-on-surface);
+    }
+
+    &.active {
+      color: var(--mat-sys-primary);
+
+      .rail-folio {
+        color: var(--mat-sys-tertiary);
+      }
+    }
+  }
+}
+
+.rail-folio {
+  font-family: var(--mat-sys-display-large-font);
+  font-style: italic;
+  font-size: 12px;
+  letter-spacing: 0;
+  text-transform: none;
+  font-variant: normal;
+}
+
+.rail-foot {
+  margin-top: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding-top: 24px;
+}
+
+.rail-content {
+  padding: 16px;
+}
+
+/* ===== 'pill-tabs' preset (Field Guide) ===== */
+
+.pill-toolbar {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  background: var(--mat-sys-surface);
+}
+
+.pill-title {
+  font: var(--mat-sys-title-large);
+  color: var(--mat-sys-on-surface);
+}
+
+.pill-nav {
+  a {
+    min-height: 44px;
+    display: inline-flex;
+    align-items: center;
+  }
+
+  display: flex;
+  gap: 4px;
+  padding: 4px;
+  background: var(--mat-sys-surface-container);
+  border-radius: var(--app-radius-badge);
+
+  a {
+    display: block;
+    padding: 8px 24px;
+    border-radius: var(--app-radius-badge);
+    text-decoration: none;
+    color: var(--mat-sys-on-surface-variant);
+    font: var(--mat-sys-label-large);
+
+    &:hover {
+      color: var(--mat-sys-on-surface);
+    }
+
+    &.active {
+      background: var(--mat-sys-primary-container);
+      color: var(--mat-sys-on-primary-container);
+    }
+  }
+}
+
+.pill-controls {
+  display: flex;
+  align-items: center;
+  justify-content: flex-end;
+}
+
+.pill-content {
+  flex: 1;
+  overflow: auto;
+  width: 100%;
+    margin: 0 auto;
+  padding: 16px;
+  box-sizing: border-box;
+}
+
+// Handset adaptation for the top-bar presets: bars wrap instead of
+// overflowing; pills tighten; controls stay reachable.
+@media (max-width: 959px) {
+  .command-bar {
+    flex-wrap: wrap;
+    height: auto;
+    row-gap: 0.25rem;
+    padding-block: 0.5rem;
+  }
+
+  .pill-toolbar {
+    grid-template-columns: 1fr auto;
+    grid-template-areas: 'title controls' 'nav nav';
+    row-gap: 0.25rem;
+    height: auto;
+    padding-block: 0.5rem;
+
+    .pill-title {
+      grid-area: title;
+    }
+
+    .pill-nav {
+      grid-area: nav;
+      justify-self: center;
+    }
+
+    .pill-controls {
+      grid-area: controls;
+    }
+  }
 }

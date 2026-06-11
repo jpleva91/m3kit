@@ -1,0 +1,38 @@
+@for (readout of readouts(); track readout.label) {
+  <div class="rpt-kpi-strip__readout">
+    <span class="rpt-kpi-strip__label">{{ readout.label }}</span>
+
+    <div class="rpt-kpi-strip__value-line">
+      <span class="rpt-kpi-strip__value">{{ readout.value }}</span>
+
+      @if (readout.delta !== null) {
+        <span
+          class="rpt-kpi-strip__delta"
+          [class.rpt-kpi-strip__delta--up]="readout.delta > 0"
+          [class.rpt-kpi-strip__delta--down]="readout.delta < 0"
+        >
+          @if (readout.delta > 0) {
+            <mat-icon class="rpt-kpi-strip__delta-icon" aria-hidden="true">arrow_upward</mat-icon>
+          } @else if (readout.delta < 0) {
+            <mat-icon class="rpt-kpi-strip__delta-icon" aria-hidden="true">arrow_downward</mat-icon>
+          }
+          <span>{{ readout.formattedDelta }}</span>
+        </span>
+      }
+
+      @if (readout.sparklinePoints; as points) {
+        <svg
+          class="rpt-kpi-strip__sparkline"
+          [attr.viewBox]="sparklineViewBox"
+          [attr.width]="sparklineWidth"
+          [attr.height]="sparklineHeight"
+          preserveAspectRatio="none"
+          role="img"
+          aria-label="Trend sparkline"
+        >
+          <polyline [attr.points]="points" fill="none" stroke-width="1.5" />
+        </svg>
+      }
+    </div>
+  </div>
+}

@@ -3,6 +3,7 @@ import { provideRouter } from '@angular/router';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
+import { ThemeService } from './core/theme.service';
 
 describe('AppComponent', () => {
   const BRAND_CLASSES = [
@@ -95,6 +96,23 @@ describe('AppComponent', () => {
     expect(
       JSON.parse(localStorage.getItem('demo-reporting.theme') ?? '{}')
     ).toEqual({ brand: 'terminal', mode: 'light' });
+  });
+
+  it('should switch to the command-bar layout preset for the terminal brand', () => {
+    const fixture = TestBed.createComponent(AppComponent);
+    fixture.detectChanges();
+    const compiled = fixture.nativeElement as HTMLElement;
+
+    // Default brand (instruments) renders the sidenav shell.
+    expect(compiled.querySelector('mat-sidenav-container')).toBeTruthy();
+    expect(compiled.querySelector('header.command-bar')).toBeNull();
+
+    TestBed.inject(ThemeService).setBrand('terminal');
+    fixture.detectChanges();
+
+    expect(compiled.querySelector('mat-sidenav-container')).toBeNull();
+    expect(compiled.querySelector('header.command-bar')).toBeTruthy();
+    expect(compiled.querySelector('footer.command-footline')).toBeTruthy();
   });
 
   it('should toggle dark mode on the root element and persist it', () => {
