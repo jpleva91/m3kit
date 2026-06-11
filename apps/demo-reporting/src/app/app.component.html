@@ -15,6 +15,8 @@
       <button
         mat-menu-item
         type="button"
+        role="menuitemradio"
+        [attr.aria-checked]="themeService.brand() === brand.value"
         (click)="themeService.setBrand(brand.value)"
       >
         @if (themeService.brand() === brand.value) {
