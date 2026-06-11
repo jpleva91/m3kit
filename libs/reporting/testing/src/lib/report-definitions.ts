@@ -1,13 +1,13 @@
 /**
  * Ready-made `ReportDefinition` fixtures for the synthetic domains, typed
- * against @reporting/core, so consumers can demo a report instantly:
+ * against @m3kit/core, so consumers can demo a report instantly:
  *
  * ```ts
  * const dataSource = new InMemoryReportDataSource(makeInvoices(100));
  * const definition = INVOICES_REPORT_DEFINITION;
  * ```
  */
-import type { ReportDefinition } from '@reporting/core';
+import type { ReportDefinition } from '@m3kit/core';
 
 import type { Customer, Invoice } from './factories';
 

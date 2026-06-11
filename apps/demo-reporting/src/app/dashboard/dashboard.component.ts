@@ -6,8 +6,8 @@ import {
   DetailCardRow,
   GridSpanDirective,
   KpiCardComponent,
-} from '@reporting/dashboard';
-import { Invoice, makeInvoices, makeSupportTickets } from '@reporting/testing';
+} from '@m3kit/dashboard';
+import { Invoice, makeInvoices, makeSupportTickets } from '@m3kit/testing';
 
 /** Seeds for the synthetic fixtures, so the dashboard is deterministic. */
 const INVOICE_SEED = 1;

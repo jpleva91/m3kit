@@ -1,5 +1,5 @@
 @use '@angular/material' as mat;
-@use 'reporting-theme' as contract;
+@use 'm3kit-theme' as contract;
 @use './ledger-colors' as palettes;
 
 /// "Ledger" — alternate brand: private-bank editorial heirloom. Oxblood +
@@ -10,7 +10,7 @@
 /// Palettes generated from primary `#6B1F2A` (oxblood), tertiary `#B08D3E`
 /// (gold leaf), neutral `#8A8275` (warm stone — carries the paper warmth) —
 /// see `_ledger-colors.scss`. Implements the brand mixin contract from
-/// `@reporting/theme` (`@use 'reporting-theme'`).
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
 
 /// Typography per DESIGN.md: Source Sans 3 for body/UI/labels, Fraunces
 /// for the brand (display/headline) roles.

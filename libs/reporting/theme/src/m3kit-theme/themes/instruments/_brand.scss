@@ -7,7 +7,7 @@
 /// JetBrains Mono. See DESIGN.md for the binding spec.
 ///
 /// Implements the brand mixin contract documented in `../../_contract.scss`
-/// (`@use 'reporting-theme'`): `brand-light()` emits the full light theme,
+/// (`@use 'm3kit-theme'`): `brand-light()` emits the full light theme,
 /// `brand-dark()` re-emits only the dark-mode color tokens.
 
 /// Typography per DESIGN.md: Instrument Sans for body/UI/labels,

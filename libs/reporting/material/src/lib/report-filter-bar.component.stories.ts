@@ -1,6 +1,6 @@
 import { provideAnimations } from '@angular/platform-browser/animations';
 import { applicationConfig, type Meta, type StoryObj } from '@storybook/angular';
-import { ReportDefinition } from '@reporting/core';
+import { ReportDefinition } from '@m3kit/core';
 
 import { ReportFilterBarComponent } from './report-filter-bar.component';
 

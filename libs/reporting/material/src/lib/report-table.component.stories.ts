@@ -5,7 +5,7 @@ import {
   InMemoryReportDataSource,
   ReportDataSource,
   ReportDefinition,
-} from '@reporting/core';
+} from '@m3kit/core';
 
 import { ReportTableComponent } from './report-table.component';
 

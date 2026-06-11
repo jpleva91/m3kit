@@ -13,17 +13,17 @@ to a read-only reference. There is no shared-fork relationship and no sync-back.
 
 1. Clone this repo somewhere temporary (or download a source archive):
    ```bash
-   git clone <this-repo> /tmp/angular-reporting-reference
+   git clone <this-repo> /tmp/m3kit
    ```
 2. Verify it is green before copying, so you know your baseline:
    ```bash
-   cd /tmp/angular-reporting-reference
+   cd /tmp/m3kit
    pnpm install --frozen-lockfile
    npx nx run-many -t lint test build
    ```
 3. Copy the library sources — **source files only, not git history**:
    ```bash
-   cp -r /tmp/angular-reporting-reference/libs/reporting <your-workspace>/libs/
+   cp -r /tmp/m3kit/libs/reporting <your-workspace>/libs/
    ```
    Adjust the destination to your layout (e.g. `libs/shared/reporting`). Do **not**
    copy `apps/demo-reporting` (demo-only), `node_modules`, `dist`, the lockfile, or
@@ -33,11 +33,11 @@ to a read-only reference. There is no shared-fork relationship and no sync-back.
    import commit, with no upstream objects in it.
 5. Bring the license artifacts along — see "License obligations" below.
 6. Perform the renames from the adoption guide: tsconfig path aliases
-   (`@reporting/*` → your scope), project names/tags in each `project.json`, and the
+   (`@m3kit/*` → your scope), project names/tags in each `project.json`, and the
    workspace-wide import-specifier replace.
 7. Commit the import as a single, clearly labeled commit, e.g.:
    ```
-   feat(reporting): internalize angular-reporting-reference libs (Apache-2.0, source import)
+   feat(reporting): internalize m3kit libs (Apache-2.0, source import)
    ```
    Note the upstream repo URL and the commit/tag you copied from in the commit body.
    That one line is your entire provenance record — keep it accurate.
@@ -155,8 +155,8 @@ merged into your copy, and no expectation that your improvements flow back.
 
 - [ ] `libs/reporting/*` source copied into the consumer workspace; `apps/demo-reporting`
       and the reference's root config/docs **not** copied.
-- [ ] Import paths renamed (`@reporting/*` → your scope); zero remaining references to
-      `@reporting/core|material|testing` in the workspace.
+- [ ] Import paths renamed (`@m3kit/*` → your scope); zero remaining references to
+      `@m3kit/core|material|testing` in the workspace.
 - [ ] Project names and tags renamed into your workspace's taxonomy.
 - [ ] Dependencies reconciled: Angular / Material / CDK / `@ngrx/signals` majors match
       the consumer workspace; CDK version equals Material version; no attempt to hold

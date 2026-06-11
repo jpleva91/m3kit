@@ -36,9 +36,9 @@ change anything here; version moves require a new ADR.
 
 **Decision:** Three libraries under `libs/reporting/`:
 
-- `@reporting/core` — contracts only; no Material/CDK, no internal dependencies
-- `@reporting/material` — Material/CDK UI layer; may depend on core only
-- `@reporting/testing` — harnesses and synthetic fixtures; may depend on core only
+- `@m3kit/core` — contracts only; no Material/CDK, no internal dependencies
+- `@m3kit/material` — Material/CDK UI layer; may depend on core only
+- `@m3kit/testing` — harnesses and synthetic fixtures; may depend on core only
 
 Tags are per-lib scopes: `scope:reporting-core`, `scope:reporting-material`,
 `scope:reporting-testing`, plus `type:lib`; the app is `type:app, scope:demo`.
@@ -77,7 +77,7 @@ compatibility matrix.
 **Rationale:** Reporting plumbing is the kind of code enterprise teams need to
 own and adapt, not track as an upstream dependency. Optimizing for copy-in means:
 minimal dependencies, conventional Nx layout, no custom executors or generators,
-and a single documented rename point (the `@reporting/*` tsconfig path prefix).
+and a single documented rename point (the `@m3kit/*` tsconfig path prefix).
 See `docs/ADOPTION_GUIDE.md` and `docs/INTERNALIZATION_GUIDE.md`.
 
 ## ADR-004 — No e2e testing in the scaffold phase
@@ -225,6 +225,6 @@ contract preserves the minimal copy-in surface from ADR-003/ADR-005.
 - Fresh-clone reproducibility (per ADR-006): repository cloned to a clean
   directory, `pnpm install --frozen-lockfile`, then the same gate — green for
   all four projects from the lockfile-driven install alone.
-- Module boundaries: a deliberate `@reporting/material` import in
+- Module boundaries: a deliberate `@m3kit/material` import in
   `libs/reporting/core` failed lint with `@nx/enforce-module-boundaries`,
   was reverted, and lint ran green (logged in `BOUNDARY_LOG.md`).

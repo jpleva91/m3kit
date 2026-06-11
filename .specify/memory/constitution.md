@@ -1,4 +1,4 @@
-# Angular Reporting Reference Constitution
+# m3kit (Angular Reporting Reference) Constitution
 
 ## Core Principles
 

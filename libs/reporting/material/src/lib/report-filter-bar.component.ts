@@ -12,7 +12,7 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { Subject, of, timer } from 'rxjs';
 import { debounce, distinctUntilChanged, map } from 'rxjs/operators';
-import { ReportDefinition } from '@reporting/core';
+import { ReportDefinition } from '@m3kit/core';
 
 /** Payload emitted by `rpt-report-filter-bar` when the search text changes. */
 export interface ReportFilterBarChange {

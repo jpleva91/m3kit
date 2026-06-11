@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 
 import { DetailCardComponent, DetailCardRow } from './detail-card.component';
 
-/** Local synthetic fixture; lib stories must not depend on @reporting/testing. */
+/** Local synthetic fixture; lib stories must not depend on @m3kit/testing. */
 const INVOICE_ROWS: readonly DetailCardRow[] = [
   { label: 'Number', value: 'INV-2026-0042' },
   { label: 'Customer', value: 'Customer 0117' },

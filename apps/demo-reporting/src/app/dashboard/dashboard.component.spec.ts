@@ -1,6 +1,6 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { makeInvoices, makeSupportTickets } from '@reporting/testing';
+import { makeInvoices, makeSupportTickets } from '@m3kit/testing';
 
 import { DashboardComponent } from './dashboard.component';
 

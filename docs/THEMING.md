@@ -10,7 +10,7 @@ The kit is themed through exactly two token surfaces:
 1. **Material 3 system tokens** (`--mat-sys-*`), emitted by Angular Material's
    `mat.theme` mixin from brand-supplied palettes, typography, and density.
 2. **A small app-token contract** (`--app-*`), defined and documented in
-   `libs/reporting/theme/src/reporting-theme/_contract.scss`, for the few
+   `libs/reporting/theme/src/m3kit-theme/_contract.scss`, for the few
    domain-specific decisions M3 has no token for (status badge colors, shape
    radii, an optional data-cell font stack).
 
@@ -21,17 +21,17 @@ brands or modes re-emits tokens under a class scope on the root element, and
 every component restyles itself with **zero duplicated component CSS**.
 
 The theming machinery lives in its own library, `libs/reporting/theme`
-(`@reporting/theme`), so it travels with the rest of the copy-in deliverable:
+(`@m3kit/theme`), so it travels with the rest of the copy-in deliverable:
 
 ```
 libs/reporting/theme/
 ├── project.json                 # lint-only project (no build/test targets)
 ├── README.md                    # contract + wiring summary
-└── src/reporting-theme/
-    ├── _index.scss              # entry: @use 'reporting-theme'
+└── src/m3kit-theme/
+    ├── _index.scss              # entry: @use 'm3kit-theme'
     ├── _contract.scss           # custom-prop API + brand mixin contract + emit helpers
     └── themes/instruments/      # "Instruments", the default brand
-        ├── _index.scss          # entry: @use 'reporting-theme/themes/instruments'
+        ├── _index.scss          # entry: @use 'm3kit-theme/themes/instruments'
         ├── _brand.scss          # brand-light() / brand-dark()
         └── _colors.scss         # generated M3 palettes
 ```
@@ -49,8 +49,8 @@ This block is set on the `build` target of `apps/demo-reporting/project.json`
 in place, any stylesheet in the workspace can write:
 
 ```scss
-@use 'reporting-theme' as contract;          // the contract + emit helpers
-@use 'reporting-theme/themes/instruments';   // the default brand
+@use 'm3kit-theme' as contract;          // the contract + emit helpers
+@use 'm3kit-theme/themes/instruments';   // the default brand
 ```
 
 ## The custom-prop API (`--app-*`)
@@ -117,7 +117,7 @@ The contract's emit helpers enforce the token names so brands cannot drift:
 
 Reference implementations:
 
-- `libs/reporting/theme/src/reporting-theme/themes/instruments/_brand.scss` —
+- `libs/reporting/theme/src/m3kit-theme/themes/instruments/_brand.scss` —
   the default brand, shipped inside the lib.
 - `apps/demo-reporting/src/styles/themes/_terminal.scss`, `_ledger.scss`,
   `_field-guide.scss` — example *consumer* brands living app-side, exactly
@@ -148,7 +148,7 @@ Create `apps/demo-reporting/src/styles/themes/_midnight.scss`:
 
 ```scss
 @use '@angular/material' as mat;
-@use 'reporting-theme' as contract;
+@use 'm3kit-theme' as contract;
 @use './midnight-colors' as palettes;
 
 /// "Midnight" — deep indigo nocturne. Space Grotesk throughout.
@@ -280,7 +280,7 @@ harmless but redundant.
 Storybook shares the app's single token source rather than maintaining its
 own: `libs/reporting/material/.storybook/storybook-theme.scss` `@use`s the
 demo app aggregator and calls `app-theme()`. The includePath on the
-`storybook` / `build-storybook` targets makes `reporting-theme` resolve there
+`storybook` / `build-storybook` targets makes `m3kit-theme` resolve there
 too.
 
 `libs/reporting/material/.storybook/preview.ts` defines two `globalTypes`
@@ -313,5 +313,5 @@ This is recorded as a binding decision in `DESIGN.md` (Decisions Log,
 `stylePreprocessorOptions.includePaths` entry on your app's build target (and
 Storybook targets, if you take the Storybook), pointing at wherever you placed
 `libs/reporting/theme/src`. Your own brand modules follow the consumer-brand
-pattern above: live app-side, `@use 'reporting-theme' as contract`, implement
+pattern above: live app-side, `@use 'm3kit-theme' as contract`, implement
 `brand-light()` / `brand-dark()`.

@@ -95,8 +95,8 @@ README.md                      # What/why, pinned stack, quickstart, repo map
 **Structure Decision**: Nx 20 Angular monorepo with `apps/` + `libs/` per the
 canonical Nx Angular-monorepo layout. The demo app is disposable during
 internalization; everything reusable lives in the three `libs/reporting/*`
-libraries. Import paths are mapped in `tsconfig.base.json` as `@reporting/core`,
-`@reporting/material`, and `@reporting/testing` — the single documented rename
+libraries. Import paths are mapped in `tsconfig.base.json` as `@m3kit/core`,
+`@m3kit/material`, and `@m3kit/testing` — the single documented rename
 point for adopters. Libraries are standard non-publishable Nx Angular libraries
 (no buildable/publishable machinery), generated with Jest unit testing and no
 e2e (unit testing since migrated to Vitest; see DECISIONS.md ADR-005 amendment,

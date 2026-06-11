@@ -31,7 +31,7 @@ import {
   ReportQuery,
   ReportSortState,
   createEmptyPage,
-} from '@reporting/core';
+} from '@m3kit/core';
 
 /**
  * Material table for a `ReportDefinition<T>` backed by any

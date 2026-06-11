@@ -32,7 +32,7 @@ copy-in cheap.
 Quickstart:
 
 ```bash
-git clone <this-repo> && cd angular-reporting-reference
+git clone <this-repo> && cd m3kit
 pnpm install --frozen-lockfile
 npx nx run-many -t lint test build   # every project must be green
 npx nx serve demo-reporting          # dashboard + reports demo, brand/mode switcher
@@ -106,11 +106,11 @@ The libs are addressed via tsconfig path aliases in `tsconfig.base.json`:
 
 ```jsonc
 "paths": {
-  "@reporting/core":     ["libs/reporting/core/src/index.ts"],
-  "@reporting/material": ["libs/reporting/material/src/index.ts"],
-  "@reporting/testing":  ["libs/reporting/testing/src/index.ts"],
-  "@reporting/dashboard": ["libs/reporting/dashboard/src/index.ts"],
-  "@reporting/forms":     ["libs/reporting/forms/src/index.ts"]
+  "@m3kit/core":     ["libs/reporting/core/src/index.ts"],
+  "@m3kit/material": ["libs/reporting/material/src/index.ts"],
+  "@m3kit/testing":  ["libs/reporting/testing/src/index.ts"],
+  "@m3kit/dashboard": ["libs/reporting/dashboard/src/index.ts"],
+  "@m3kit/forms":     ["libs/reporting/forms/src/index.ts"]
 }
 ```
 
@@ -122,16 +122,16 @@ own scope (say `@acme`):
 2. Add the aliases to *your* `tsconfig.base.json`:
    `"@acme/reporting-core": ["libs/shared/reporting/core/src/index.ts"]`, etc.
 3. Workspace-wide find-and-replace the import specifiers:
-   `@reporting/core` → `@acme/reporting-core`,
-   `@reporting/material` → `@acme/reporting-material`,
-   `@reporting/testing` → `@acme/reporting-testing`,
-   `@reporting/dashboard` → `@acme/reporting-dashboard`,
-   `@reporting/forms` → `@acme/reporting-forms`.
+   `@m3kit/core` → `@acme/reporting-core`,
+   `@m3kit/material` → `@acme/reporting-material`,
+   `@m3kit/testing` → `@acme/reporting-testing`,
+   `@m3kit/dashboard` → `@acme/reporting-dashboard`,
+   `@m3kit/forms` → `@acme/reporting-forms`.
    The only cross-lib imports are `material → core` and `testing → core`, so the
    surface is small and entirely via the `index.ts` barrels.
 4. Update each copied lib's `project.json` (project names, tags) and per-lib
    `eslint.config.mjs` / `jest.config.ts` paths to match your workspace conventions.
-5. Run your lint/test/build to confirm nothing still references `@reporting/*`.
+5. Run your lint/test/build to confirm nothing still references `@m3kit/*`.
 
 There is no other magic: no custom executors, no generators, no path resolution outside
 the standard Nx/tsconfig mechanism.
@@ -147,11 +147,11 @@ Storybook):
 "stylePreprocessorOptions": { "includePaths": ["libs/reporting/theme/src"] }
 ```
 
-That makes `@use 'reporting-theme'` (the token/brand-mixin contract) and
-`@use 'reporting-theme/themes/instruments'` (the default brand) resolve from any
+That makes `@use 'm3kit-theme'` (the token/brand-mixin contract) and
+`@use 'm3kit-theme/themes/instruments'` (the default brand) resolve from any
 stylesheet. Then bring your brand modules across — or author new ones for your own
 design system. Brand modules are small app-side SCSS partials that
-`@use 'reporting-theme' as contract` and implement the two-mixin contract
+`@use 'm3kit-theme' as contract` and implement the two-mixin contract
 (`brand-light()` / `brand-dark()`); the demo app's
 `apps/demo-reporting/src/styles/themes/` modules are the worked examples. The full
 "bring your own brand" walkthrough — token API table, palette generation, root-class

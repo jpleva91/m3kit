@@ -1,6 +1,6 @@
 import { Component } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { InMemoryReportDataSource, ReportDefinition } from '@reporting/core';
+import { InMemoryReportDataSource, ReportDefinition } from '@m3kit/core';
 
 import { ReportTableComponent } from './report-table.component';
 

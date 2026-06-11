@@ -1,7 +1,7 @@
-# angular-reporting-reference
+# m3kit
 
-A clean-room Angular/Nx reference implementation of a reusable, **rethemable**
-Material 3 component kit, demonstrated through a generic enterprise reporting
+A **rethemable Material 3 UI component kit** — a clean-room Angular/Nx
+reference implementation, demonstrated through a generic enterprise reporting
 domain — report definitions, tabular display, filtering, sorting, pagination,
 and dashboard primitives — with synthetic data in a small Angular Material demo
 app. Components consume design tokens only; brands are token re-emissions, so
@@ -64,12 +64,12 @@ For a reproducible install from a fresh clone, use
 | Path | What it is |
 |---|---|
 | `apps/demo-reporting` | Angular 19 standalone demo app: Material shell with dashboard, invoices, and customers pages, plus the brand/mode switcher. Disposable during adoption. |
-| `libs/reporting/core` (`@reporting/core`) | Reporting contracts. No Material/CDK, no internal dependencies. |
-| `libs/reporting/material` (`@reporting/material`) | Material/CDK UI layer. May depend on core only. |
-| `libs/reporting/testing` (`@reporting/testing`) | Test harnesses and synthetic data factories. May depend on core only. |
-| `libs/reporting/dashboard` (`@reporting/dashboard`) | Dashboard primitives: KPI cards, detail cards, grid. May depend on core only. |
-| `libs/reporting/forms` (`@reporting/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
-| `libs/reporting/theme` (`@reporting/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
+| `libs/reporting/core` (`@m3kit/core`) | Reporting contracts. No Material/CDK, no internal dependencies. |
+| `libs/reporting/material` (`@m3kit/material`) | Material/CDK UI layer. May depend on core only. |
+| `libs/reporting/testing` (`@m3kit/testing`) | Test harnesses and synthetic data factories. May depend on core only. |
+| `libs/reporting/dashboard` (`@m3kit/dashboard`) | Dashboard primitives: KPI cards, detail cards, grid. May depend on core only. |
+| `libs/reporting/forms` (`@m3kit/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
+| `libs/reporting/theme` (`@m3kit/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
 | `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `THEMING.md`, `DECISIONS.md`. |
 | `LICENSE` | Apache License 2.0 full text. |
 
@@ -95,13 +95,13 @@ demo brands) is in `DESIGN.md`.
 
 Start with `docs/ADOPTION_GUIDE.md` (how to evaluate and copy the libraries into
 your workspace) and `docs/INTERNALIZATION_GUIDE.md` (the ownership-transfer
-playbook: copy-in steps, dependency reconciliation, renaming the `@reporting/*`
+playbook: copy-in steps, dependency reconciliation, renaming the `@m3kit/*`
 path prefix). `docs/DECISIONS.md` explains why the repository is shaped the way
 it is, so you can revisit those decisions deliberately in your own context.
 
 ## License
 
-Copyright 2026 the angular-reporting-reference authors.
+Copyright 2026 the m3kit authors.
 
 Licensed under the Apache License, Version 2.0 (the "License"); you may not use
 the files in this repository except in compliance with the License. You may

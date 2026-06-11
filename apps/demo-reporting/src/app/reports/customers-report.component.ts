@@ -1,12 +1,12 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
-import { InMemoryReportDataSource, ReportDefinition } from '@reporting/core';
+import { InMemoryReportDataSource, ReportDefinition } from '@m3kit/core';
 import {
   ReportFilterBarChange,
   ReportFilterBarComponent,
   ReportTableComponent,
   ReportToolbarComponent,
-} from '@reporting/material';
-import { CUSTOMERS_REPORT_DEFINITION, Customer, makeCustomers } from '@reporting/testing';
+} from '@m3kit/material';
+import { CUSTOMERS_REPORT_DEFINITION, Customer, makeCustomers } from '@m3kit/testing';
 
 /** Seed for the synthetic customer fixtures, so the demo is deterministic. */
 const CUSTOMER_SEED = 1;

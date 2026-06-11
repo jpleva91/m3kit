@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { InMemoryReportDataSource, ReportDefinition } from '@reporting/core';
-import { FilterFormComponent, FilterFormValues, FormFieldOption } from '@reporting/forms';
+import { InMemoryReportDataSource, ReportDefinition } from '@m3kit/core';
+import { FilterFormComponent, FilterFormValues, FormFieldOption } from '@m3kit/forms';
 import {
   ReportFilterBarChange,
   ReportFilterBarComponent,
   ReportTableComponent,
   ReportToolbarComponent,
-} from '@reporting/material';
-import { INVOICES_REPORT_DEFINITION, Invoice, makeInvoices } from '@reporting/testing';
+} from '@m3kit/material';
+import { INVOICES_REPORT_DEFINITION, Invoice, makeInvoices } from '@m3kit/testing';
 
 /** Seed for the synthetic invoice fixtures, so the demo is deterministic. */
 const INVOICE_SEED = 1;

@@ -10,7 +10,7 @@ import { FormControl, FormGroup } from '@angular/forms';
 import { MatButtonModule } from '@angular/material/button';
 import { Subject, of, timer } from 'rxjs';
 import { debounce, distinctUntilChanged, map, switchMap } from 'rxjs/operators';
-import { ReportColumnDef, ReportColumnType, ReportDefinition } from '@reporting/core';
+import { ReportColumnDef, ReportColumnType, ReportDefinition } from '@m3kit/core';
 
 import { FormFieldComponent, FormFieldOption, FormFieldType } from './form-field.component';
 

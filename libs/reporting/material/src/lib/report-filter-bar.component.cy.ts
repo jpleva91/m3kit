@@ -1,6 +1,6 @@
 import { Component, signal } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ReportDefinition } from '@reporting/core';
+import { ReportDefinition } from '@m3kit/core';
 
 import {
   REPORT_FILTER_DEBOUNCE_MS,

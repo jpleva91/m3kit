@@ -1,11 +1,11 @@
-/// @reporting/theme — the component-facing theming contract.
+/// @m3kit/theme — the component-facing theming contract.
 ///
 /// This library is SCSS-only. Consumers resolve it Nx-style through
 /// `stylePreprocessorOptions.includePaths: ["libs/reporting/theme/src"]`
 /// (wired in the demo app `build` target and in the Storybook
 /// `storybook` / `build-storybook` targets), which makes
-/// `@use 'reporting-theme'` (this contract) and
-/// `@use 'reporting-theme/themes/instruments'` (the default brand)
+/// `@use 'm3kit-theme'` (this contract) and
+/// `@use 'm3kit-theme/themes/instruments'` (the default brand)
 /// resolve from any stylesheet in the workspace.
 ///
 /// ── Custom-property API (what components may consume) ─────────────────

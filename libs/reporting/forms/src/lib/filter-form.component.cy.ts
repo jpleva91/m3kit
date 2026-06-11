@@ -1,7 +1,7 @@
 import { Component, signal } from '@angular/core';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ReportDefinition } from '@reporting/core';
+import { ReportDefinition } from '@m3kit/core';
 
 import {
   FILTER_FORM_DEBOUNCE_MS,

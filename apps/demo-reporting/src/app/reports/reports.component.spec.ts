@@ -1,7 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { makeInvoices } from '@reporting/testing';
+import { makeInvoices } from '@m3kit/testing';
 
 import { ReportsComponent } from './reports.component';
 

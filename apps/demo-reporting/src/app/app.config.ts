@@ -9,7 +9,7 @@ export const appConfig: ApplicationConfig = {
     provideZoneChangeDetection({ eventCoalescing: true }),
     provideRouter(appRoutes),
     provideAnimationsAsync(),
-    // Date adapter for the datepickers rendered by @reporting/forms.
+    // Date adapter for the datepickers rendered by @m3kit/forms.
     provideNativeDateAdapter(),
   ],
 };

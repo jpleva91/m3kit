@@ -40,7 +40,7 @@ description: "Task list for the reporting reference workspace scaffold"
 
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
-- [x] T005 Generate the three reporting libraries with tags: `libs/reporting/core` (`scope:reporting-core,type:lib`), `libs/reporting/material` (`scope:reporting-material,type:lib`), `libs/reporting/testing` (`scope:reporting-testing,type:lib`) — standalone, Jest unit tests; confirm tags in each `project.json` and import paths `@reporting/core`, `@reporting/material`, `@reporting/testing` in `tsconfig.base.json`
+- [x] T005 Generate the three reporting libraries with tags: `libs/reporting/core` (`scope:reporting-core,type:lib`), `libs/reporting/material` (`scope:reporting-material,type:lib`), `libs/reporting/testing` (`scope:reporting-testing,type:lib`) — standalone, Jest unit tests; confirm tags in each `project.json` and import paths `@m3kit/core`, `@m3kit/material`, `@m3kit/testing` in `tsconfig.base.json`
 - [x] T006 Strip each library's `src/index.ts` to a single placeholder export (named placeholder type or token) — no Material imports in `libs/reporting/core`, no real contracts anywhere; each library keeps one trivial passing spec
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
@@ -56,7 +56,7 @@ description: "Task list for the reporting reference workspace scaffold"
 ### Implementation for User Story 1
 
 - [x] T007 [US1] Configure `@nx/enforce-module-boundaries` `depConstraints` in the root `eslint.config.mjs` per plan.md Module Boundaries (core → nothing internal; material → core; testing → core; `type:app` → all three reporting scopes; no permissive catch-all); ensure `apps/demo-reporting/project.json` is tagged `type:app,scope:demo`
-- [x] T008 [US1] Prove enforcement with a deliberate violation: temporarily import `@reporting/material` from inside `libs/reporting/core`, confirm `nx lint reporting-core` fails with a module-boundary error, revert, and record the check in `docs/BOUNDARY_LOG.md`
+- [x] T008 [US1] Prove enforcement with a deliberate violation: temporarily import `@m3kit/material` from inside `libs/reporting/core`, confirm `nx lint reporting-core` fails with a module-boundary error, revert, and record the check in `docs/BOUNDARY_LOG.md`
 - [x] T009 [US1] Full verification run: `npx nx run-many -t lint test build` passes for all four projects with each project reporting >=1 passing test; resolved versions confirmed via `nx report`
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and testable independently

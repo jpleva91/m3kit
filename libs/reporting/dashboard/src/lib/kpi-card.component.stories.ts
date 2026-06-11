@@ -2,7 +2,7 @@ import type { Meta, StoryObj } from '@storybook/angular';
 
 import { KpiCardComponent } from './kpi-card.component';
 
-/** Local synthetic series; lib stories must not depend on @reporting/testing. */
+/** Local synthetic series; lib stories must not depend on @m3kit/testing. */
 const REVENUE_SPARKLINE: readonly number[] = [4200, 5100, 4800, 6200, 5900, 7400];
 
 const meta: Meta<KpiCardComponent> = {

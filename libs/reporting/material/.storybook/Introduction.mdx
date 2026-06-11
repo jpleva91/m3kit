@@ -2,9 +2,10 @@ import { Meta } from '@storybook/blocks';
 
 <Meta title="Introduction" />
 
-# Angular Reporting Reference
+# m3kit
 
-A reference implementation of a reporting UI toolkit built with Angular,
+A rethemable Material 3 UI component kit — a reference implementation of a
+reporting UI toolkit built with Angular,
 Angular Material (M3), and NgRx Signals. Everything here is standalone,
 signals-first, `OnPush`, and strictly typed. All demo data is synthetic
 (customers, orders, invoices, products, support tickets).
@@ -13,11 +14,11 @@ signals-first, `OnPush`, and strictly typed. All demo data is synthetic
 
 | Library | Import path | Contents |
 | --- | --- | --- |
-| **core** | `@reporting/core` | Framework-agnostic contracts: `ReportDefinition`, `ReportColumnDef`, `ReportQuery`, `ReportPage`, `ReportDataSource`, `InMemoryReportDataSource`, query/page helpers. No Material dependency. |
-| **material** | `@reporting/material` | Material-based report UI: `ReportTable`, `ReportToolbar`, `ReportFilterBar`. |
-| **dashboard** | `@reporting/dashboard` | Dashboard building blocks: `KpiCard`, `DetailCard`, `DashboardGrid`. |
-| **forms** | `@reporting/forms` | Typed reactive-form helpers: `FormField`, `FormSection`, `FilterForm`. |
-| **testing** | `@reporting/testing` | Synthetic data factories (`makeInvoices`, `makeCustomers`, …) and ready-made report definitions for specs and demos. |
+| **core** | `@m3kit/core` | Framework-agnostic contracts: `ReportDefinition`, `ReportColumnDef`, `ReportQuery`, `ReportPage`, `ReportDataSource`, `InMemoryReportDataSource`, query/page helpers. No Material dependency. |
+| **material** | `@m3kit/material` | Material-based report UI: `ReportTable`, `ReportToolbar`, `ReportFilterBar`. |
+| **dashboard** | `@m3kit/dashboard` | Dashboard building blocks: `KpiCard`, `DetailCard`, `DashboardGrid`. |
+| **forms** | `@m3kit/forms` | Typed reactive-form helpers: `FormField`, `FormSection`, `FilterForm`. |
+| **testing** | `@m3kit/testing` | Synthetic data factories (`makeInvoices`, `makeCustomers`, …) and ready-made report definitions for specs and demos. |
 
 The stories in this Storybook are grouped to match: **Material/**,
 **Dashboard/**, **Forms/**, and **App/** (components from the demo
@@ -29,7 +30,7 @@ Dependencies are enforced by lint (`@nx/enforce-module-boundaries`):
 
 - `dashboard`, `forms`, `material`, and `testing` may depend on **core only**.
 - The demo **app** may depend on all libraries.
-- Library stories never import `@reporting/testing` — they use small local
+- Library stories never import `@m3kit/testing` — they use small local
   fixtures so each library stays self-contained.
 
 ## M3 theming

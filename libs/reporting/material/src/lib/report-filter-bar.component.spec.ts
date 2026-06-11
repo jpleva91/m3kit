@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { ReportDefinition } from '@reporting/core';
+import { ReportDefinition } from '@m3kit/core';
 
 import {
   ReportFilterBarChange,
