@@ -70,6 +70,51 @@ $_status-dark: (
   ),
 );
 
+/// Severity feedback tokens (container / on-container pairs) for banners
+/// and inline alerts. The contract's info fallback is the primary
+/// container — a red-family surface under the oxblood primary, visually
+/// adjacent to error in a red/gold brand — so info takes the ink-navy
+/// register instead (the chart palette's ink navy `#2B4162`); success
+/// follows the paid ink green, warning the gold-leaf family, error the
+/// overdue oxblood.
+$_severity-light: (
+  info: (
+    bg: #d9e3f8,
+    fg: #15243c,
+  ),
+  success: (
+    bg: #bceec8,
+    fg: #00210f,
+  ),
+  warning: (
+    bg: #ffdf9e,
+    fg: #261a00,
+  ),
+  error: (
+    bg: #ffdada,
+    fg: #40000c,
+  ),
+);
+
+$_severity-dark: (
+  info: (
+    bg: #2b4162,
+    fg: #d9e3f8,
+  ),
+  success: (
+    bg: #224f33,
+    fg: #bceec8,
+  ),
+  warning: (
+    bg: #5b4300,
+    fg: #ffdf9e,
+  ),
+  error: (
+    bg: #861f2e,
+    fg: #ffdada,
+  ),
+);
+
 /// Chart series palette (`--app-chart-1..6`): editorial ink set — oxblood,
 /// gold leaf (deepened to ink weight on paper), ink green, ink navy, faded
 /// plum, sienna ink: the registers of a hand-ruled ledger. Dark mode lifts
@@ -95,9 +140,11 @@ $_chart-dark: #e08a96, #d9b765, #8fc4a0, #9db5d9, #c9a3b8, #d99a6e;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    @include contract.severity-tokens($_severity-light);
     // Shape: square editorial print — cards 2px, controls 2px,
     // badges 0 (rules and stamps, not pills).
     @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 0px);
+    @include contract.material-shape-bridge();
     @include contract.font-data("'Source Sans 3'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
@@ -118,6 +165,7 @@ $_chart-dark: #e08a96, #d9b765, #8fc4a0, #9db5d9, #c9a3b8, #d99a6e;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    @include contract.severity-tokens($_severity-dark);
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }

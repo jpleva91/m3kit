@@ -20,9 +20,18 @@
 /// status family and M3 system pairs (info → primary-container,
 /// success → status-paid → primary-container, warning →
 /// tertiary-container, error → error-container), so brands that have
-/// not adopted the mixin still render correctly:
+/// not adopted the mixin still render correctly. Non-adopting brands call
+/// `severity-tokens-reset()` instead, so an ancestor brand scope's pairs
+/// (the default brand emits at bare `html`) never shadow those fallbacks:
 ///   --app-severity-{info,success,warning,error}-bg
 ///   --app-severity-{info,success,warning,error}-fg
+///
+/// Delta sentiment tokens — optional overrides for the stat-delta roles.
+/// Consumers fall back onto the DESIGN.md sentiment mapping (positive →
+/// tertiary, negative → error), so brands emit these only when those
+/// roles collide with the brand palette (e.g. a red-family tertiary):
+///   --app-delta-positive
+///   --app-delta-negative
 ///
 /// Shape tokens:
 ///   --app-radius-card      cards and panels
@@ -50,15 +59,18 @@
 /// zero-argument mixins:
 ///
 /// - `brand-light()` emits the full light theme: `mat.theme` color +
-///   typography + density tokens, `status-tokens()`, `radius-tokens()`,
-///   `chart-tokens()`, and `color-scheme: light`.
+///   typography + density tokens, `status-tokens()`, a severity emission
+///   (`severity-tokens()` or `severity-tokens-reset()`), `radius-tokens()`,
+///   `material-shape-bridge()`, `chart-tokens()`, and `color-scheme: light`.
 /// - `brand-dark()` re-emits only what changes in dark mode: `mat.theme`
-///   color tokens, `status-tokens()`, `chart-tokens()` (tones adjusted for
-///   dark surfaces), and `color-scheme: dark`.
+///   color tokens, `status-tokens()`, the severity emission,
+///   `chart-tokens()` (tones adjusted for dark surfaces), and
+///   `color-scheme: dark`.
 ///   Typography, density, and radius are inherited from the light emission
 ///   (the brand's light selector always also matches in dark mode).
 @use 'sass:list';
 @use 'sass:map';
+@use '@angular/material' as mat;
 
 /// Status kinds, in emission order. `status-tokens()` requires an entry
 /// for every kind so a brand can never ship a partial badge palette.
@@ -104,12 +116,56 @@ $severity-kinds: info, success, warning, error;
   }
 }
 
+/// Resets every `--app-severity-*` pair to its guaranteed-invalid initial
+/// value (`initial` on a custom property restores it), so the chained
+/// `var()` fallbacks in feedback components engage even when an ancestor
+/// scope has emitted its own pairs — the default brand emits severity at
+/// bare `html` / `html.dark`, which would otherwise cascade into every
+/// `html.theme-<brand>` scope. Brands that don't call `severity-tokens()`
+/// call this from both `brand-light()` and `brand-dark()`.
+@mixin severity-tokens-reset() {
+  @each $kind in $severity-kinds {
+    --app-severity-#{$kind}-bg: initial;
+    --app-severity-#{$kind}-fg: initial;
+  }
+}
+
+/// Emits the optional `--app-delta-*` sentiment pair for stat deltas.
+/// Adoption is optional polish: delta consumers fall back onto the
+/// DESIGN.md sentiment roles (positive → tertiary, negative → error), so
+/// a brand calls this only when those roles collide with its palette
+/// (e.g. a red-family tertiary that would make positive deltas read as
+/// negative). `var(--mat-sys-*)` references resolve at the consuming
+/// element, so a single light emission tracks the dark re-emission.
+@mixin delta-tokens($positive, $negative) {
+  --app-delta-positive: #{$positive};
+  --app-delta-negative: #{$negative};
+}
+
 /// Emits the `--app-radius-*` shape tokens. Defaults are the Instruments
 /// values (cards md 10px, controls sm 6px, badges full pill).
 @mixin radius-tokens($card: 10px, $control: 6px, $badge: 999px) {
   --app-radius-card: #{$card};
   --app-radius-control: #{$control};
   --app-radius-badge: #{$badge};
+}
+
+/// Bridges `--app-radius-control` onto the Material button shape tokens so
+/// filled / outlined / protected / text buttons take the brand's control
+/// radius instead of M3's full-pill default — the contract documents
+/// `--app-radius-control` as covering "inputs, buttons, chips". Brands
+/// call this from `brand-light()` alongside `radius-tokens()`; the `var()`
+/// resolves per scope, so no per-brand values are needed (a pill-control
+/// brand keeps its pills).
+@mixin material-shape-bridge() {
+  @include mat.button-overrides(
+    (
+      filled-container-shape: var(--app-radius-control),
+      outlined-container-shape: var(--app-radius-control),
+      protected-container-shape: var(--app-radius-control),
+      text-container-shape: var(--app-radius-control),
+    )
+  );
 }
 
 /// Emits `--app-font-data`, the data-cell (tabular figures / mono) stack.

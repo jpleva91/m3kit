@@ -45,6 +45,12 @@ const meta: Meta<OverflowMenuComponent> = {
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
   ],
+  // The render template binds every input; without a default here the
+  // `[icon]` binding would write `undefined` over the component's
+  // `more_vert` input default and the trigger glyph would vanish.
+  args: {
+    icon: 'more_vert',
+  },
   render: (args) => ({
     props: args,
     // Padded stage so the opened menu has room inside the story iframe.

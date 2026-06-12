@@ -99,8 +99,12 @@ $_chart-dark: #e4c278, #b08862, #ede5d3, #a3bf9f, #cf8490, #93a2b6;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    // Severity: not adopted — reset so the default brand's pairs at bare
+    // `html` never shadow the contract fallbacks.
+    @include contract.severity-tokens-reset();
     // Shape: knife-edge luxury chrome — 2px everywhere, no pills.
     @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 2px);
+    @include contract.material-shape-bridge();
     @include contract.font-data("'JetBrains Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
@@ -121,6 +125,8 @@ $_chart-dark: #e4c278, #b08862, #ede5d3, #a3bf9f, #cf8490, #93a2b6;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    // The default brand also emits dark severity at bare `html.dark`.
+    @include contract.severity-tokens-reset();
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }

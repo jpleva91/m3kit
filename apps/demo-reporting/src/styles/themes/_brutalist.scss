@@ -73,6 +73,51 @@ $_status-dark: (
   ),
 );
 
+/// Severity feedback tokens (container / on-container pairs) — the
+/// contract's warning fallback is the tertiary container, which under the
+/// signal-red tertiary collides with the error container (two
+/// indistinguishable reds), so the pairs run the brand's own stark
+/// ink/paper/red scheme: info is the quiet concrete register, success
+/// acid green, warning the ink/paper inversion stamp (attention without
+/// a second red), error solid signal red.
+$_severity-light: (
+  info: (
+    bg: #f2f2f2,
+    fg: #444444,
+  ),
+  success: (
+    bg: #c8f04c,
+    fg: #111111,
+  ),
+  warning: (
+    bg: #111111,
+    fg: #ffffff,
+  ),
+  error: (
+    bg: #e11900,
+    fg: #ffffff,
+  ),
+);
+
+$_severity-dark: (
+  info: (
+    bg: #1f1f1f,
+    fg: #bbbbbb,
+  ),
+  success: (
+    bg: #c8f04c,
+    fg: #0a0a0a,
+  ),
+  warning: (
+    bg: #ffffff,
+    fg: #0a0a0a,
+  ),
+  error: (
+    bg: #ff5436,
+    fg: #0a0a0a,
+  ),
+);
+
 /// Chart series palette (`--app-chart-1..6`): the brand's whole alphabet —
 /// ink, signal red, two concrete grays, one acid accent, and a deep red.
 /// Light mode runs ink-on-white depth; dark mode lifts every channel onto
@@ -107,11 +152,21 @@ $_chart-dark: #f5f5f5, #ff5436, #ababab, #c8f04c, #757575, #a61200;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    @include contract.severity-tokens($_severity-light);
     // Shape: zero curvature anywhere — cards, controls, and badges are all
     // hard 90° corners.
     @include contract.radius-tokens($card: 0, $control: 0, $badge: 0);
+    @include contract.material-shape-bridge();
     @include contract.font-data("'IBM Plex Mono'");
     @include contract.chart-tokens($_chart-light...);
+    // Deltas: the signal-red tertiary collides with the error role, so the
+    // DESIGN.md sentiment fallback (positive → tertiary) would read as a
+    // loss; positive deltas take the ink primary role instead. The `var()`
+    // references track the dark re-emission automatically.
+    @include contract.delta-tokens(
+      $positive: var(--mat-sys-primary),
+      $negative: var(--mat-sys-error)
+    );
     color-scheme: light;
   }
 }
@@ -138,6 +193,7 @@ $_chart-dark: #f5f5f5, #ff5436, #ababab, #c8f04c, #757575, #a61200;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    @include contract.severity-tokens($_severity-dark);
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }

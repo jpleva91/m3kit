@@ -168,11 +168,24 @@ $_chart-dark: #57d38c, #ff9180, #93b4e8, #e8c26b, #5bc8de, #c5a6f2;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    // Severity: not adopted — the contract fallbacks land on-brand
+    // (warning → coral tertiary container, success → kelly paid pair);
+    // reset so the default brand's pairs at bare `html` never shadow them.
+    @include contract.severity-tokens-reset();
     // Shape: rounded, approachable notebook chrome — cards 16px,
     // controls 12px, badges full pills.
     @include contract.radius-tokens($card: 16px, $control: 12px, $badge: 999px);
+    @include contract.material-shape-bridge();
     @include contract.font-data("'DM Mono'");
     @include contract.chart-tokens($_chart-light...);
+    // Deltas: the soft-coral tertiary sits in the error family, so the
+    // DESIGN.md sentiment fallback (positive → tertiary) would read as a
+    // loss; positive deltas take the kelly primary role instead. The
+    // `var()` references track the dark re-emission automatically.
+    @include contract.delta-tokens(
+      $positive: var(--mat-sys-primary),
+      $negative: var(--mat-sys-error)
+    );
     color-scheme: light;
   }
 }
@@ -192,6 +205,8 @@ $_chart-dark: #57d38c, #ff9180, #93b4e8, #e8c26b, #5bc8de, #c5a6f2;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    // The default brand also emits dark severity at bare `html.dark`.
+    @include contract.severity-tokens-reset();
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }

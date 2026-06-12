@@ -12,6 +12,15 @@
   --mat-badge-text-color: var(--mat-sys-on-secondary-container);
 }
 
+// Hairline outline on the badge content so the secondary-container fill
+// separates from near-tone surfaces; the on-secondary-container text
+// carries legibility. ::ng-deep because the badge directive creates the
+// content element dynamically (it never receives this component's
+// encapsulation attribute).
+:host ::ng-deep .mat-badge-content {
+  border: 1px solid var(--mat-sys-outline-variant);
+}
+
 .m3k-tabs-page__icon {
   margin-right: 8px;
 }

@@ -96,9 +96,16 @@ $_chart-dark: #8a3ffc, #33b1ff, #08bdba, #ff7eb6, #fa4d56, #4589ff;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    // Severity: not adopted — the info fallback lands in the IBM-blue
+    // primary container, the correct family (warning falls to the quiet
+    // steel tertiary; revisit if a warning-severity story ships); reset
+    // so the default brand's pairs at bare `html` never shadow the
+    // fallbacks.
+    @include contract.severity-tokens-reset();
     // Shape: squared enterprise chrome — 2px across cards, controls,
     // and badges (no pill silhouettes in Carbon).
     @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 2px);
+    @include contract.material-shape-bridge();
     @include contract.font-data("'IBM Plex Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
@@ -119,6 +126,8 @@ $_chart-dark: #8a3ffc, #33b1ff, #08bdba, #ff7eb6, #fa4d56, #4589ff;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    // The default brand also emits dark severity at bare `html.dark`.
+    @include contract.severity-tokens-reset();
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }

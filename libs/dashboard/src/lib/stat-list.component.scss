@@ -34,13 +34,16 @@
     color: var(--mat-sys-on-surface-variant);
 
     // Sentiment roles per DESIGN.md: positive deltas take the tertiary
-    // (warm accent) role, negative deltas the error role.
+    // (warm accent) role, negative deltas the error role. The optional
+    // `--app-delta-*` contract tokens override the roles for brands whose
+    // tertiary sits in the error family (`delta-tokens()` in
+    // `m3kit-theme`), so direction stays distinguishable.
     &--up {
-      color: var(--mat-sys-tertiary);
+      color: var(--app-delta-positive, var(--mat-sys-tertiary));
     }
 
     &--down {
-      color: var(--mat-sys-error);
+      color: var(--app-delta-negative, var(--mat-sys-error));
     }
   }
 

@@ -140,6 +140,8 @@ $_chart-dark: #8fa9ff, #f0a36b, #5ec8e0, #b79cff, #6fcf8f, #f286b2;
     @include contract.status-tokens($_status-light);
     @include contract.severity-tokens($_severity-light);
     @include contract.radius-tokens();
+    // Buttons follow the control radius (M3 defaults them to full pills).
+    @include contract.material-shape-bridge();
     @include contract.font-data("'JetBrains Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;

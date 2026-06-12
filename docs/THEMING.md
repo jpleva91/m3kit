@@ -90,7 +90,14 @@ so a partial feedback palette cannot ship.
 **Per-brand adoption is optional polish.** Feedback components consume these
 tokens through chained `var()` fallbacks onto M3 system container pairs, so a
 brand that never calls `severity-tokens()` still renders correct feedback
-surfaces from its `mat.theme` emission. The fallback mapping is fixed:
+surfaces from its `mat.theme` emission. One rule keeps that true: a brand
+that does **not** adopt the mixin must call `severity-tokens-reset()` from
+both `brand-light()` and `brand-dark()`. The default brand emits its severity
+pairs at bare `html` / `html.dark`, so without the reset those pairs would
+cascade into every `html.theme-<brand>` scope and shadow the fallbacks
+(`initial` on a custom property restores its guaranteed-invalid initial
+value, which is what lets the chained `var()` fallbacks engage). The
+fallback mapping is fixed:
 
 | Token | Consumed by | Light/dark notes |
 |---|---|---|
@@ -106,6 +113,20 @@ in the default brand module) derive from its status palette discipline: info
 shares the primary family, success the paid family, error the overdue family,
 and warning the tertiary family (DESIGN.md: "warning = tertiary family").
 
+### Delta sentiment tokens
+
+Optional overrides for the stat-delta sentiment roles. Consumers fall back
+onto the DESIGN.md sentiment mapping (positive → tertiary, negative →
+error), so a brand emits these via `delta-tokens()` only when those roles
+collide with its palette — a red-family tertiary would make positive deltas
+read as losses (Field Guide's soft coral and Brutalist's signal red are the
+two shipped cases; both remap positive → `var(--mat-sys-primary)`).
+
+| Token | Consumed by | Light/dark notes |
+|---|---|---|
+| `--app-delta-positive` | `libs/dashboard/src/lib/stat-list.component.scss` (upward deltas), falling back to `--mat-sys-tertiary` | Brands emit `var(--mat-sys-*)` references, which resolve at the consuming element — a single light emission tracks the dark re-emission. |
+| `--app-delta-negative` | same, falling back to `--mat-sys-error` | same |
+
 ### Shape tokens
 
 | Token | Consumed by | Light/dark notes |
@@ -118,7 +139,7 @@ and warning the tertiary family (DESIGN.md: "warning = tertiary family").
 
 | Token | Consumed by | Light/dark notes |
 |---|---|---|
-| `--app-font-data` | **Optional / consumed by data-table cells, kpi-card/kpi-strip values, and chart axis labels (with 'JetBrains Mono' fallback).** The data-cell (tabular figures / mono) stack. The component layer currently hardcodes its mono stack in `data-table.component.scss`; brands emit this token only once that hook exists. The `font-data()` helper is ready in the contract. | Light-only emission; dark inherits. |
+| `--app-font-data` | Data-table cells, kpi-strip and stat-list values, timeline metadata, and chart axis numerals (all with a `'JetBrains Mono'` fallback). The data-cell (tabular figures / mono) stack, emitted via the `font-data()` helper. | Light-only emission; dark inherits. |
 
 ### Chart series tokens
 
@@ -142,14 +163,17 @@ A brand is one SCSS module exposing two **zero-argument** mixins:
 
 - **`brand-light()`** — emits the full theme: `mat.theme` with `color`
   (light), `typography`, and `density`; `contract.status-tokens($light-map)`;
-  `contract.radius-tokens(...)`; `contract.chart-tokens($light-list...)`;
-  and `color-scheme: light`.
+  a severity emission (`contract.severity-tokens($light-map)` or
+  `contract.severity-tokens-reset()`); `contract.radius-tokens(...)`;
+  `contract.material-shape-bridge()`; `contract.font-data(...)`;
+  `contract.chart-tokens($light-list...)`; and `color-scheme: light`.
 - **`brand-dark()`** — re-emits **only what changes in dark mode**: `mat.theme`
-  with dark `color` only; `contract.status-tokens($dark-map)`;
-  `contract.chart-tokens($dark-list...)`; and
-  `color-scheme: dark`. Typography, density, and radius are *not* re-emitted —
-  the brand's light selector always also matches in dark mode, so those tokens
-  cascade through (see "Light/dark wiring").
+  with dark `color` only; `contract.status-tokens($dark-map)`; the severity
+  emission (the default brand emits dark severity at bare `html.dark`, so
+  non-adopting brands reset here too); `contract.chart-tokens($dark-list...)`;
+  and `color-scheme: dark`. Typography, density, and radius are *not*
+  re-emitted — the brand's light selector always also matches in dark mode,
+  so those tokens cascade through (see "Light/dark wiring").
 
 The contract's emit helpers enforce the token names so brands cannot drift:
 
@@ -159,10 +183,20 @@ The contract's emit helpers enforce the token names so brands cannot drift:
   covering every `$severity-kinds` entry; missing kinds are a compile error.
   Optional polish (see "Severity feedback tokens" above): components fall
   back to M3 system pairs when a brand does not emit these.
+- `severity-tokens-reset()` — resets every `--app-severity-*` pair to
+  `initial` so the fallbacks engage; the required counterpart to *not*
+  calling `severity-tokens()` (call it from both mixins).
+- `delta-tokens($positive, $negative)` — emits the optional `--app-delta-*`
+  sentiment overrides; only for brands whose tertiary collides with the
+  error family (see "Delta sentiment tokens" above).
 - `radius-tokens($card: 10px, $control: 6px, $badge: 999px)` — defaults are
   the Instruments values; override per brand.
-- `font-data($family)` — emits `--app-font-data` (hold off until the
-  component hook exists; see table above).
+- `material-shape-bridge()` — bridges `--app-radius-control` onto the
+  Material button shape tokens (M3 defaults buttons to full pills); call it
+  from `brand-light()` alongside `radius-tokens()`. The `var()` resolves per
+  scope, so pill-control brands keep their pills.
+- `font-data($family)` — emits `--app-font-data`, the data-cell stack (see
+  table above).
 - `chart-tokens($colors...)` — emits `--app-chart-1..6` from exactly six
   series colors, in order; any other count is a compile error.
 
@@ -213,6 +247,57 @@ The full roster (seeds and fonts per module; voice descriptions in
 | Pop | `_pop.scss` | `#D6006C` magenta / `#00B8D9` cyan | Baloo 2 / Fredoka + DM Mono |
 | Gazette | `_gazette.scss` | `#1A1A1A` ink / `#1D4ED8` link-blue | Playfair Display / Libre Franklin + PT Mono |
 | Synth | `_synth.scss` | `#00D4AA` neon teal / `#FF3D8A` neon pink | Chakra Petch / JetBrains Mono |
+
+### Theme matrix
+
+What each shipped brand actually emits, side by side — scan this to pick the
+starting brand closest to your register, then read its module for the worked
+values. Every brand emits all five status pairs, a severity emission, the
+three radius tokens, `--app-font-data`, and all six chart slots (the closed
+lists are compile-enforced); the columns call out the *character* of each
+emission plus the brand's severity decision. "Fallback" in the severity
+column means the brand calls `severity-tokens-reset()` in both mixins and
+feedback surfaces render from the contract's fixed fallback chain (info →
+primary-container, success → status-paid → primary-container, warning →
+tertiary-container, error → error-container).
+
+| Brand | `mat.theme` seeds | Status tokens | Severity tokens | Radius (card/control/badge) / font signature |
+|---|---|---|---|---|
+| Instruments | Cobalt `#1B4FD8` primary, burnt sienna `#C45F1A` tertiary, cool-slate neutrals | M3 container pastels: cobalt sent, forest paid, crimson overdue | **Adopted** — status-palette discipline: info cobalt, success forest, warning sienna (tertiary family), error crimson | 10 / 6 / 999 (pill badges) · DM Serif Display / Instrument Sans + JetBrains Mono |
+| Terminal | Phosphor green `#2FD584`, amber `#F59E0B`, charcoal neutral; dark-first | Console channels: cyan sent, phosphor paid, signal-red overdue | Fallback — deliberately kept: it lands on the brand's own console channels (info → phosphor primary container, warning → amber tertiary container) | 4 / 3 / 3, no pills · Archivo + IBM Plex Mono data |
+| Ledger | Oxblood `#6B1F2A`, gold leaf `#B08D3E`, warm-stone neutral | Heirloom inks: gold sent, ink-green paid, oxblood overdue | **Adopted** — the info fallback (oxblood primary container) is a red-family surface, visually adjacent to error in a red/gold brand, so info takes the ink-navy register instead; success ink green, warning gold leaf, error oxblood | 2 / 2 / 0 square print · Fraunces / Source Sans 3 |
+| Field Guide | Kelly `#1E9E5A`, soft coral `#E8604C`, warm gray (ink-navy dark neutrals) | Specimen pastels: sand draft, sky sent, kelly paid, coral overdue | Fallback — lands on-brand (warning → coral tertiary, success → kelly paid). Overrides delta sentiment: positive → primary (the coral tertiary would read as a loss) | 16 / 12 / 999 rounded notebook · Outfit + DM Mono |
+| Carbon | IBM blue `#0F62FE`, steel `#6F6F6F`, cool gray | Enterprise pairs: IBM blue sent, IBM green paid, IBM red overdue, purple void | Fallback — info lands in the IBM-blue primary container, the correct family; warning falls to the quiet steel tertiary (see nuances below) | 2 / 2 / 2 squared · IBM Plex Sans + IBM Plex Mono |
+| Brutalist | Ink `#111111`, signal red `#E11900`, concrete gray; pure white/black surface overrides via `mat.theme-overrides` | Stark stamps, not pastels: black/white inversion sent, acid-green paid, solid-red overdue | **Adopted** — the warning fallback (signal-red tertiary container) would be indistinguishable from error, so warning is the ink/paper inversion stamp; info quiet concrete, success acid green, error solid red. Also overrides delta sentiment: positive → primary | 0 / 0 / 0 hard corners · Archivo 900/500 + IBM Plex Mono |
+| Meadow | Lavender `#8B7EC8`, mint `#6FBF8F`, gray-lilac neutral | Gentle pastels: sage paid, sky sent, blush overdue | Fallback — info → lavender, warning → mint | 20 / 14 / 999 soft · Nunito + DM Mono |
+| Beacon | Accessible blue `#0050B3`, burnt orange `#B34700`, neutral `#444444`; AAA-leaning pairings | High-contrast pairs past 7:1 in both modes | Fallback — info → deep blue, warning → burnt orange | 6 / 4 / 6 modest, no pills · Atkinson Hyperlegible + Source Sans 3 data |
+| Noir | Champagne gold `#C9A961`, bronze `#8C6D4F`, warm charcoal; dark-first | Candlelit inks: gold sent, deep-green paid, oxblood overdue | Fallback — info → gold, warning → bronze | 2 / 2 / 2 knife-edge · Cormorant Garamond / Jost + JetBrains Mono |
+| Pop | Magenta `#D6006C`, cyan `#00B8D9`, violet-cast gray | Candy containers: blue-raspberry sent, lime paid, strawberry overdue | Fallback — info → magenta, warning → cyan | 24 / 999 / 999 gumdrop (pill buttons preserved by the shape bridge) · Baloo 2 / Fredoka + DM Mono |
+| Gazette | Ink `#1A1A1A`, link-blue `#1D4ED8`, newsprint gray | Ink-on-paper: link-blue sent, ink-green paid, ink-red overdue | Fallback — info → ink-gray, warning → link-blue tertiary | 0 / 0 / 0 rules-not-boxes · Playfair Display / Libre Franklin + PT Mono |
+| Synth | Neon teal `#00D4AA`, neon pink `#FF3D8A`, blue-charcoal; dark-first neon (documented doctrine deviation in the module) | Neon-coded: cyan sent, teal paid, pink overdue | Fallback — info → teal, warning → pink | 4 / 4 / 4 uniform chamfer · Chakra Petch + JetBrains Mono |
+
+#### Known register nuances
+
+Documented decisions, not defects — kept as-is deliberately:
+
+- **Carbon's warning is quiet.** The warning fallback lands in the steel-gray
+  tertiary container — semantically muted but on-register for the enterprise
+  chrome. Revisit with a tuned `severity-tokens()` map only if a
+  warning-severity story ships.
+- **Six fallback brands are correct-by-construction but not yet
+  pixel-checked.** Meadow, Beacon, Noir, Pop, Gazette, and Synth render
+  severity from the contract's fallback chain; their banner and timeline
+  surfaces deserve a visual spot-check in both modes before leaning on them
+  for severity-heavy screens. (Terminal, Field Guide, and Carbon fallbacks
+  have been verified in both modes.)
+- **Gazette's warning reads as link ink.** Its tertiary *is* the link-blue
+  accent, so the warning fallback is a blue container — attention as ink, not
+  amber. On-register for a newspaper; adopt a tuned map if warnings need
+  conventional caution colors.
+- **Beacon's type scale stays global.** A slightly larger body size would
+  suit the brand, but the `mat.theme` typography shorthand (and the `--app-*`
+  contract) carries families/weights only — type scale is not a per-brand
+  variable (noted in `_beacon.scss`).
 
 ## Worked example: adding a "Midnight" brand
 
@@ -280,7 +365,11 @@ $_status-dark: (
     density: 0,
   ));
   @include contract.status-tokens($_status-light);
+  // Not adopting severity pairs (the fallbacks are fine for indigo):
+  // reset so the default brand's bare-`html` emission never shadows them.
+  @include contract.severity-tokens-reset();
   @include contract.radius-tokens($card: 14px, $control: 8px, $badge: 999px);
+  @include contract.material-shape-bridge();
   color-scheme: light;
 }
 
@@ -294,6 +383,8 @@ $_status-dark: (
     ),
   ));
   @include contract.status-tokens($_status-dark);
+  // The default brand also emits dark severity at bare `html.dark`.
+  @include contract.severity-tokens-reset();
   color-scheme: dark;
 }
 ```

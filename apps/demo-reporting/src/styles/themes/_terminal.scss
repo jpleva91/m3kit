@@ -102,9 +102,15 @@ $_chart-dark: #2fd584, #22b8cf, #f59e0b, #5ea0ef, #e06bb7, #ef4444;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    // Severity: not adopted — the contract fallbacks already land on the
+    // console channels (info → phosphor primary container, warning →
+    // amber tertiary container); reset so the default brand's pairs at
+    // bare `html` never shadow them.
+    @include contract.severity-tokens-reset();
     // Shape: near-square console chrome — cards 4px, controls 3px,
     // badges 3px (no pill silhouettes in Terminal).
     @include contract.radius-tokens($card: 4px, $control: 3px, $badge: 3px);
+    @include contract.material-shape-bridge();
     @include contract.font-data("'IBM Plex Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
@@ -125,6 +131,8 @@ $_chart-dark: #2fd584, #22b8cf, #f59e0b, #5ea0ef, #e06bb7, #ef4444;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    // The default brand also emits dark severity at bare `html.dark`.
+    @include contract.severity-tokens-reset();
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }

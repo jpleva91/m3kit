@@ -11,11 +11,12 @@
           <mat-icon class="m3k-tabs-page__icon">{{ tab.icon }}</mat-icon>
         }
         @if (tab.badge !== undefined) {
+          <!-- Medium badge size (the default): M3 small badges are
+               contentless 6px dots, which would drop the count. -->
           <span
             class="m3k-tabs-page__label"
             [matBadge]="tab.badge"
             matBadgeOverlap="false"
-            matBadgeSize="small"
             >{{ tab.label }}</span
           >
         } @else {

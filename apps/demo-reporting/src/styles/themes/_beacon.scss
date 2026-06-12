@@ -98,9 +98,13 @@ $_chart-dark: #7ab0ff, #ffb681, #4ed8de, #ff9ed1, #ddb88a, #b3b3b3;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    // Severity: not adopted — reset so the default brand's pairs at bare
+    // `html` never shadow the contract fallbacks.
+    @include contract.severity-tokens-reset();
     // Shape: modest, consistent radii — 6/4/6. Visible focus affordances
     // matter more than silhouette play; no pills.
     @include contract.radius-tokens($card: 6px, $control: 4px, $badge: 6px);
+    @include contract.material-shape-bridge();
     // Data cells: Source Sans 3 — its figures are clear at small sizes;
     // consumers should enable `font-variant-numeric: tabular-nums` so
     // columns align.
@@ -124,6 +128,8 @@ $_chart-dark: #7ab0ff, #ffb681, #4ed8de, #ff9ed1, #ddb88a, #b3b3b3;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    // The default brand also emits dark severity at bare `html.dark`.
+    @include contract.severity-tokens-reset();
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }
