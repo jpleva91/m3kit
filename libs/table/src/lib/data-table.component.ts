@@ -24,13 +24,16 @@ import { of } from 'rxjs';
 import { catchError, switchMap, tap } from 'rxjs/operators';
 import {
   DEFAULT_PAGE_SIZE,
+  ColumnViewState,
   ColumnDef,
+  ResolvedColumn,
   TableDataSource,
   TableDefinition,
   PageState,
   DataQuery,
   SortState,
   createEmptyPage,
+  resolveColumns,
 } from '@m3kit/core';
 
 /**
@@ -103,6 +106,9 @@ export class DataTableComponent<T> {
 
   /** External pagination state (controlled mode). */
   readonly page = input<PageState | undefined>(undefined);
+
+  /** Optional headless column view-state: visibility, order, pinning, and width overrides. */
+  readonly columnState = input<readonly ColumnViewState[] | undefined>(undefined);
 
   /** Emits the clicked row. */
   readonly rowClicked = output<T>();
@@ -219,11 +225,11 @@ export class DataTableComponent<T> {
     () => (this.controlled() && this.error()) || 'Failed to load data.',
   );
 
-  /** Column definitions of the current report. */
-  readonly columns = computed(() => this.definition().columns);
+  /** Column definitions of the current report after view-state resolution. */
+  readonly columns = computed(() => resolveColumns(this.definition().columns, this.columnState()));
 
   /** Column keys, in render order. */
-  readonly displayedColumns = computed(() => this.columns().map((column) => column.key));
+  readonly displayedColumns = computed(() => this.columns().map((column) => column.def.key));
 
   /** Rows currently rendered: the `rows` input when controlled, the fetched page otherwise. */
   readonly displayedRows = computed(() =>
@@ -300,6 +306,16 @@ export class DataTableComponent<T> {
   }
 
   /** Formats a cell value according to its column's type and format hints. */
+  protected isPinnedStartEdge(column: ResolvedColumn<T>): boolean {
+    const pinnedStart = this.columns().filter((candidate) => candidate.pinned === 'start');
+    return pinnedStart[pinnedStart.length - 1]?.def.key === column.def.key;
+  }
+
+  protected isPinnedEndEdge(column: ResolvedColumn<T>): boolean {
+    const pinnedEnd = this.columns().filter((candidate) => candidate.pinned === 'end');
+    return pinnedEnd[0]?.def.key === column.def.key;
+  }
+
   protected formatCell(row: T, column: ColumnDef<T>): string {
     const value = (row as Record<string, unknown>)[column.key];
     if (value == null || value === '') {

@@ -7,8 +7,9 @@ import { Meta } from '@storybook/blocks';
 `withDataQuery<T>()` is a headless NgRx SignalStore feature
 (`@m3kit/state`) that owns the full report-query lifecycle for any
 `TableDataSource<T>` from `@m3kit/core`: free-text filter (debounced),
-per-field exact-match filters, sort, pagination, and the fetched page
-(`rows`, `totalCount`, `loading`, `error`).
+per-field exact-match filters, sort, pagination, stale marking, normalized
+`ReportError`s, telemetry, and the fetched page (`rows`, `totalCount`,
+`loading`, `error`).
 
 It follows the connect-free datasource contract: every query mutation
 re-invokes `fetch` through a single `switchMap`ped `rxMethod`, so stale
@@ -53,7 +54,7 @@ const InvoiceStore = signalStore(withDataQuery<Invoice>());
       [definition]="definition"
       [rows]="store.rows()"
       [loading]="store.loading()"
-      [error]="store.error()"
+      [error]="store.errorMessage()"
       [totalCount]="store.totalCount()"
       [sort]="store.sort()"
       [page]="store.page()"
@@ -88,6 +89,7 @@ the store fetched, so there is one fetch pipeline, not two.
 | --- | --- | --- | --- |
 | `debounceMs` | `number` | `300` | Debounce window for `setTextFilter`. |
 | `initialPageSize` | `number` | `25` | Page size of the initial query. |
+| `reportId` | `string \| undefined` | `undefined` | Stable report id for telemetry. Omit to disable emissions. |
 
 ### State signals
 
@@ -97,7 +99,9 @@ the store fetched, so there is one fetch pipeline, not two.
 | `rows` | `Signal<readonly T[]>` | Rows of the most recently fetched page. |
 | `totalCount` | `Signal<number>` | Filtered (pre-pagination) row count. |
 | `loading` | `Signal<boolean>` | A fetch is in flight. |
-| `error` | `Signal<string \| null>` | Last fetch error message, or `null`. |
+| `error` | `Signal<ReportError \| null>` | Normalized last fetch error, or `null`. |
+| `hasFetched` | `Signal<boolean>` | True after at least one fetch completes (success, empty, or error). |
+| `stale` | `Signal<boolean>` | True when the latest settled successful/empty result was marked stale. |
 
 ### Computed signals
 
@@ -109,6 +113,8 @@ the store fetched, so there is one fetch pipeline, not two.
 | `page` | `Signal<PageState>` | Current pagination. |
 | `pageCount` | `Signal<number>` | Pages implied by `totalCount` / page size. |
 | `isEmpty` | `Signal<boolean>` | Completed fetch matched no rows. |
+| `errorMessage` | `Signal<string \| null>` | Convenience message for UI bindings like table `[error]`. |
+| `loadState` | `Signal<LoadState<DataPage<T>>>` | Six-kind reporting taxonomy: `idle`, `loading`, `refreshing`, `success`, `empty`, `error`. |
 
 ### Methods
 
@@ -116,6 +122,7 @@ the store fetched, so there is one fetch pipeline, not two.
 | --- | --- |
 | `connect(dataSource)` | Connects a `TableDataSource<T>` and runs the current query. Reconnecting replaces the source and refetches. |
 | `refresh()` | Re-runs the current query. |
+| `markStale()` | Marks the current settled successful/empty result stale; the flag clears on the next successful fetch. |
 | `setTextFilter(text)` | Debounced + deduplicated free-text filter; whitespace clears it. Resets to page 0. Also accepts a `Signal<string>` or `Observable<string>` (it is an `rxMethod`). |
 | `setFieldFilters(fields)` | Replaces the exact-match field filters. Resets to page 0. |
 | `setSort(sort)` | Sets or clears (`null`) the sort. Resets to page 0. |
@@ -127,8 +134,13 @@ the store fetched, so there is one fetch pipeline, not two.
   dedup live in the store, not the template.
 - **Don't** bind `[dataSource]` on `m3k-data-table` when the store drives
   it — the store owns the single fetch path; the table renders
-  `rows`/`loading`/`error`/`totalCount`/`sort`/`page` and reports intent
+  `rows`/`loading`/`errorMessage`/`totalCount`/`sort`/`page` and reports intent
   via `sortChange`/`pageChange`.
+- **Do** provide `REPORT_TELEMETRY_REPORTER` at the app boundary when you
+  want telemetry. With `reportId` set, the feature emits redacted
+  `query_changed`, `fetch_started`, `fetch_succeeded`, `fetch_failed`, and
+  `empty_result` events with `queryHash` identity (never raw filter text);
+  the default token factory is a no-op.
 - **Do** rely on the `switchMap` semantics: rapid query changes never
   produce out-of-order results.
 - **Don't** import `@ngrx/operators` for `tapResponse` — the kit's

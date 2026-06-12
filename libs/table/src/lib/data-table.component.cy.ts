@@ -2,6 +2,7 @@ import { Component, signal } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
 import { Observable } from 'rxjs';
 import {
+  ColumnViewState,
   InMemoryTableDataSource,
   PageState,
   SortState,
@@ -36,20 +37,22 @@ const INVOICE_DEFINITION: TableDefinition<InvoiceRow> = {
   title: 'Invoices',
   defaultPageSize: 5,
   columns: [
-    { key: 'id', header: 'Invoice', type: 'text', sortable: true },
-    { key: 'customerName', header: 'Customer', type: 'text', sortable: true },
+    { key: 'id', header: 'Invoice', type: 'text', sortable: true, width: '8rem' },
+    { key: 'customerName', header: 'Customer', type: 'text', sortable: true, width: '28rem' },
     {
       key: 'amount',
       header: 'Amount',
       type: 'currency',
       sortable: true,
       align: 'end',
+      width: '10rem',
       format: { currencyCode: 'USD', digitsInfo: '1.2-2' },
     },
     {
       key: 'status',
       header: 'Status',
       type: 'badge',
+      width: '12rem',
       format: {
         badgeColors: { draft: 'default', sent: 'info', paid: 'success', overdue: 'warn' },
       },
@@ -96,6 +99,59 @@ describe(DataTableComponent.name, () => {
     cy.get('span.m3k-badge[data-color="warn"]').should('contain.text', 'overdue');
     cy.get('span.m3k-badge[data-color="success"]').should('contain.text', 'paid');
     cy.get('span.m3k-badge[data-color="default"]').should('contain.text', 'draft');
+  });
+});
+
+const PINNED_COLUMN_STATE: readonly ColumnViewState[] = [
+  { key: 'id', pinned: 'start', width: '8rem' },
+  { key: 'customerName', width: '32rem' },
+  { key: 'amount', pinned: 'end', width: '10rem' },
+  { key: 'status', visible: false },
+];
+
+@Component({
+  imports: [DataTableComponent],
+  template: `
+    <div style="width: 360px">
+      <m3k-data-table
+        [definition]="definition"
+        [dataSource]="dataSource"
+        [columnState]="columnState"
+      />
+    </div>
+  `,
+})
+class ColumnStateDataTableHostComponent {
+  readonly definition = INVOICE_DEFINITION;
+  readonly dataSource = new InMemoryTableDataSource<InvoiceRow>(makeInvoices(12));
+  readonly columnState = PINNED_COLUMN_STATE;
+}
+
+describe(`${DataTableComponent.name} columnState`, () => {
+  beforeEach(() => {
+    cy.mount(ColumnStateDataTableHostComponent, {
+      providers: [provideNoopAnimations()],
+    });
+  });
+
+  it('keeps pinned columns at their edges while horizontally scrolled and hides omitted cells', () => {
+    cy.contains('th', 'Status').should('not.exist');
+    cy.get('td.cdk-column-status').should('not.exist');
+
+    cy.get('th.cdk-column-id').then(($id) => {
+      const before = $id[0].getBoundingClientRect();
+      cy.get('.m3k-data-table__scroll').scrollTo('right');
+      cy.get('th.cdk-column-id').should(($scrolledId) => {
+        expect($scrolledId[0].getBoundingClientRect().left).to.be.closeTo(before.left, 2);
+      });
+    });
+
+    cy.get('.m3k-data-table__scroll').then(($scroll) => {
+      const scrollRight = $scroll[0].getBoundingClientRect().right;
+      cy.get('th.cdk-column-amount').should(($amount) => {
+        expect($amount[0].getBoundingClientRect().right).to.be.closeTo(scrollRight, 2);
+      });
+    });
   });
 });
 

@@ -65,6 +65,8 @@ export interface ReportEmptyResultEvent extends ReportTelemetryEventBase {
   readonly type: 'report.empty_result';
   /** Stable hash of the serialized query — never raw filter text. */
   readonly queryHash: string;
+  /** Wall-clock duration of the fetch in milliseconds. */
+  readonly durationMs: number;
 }
 
 /** An export was requested. */

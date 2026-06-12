@@ -21,8 +21,9 @@ import * as DataTableStories from './data-table.component.stories';
 Use it for any tabular report where columns, formatting, sorting, and
 pagination should be driven by data rather than hand-written templates.
 It ships type-aware cell formatting (`text`, `number`, `date`,
-`currency`, `badge`), a loading bar, an empty state, and a distinct
-error state.
+`currency`, `badge`), a loading bar, an empty state, a distinct
+error state, and optional headless column view-state for hiding,
+reordering, pinning, and width overrides.
 
 **Atomic level:** Organism — composed from Material table, sort header,
 paginator, and progress bar atoms, plus the `@m3kit/core` query contracts.
@@ -31,7 +32,7 @@ paginator, and progress bar atoms, plus the `@m3kit/core` query contracts.
 
 ```ts
 import { Component } from '@angular/core';
-import { InMemoryTableDataSource, TableDefinition } from '@m3kit/core';
+import { InMemoryTableDataSource, TableDefinition, type ColumnViewState } from '@m3kit/core';
 import { DataTableComponent } from '@m3kit/table';
 
 interface InvoiceRow {
@@ -50,6 +51,7 @@ interface InvoiceRow {
       [definition]="definition"
       [dataSource]="dataSource"
       [textFilter]="''"
+      [columnState]="columnState"
       (rowClicked)="open($event)"
     />
   `,
@@ -84,11 +86,29 @@ export class InvoicesComponent {
 
   readonly dataSource = new InMemoryTableDataSource<InvoiceRow>(rows);
 
+  readonly columnState: readonly ColumnViewState[] = [
+    { key: 'id', pinned: 'start', width: '9rem' },
+    { key: 'amount', pinned: 'end', width: '10rem' },
+    { key: 'customerName', width: '20rem' },
+    { key: 'status' },
+    { key: 'issuedAt', visible: false },
+  ];
+
   open(row: InvoiceRow): void {
     // navigate to detail
   }
 }
 ```
+
+## Column view-state
+
+Bind `[columnState]` to apply a headless `ColumnViewState[]` on top of the
+static definition. The state array is display order: unknown keys are ignored,
+duplicate keys are first-wins, unlisted definition columns are appended, and
+`visible: false` hides a column. `pinned: 'start' | 'end'` renders sticky
+columns at the corresponding horizontal edge, and a state `width` overrides the
+column definition's `width`. The table does not provide column-picker, drag, or
+resize UI; apps and saved views own writing the state.
 
 ## Controlled mode — store-driven
 
@@ -119,6 +139,7 @@ A `withDataQuery` store composes onto the bindings one-to-one:
 | `dataSource` | input | `TableDataSource<T> \| undefined` | `undefined` | Source the table fetches pages from on every query change (uncontrolled mode). Ignored while `rows` is bound. |
 | `textFilter` | input | `string` | `''` | Free-text filter applied across searchable fields (uncontrolled mode; wire to `m3k-table-filter-bar`'s `filterChange`). |
 | `fieldFilters` | input | `Readonly<Record<string, unknown>>` | `{}` | Per-field exact-match filters, keyed by row property (uncontrolled mode; wire to `m3k-filter-form`'s `filtersChange`). |
+| `columnState` | input | `readonly ColumnViewState[] \| undefined` | `undefined` | Optional headless view-state for column visibility, order, pinning, and width overrides. |
 | `rows` | input | `readonly T[] \| undefined` | `undefined` | Externally fetched rows. Binding a value switches the table to controlled mode. |
 | `loading` | input | `boolean \| undefined` | `undefined` | External loading flag (controlled mode). |
 | `error` | input | `string \| null \| undefined` | `undefined` | External error message, rendered in the error row; `null` when healthy (controlled mode). |
@@ -139,6 +160,8 @@ Public API beyond inputs: `applyTextFilter(text)` and
 Token-only styling. The component consumes:
 
 - `--mat-sys-surface-container` — row hover background
+- `--mat-sys-surface` — sticky column cell background
+- `--mat-sys-outline-variant` — pinned-edge divider
 - `--mat-sys-primary` — row focus-visible outline
 - `--mat-sys-on-surface-variant` — empty-state cell text
 - `--mat-sys-error` — error-state cell text

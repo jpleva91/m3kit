@@ -2,6 +2,7 @@ import { provideAnimations } from '@angular/platform-browser/animations';
 import { applicationConfig, type Meta, type StoryObj } from '@storybook/angular';
 import { NEVER } from 'rxjs';
 import {
+  ColumnViewState,
   InMemoryTableDataSource,
   TableDataSource,
   TableDefinition,
@@ -33,7 +34,7 @@ const INVOICE_DEFINITION: TableDefinition<InvoiceRow> = {
   description: 'All invoices issued to customers.',
   columns: [
     { key: 'id', header: 'Invoice', type: 'text', sortable: true, width: '120px' },
-    { key: 'customerName', header: 'Customer', type: 'text', sortable: true },
+    { key: 'customerName', header: 'Customer', type: 'text', sortable: true, width: '18rem' },
     {
       key: 'amount',
       header: 'Amount',
@@ -65,6 +66,14 @@ const PENDING_DATA_SOURCE: TableDataSource<InvoiceRow> = {
   fetch: () => NEVER,
 };
 
+const COLUMN_STATE: readonly ColumnViewState[] = [
+  { key: 'id', pinned: 'start', width: '9rem' },
+  { key: 'amount', pinned: 'end', width: '10rem' },
+  { key: 'customerName', width: '22rem' },
+  { key: 'status' },
+  { key: 'issuedAt', visible: false },
+];
+
 const meta: Meta<DataTableComponent<InvoiceRow>> = {
   component: DataTableComponent,
   title: 'Organisms/DataTable',
@@ -85,6 +94,14 @@ export const Filtered: Story = {
     definition: INVOICE_DEFINITION,
     dataSource: new InMemoryTableDataSource(INVOICES),
     textFilter: 'Acme Corp 1',
+  },
+};
+
+export const ColumnState: Story = {
+  args: {
+    definition: INVOICE_DEFINITION,
+    dataSource: new InMemoryTableDataSource(INVOICES),
+    columnState: COLUMN_STATE,
   },
 };
 

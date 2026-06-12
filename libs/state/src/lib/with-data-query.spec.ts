@@ -3,12 +3,15 @@ import { signalStore } from '@ngrx/signals';
 import { Subject, throwError } from 'rxjs';
 
 import {
+  dataQueryHash,
   InMemoryTableDataSource,
   type DataPage,
   type DataQuery,
+  type ReportTelemetryEvent,
   type TableDataSource,
 } from '@m3kit/core';
 
+import { REPORT_TELEMETRY_REPORTER } from './telemetry-token';
 import { TEXT_FILTER_DEBOUNCE_MS, withDataQuery } from './with-data-query';
 
 interface Invoice {
@@ -28,7 +31,7 @@ const INVOICES: readonly Invoice[] = [
 
 const InvoiceStore = signalStore(
   { providedIn: 'root' },
-  withDataQuery<Invoice>({ initialPageSize: 2 })
+  withDataQuery<Invoice>({ initialPageSize: 2, reportId: 'invoices' })
 );
 
 /** Records every query it receives; resolves through an in-memory source. */
@@ -54,6 +57,18 @@ function createStore(): InstanceType<typeof InvoiceStore> {
   return TestBed.inject(InvoiceStore);
 }
 
+function createStoreWithTelemetry(events: ReportTelemetryEvent[]): InstanceType<typeof InvoiceStore> {
+  TestBed.configureTestingModule({
+    providers: [
+      {
+        provide: REPORT_TELEMETRY_REPORTER,
+        useValue: { report: (event: ReportTelemetryEvent) => events.push(event) },
+      },
+    ],
+  });
+  return TestBed.inject(InvoiceStore);
+}
+
 describe('withDataQuery', () => {
   it('starts with an empty page and a neutral query', () => {
     const store = createStore();
@@ -61,10 +76,14 @@ describe('withDataQuery', () => {
     expect(store.totalCount()).toBe(0);
     expect(store.loading()).toBe(false);
     expect(store.error()).toBeNull();
+    expect(store.errorMessage()).toBeNull();
+    expect(store.hasFetched()).toBe(false);
+    expect(store.stale()).toBe(false);
+    expect(store.loadState()).toEqual({ kind: 'idle' });
     expect(store.textFilter()).toBe('');
     expect(store.sort()).toBeNull();
     expect(store.page()).toEqual({ index: 0, size: 2 });
-    expect(store.isEmpty()).toBe(true);
+    expect(store.isEmpty()).toBe(false);
   });
 
   it('does not fetch before a data source is connected', () => {
@@ -88,6 +107,12 @@ describe('withDataQuery', () => {
     expect(store.pageCount()).toBe(3);
     expect(store.loading()).toBe(false);
     expect(store.isEmpty()).toBe(false);
+    expect(store.hasFetched()).toBe(true);
+    expect(store.loadState()).toEqual({
+      kind: 'success',
+      data: { rows: store.rows(), totalCount: 5, pageIndex: 0, pageSize: 2 },
+      stale: false,
+    });
   });
 
   it('tracks loading across an async fetch', fakeAsync(() => {
@@ -96,10 +121,59 @@ describe('withDataQuery', () => {
 
     expect(store.loading()).toBe(true);
     expect(store.rows()).toEqual([]);
+    expect(store.loadState()).toEqual({ kind: 'loading' });
 
     tick(50);
     expect(store.loading()).toBe(false);
     expect(store.rows()).toHaveLength(2);
+  }));
+
+  it('reports refreshing while a refetch is in flight with retained rows', fakeAsync(() => {
+    const store = createStore();
+    const dataSource = new RecordingDataSource(50);
+    store.connect(dataSource);
+    tick(50);
+
+    store.refresh();
+
+    expect(store.loading()).toBe(true);
+    expect(store.loadState()).toEqual({
+      kind: 'refreshing',
+      data: { rows: store.rows(), totalCount: 5, pageIndex: 0, pageSize: 2 },
+    });
+    tick(50);
+    expect(store.loadState().kind).toBe('success');
+  }));
+
+  it('marks settled results stale and clears the stale flag on the next success', () => {
+    const store = createStore();
+    store.connect(new RecordingDataSource());
+
+    store.markStale();
+
+    expect(store.stale()).toBe(true);
+    expect(store.loadState()).toEqual({
+      kind: 'success',
+      data: { rows: store.rows(), totalCount: 5, pageIndex: 0, pageSize: 2 },
+      stale: true,
+    });
+
+    store.refresh();
+
+    expect(store.stale()).toBe(false);
+    expect(store.loadState().kind).toBe('success');
+  });
+
+  it('derives empty load state after a successful zero-row fetch', fakeAsync(() => {
+    const store = createStore();
+    store.connect(new RecordingDataSource());
+
+    store.setTextFilter('missing');
+    tick(TEXT_FILTER_DEBOUNCE_MS);
+
+    expect(store.hasFetched()).toBe(true);
+    expect(store.isEmpty()).toBe(true);
+    expect(store.loadState()).toEqual({ kind: 'empty', stale: false });
   }));
 
   it('cancels stale in-flight fetches via switchMap (latest query wins)', fakeAsync(() => {
@@ -229,9 +303,15 @@ describe('withDataQuery', () => {
         fetch: () => throwError(() => new Error('boom')),
       });
 
-      expect(store.error()).toBe('boom');
+      expect(store.error()).toEqual({ kind: 'unknown', message: 'boom', retryable: false });
+      expect(store.errorMessage()).toBe('boom');
       expect(store.loading()).toBe(false);
       expect(store.rows()).toEqual([]);
+      expect(store.hasFetched()).toBe(true);
+      expect(store.loadState()).toEqual({
+        kind: 'error',
+        error: { kind: 'unknown', message: 'boom', retryable: false },
+      });
     });
 
     it('keeps the rxMethod subscription alive after an error', () => {
@@ -247,12 +327,34 @@ describe('withDataQuery', () => {
           return healthy.fetch(query);
         },
       });
-      expect(store.error()).toBe('boom');
+      expect(store.errorMessage()).toBe('boom');
 
       store.refresh();
 
       expect(store.error()).toBeNull();
       expect(store.rows()).toHaveLength(2);
+    });
+
+    it('keeps last good data in the error load state', () => {
+      const store = createStore();
+      let failNext = false;
+      store.connect({
+        fetch: (query) => {
+          if (failNext) {
+            return throwError(() => new Error('boom'));
+          }
+          return new RecordingDataSource().fetch(query);
+        },
+      });
+      failNext = true;
+
+      store.refresh();
+
+      expect(store.loadState()).toEqual({
+        kind: 'error',
+        error: { kind: 'unknown', message: 'boom', retryable: false },
+        data: { rows: store.rows(), totalCount: 5, pageIndex: 0, pageSize: 2 },
+      });
     });
 
     it('clears a stale error when a new fetch starts', () => {
@@ -265,12 +367,76 @@ describe('withDataQuery', () => {
           return calls === 1 ? throwError(() => 'nope') : gate.asObservable();
         },
       });
-      expect(store.error()).toBe('nope');
+      expect(store.errorMessage()).toBe('nope');
 
       store.refresh();
 
       expect(store.error()).toBeNull();
       expect(store.loading()).toBe(true);
     });
+  });
+
+  describe('telemetry', () => {
+    it('emits redacted query lifecycle events with hashes and durations', fakeAsync(() => {
+      const events: ReportTelemetryEvent[] = [];
+      const store = createStoreWithTelemetry(events);
+      const dataSource = new RecordingDataSource();
+
+      store.connect(dataSource);
+      store.setTextFilter('Acme');
+      tick(TEXT_FILTER_DEBOUNCE_MS);
+
+      expect(events.map((event) => event.type)).toEqual([
+        'report.fetch_started',
+        'report.fetch_succeeded',
+        'report.query_changed',
+        'report.fetch_started',
+        'report.fetch_succeeded',
+      ]);
+      expect(events.every((event) => event.reportId === 'invoices')).toBe(true);
+      expect(events[2]).toMatchObject({
+        type: 'report.query_changed',
+        queryHash: dataQueryHash(dataSource.queries[1]),
+      });
+      const success = events[4];
+      expect(success).toMatchObject({
+        type: 'report.fetch_succeeded',
+        queryHash: dataQueryHash(dataSource.queries[1]),
+        rowCount: 2,
+        totalCount: 2,
+      });
+      expect(success.type === 'report.fetch_succeeded' && success.durationMs).toEqual(expect.any(Number));
+      expect(JSON.stringify(events)).not.toContain('Acme');
+    }));
+
+    it('emits empty_result and fetch_failed with hashes and no raw error message', fakeAsync(() => {
+      const events: ReportTelemetryEvent[] = [];
+      const store = createStoreWithTelemetry(events);
+      let failNext = false;
+      store.connect({
+        fetch: (query) => {
+          if (failNext) {
+            return throwError(() => new Error('Sensitive customer text'));
+          }
+          return new RecordingDataSource().fetch(query);
+        },
+      });
+
+      store.setTextFilter('missing');
+      tick(TEXT_FILTER_DEBOUNCE_MS);
+      failNext = true;
+      store.refresh();
+
+      expect(events.some((event) => event.type === 'report.empty_result')).toBe(true);
+      const failure = events.find((event) => event.type === 'report.fetch_failed');
+      expect(failure).toMatchObject({
+        type: 'report.fetch_failed',
+        errorKind: 'unknown',
+        retryable: false,
+      });
+      expect(failure?.type === 'report.fetch_failed' && failure.durationMs).toEqual(expect.any(Number));
+      expect(JSON.stringify(events)).not.toContain('missing');
+      expect(JSON.stringify(events)).not.toContain('Sensitive customer text');
+    }));
   });
 });

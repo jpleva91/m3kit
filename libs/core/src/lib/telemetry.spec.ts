@@ -48,6 +48,7 @@ const EVERY_EVENT: readonly ReportTelemetryEvent[] = [
     reportId: 'invoices',
     at: '2026-06-12T09:00:01.000Z',
     queryHash: 'a1b2c3d4',
+    durationMs: 1000,
   },
   {
     type: 'report.export_requested',

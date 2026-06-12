@@ -8,6 +8,7 @@ import {
   TableDefinition,
   DataPage,
   DataQuery,
+  ColumnViewState,
   PageState,
   SortState,
 } from '@m3kit/core';
@@ -93,6 +94,7 @@ class RecordingDataSource implements TableDataSource<InvoiceRow> {
       [dataSource]="dataSource"
       [textFilter]="text"
       [fieldFilters]="fields"
+      [columnState]="columnState"
       (rowClicked)="clicked = $event"
     />
   `,
@@ -104,6 +106,7 @@ class HostComponent {
   );
   text = '';
   fields: Readonly<Record<string, unknown>> = {};
+  columnState: readonly ColumnViewState[] | undefined = undefined;
   clicked: InvoiceRow | null = null;
 }
 
@@ -136,6 +139,71 @@ describe('DataTableComponent', () => {
 
   it('renders one header per definition column', () => {
     expect(headerTexts()).toEqual(['Invoice', 'Customer', 'Amount', 'Status', 'Issued']);
+  });
+
+  it('hides columns with visible false and reorders visible state entries', () => {
+    host.columnState = [
+      { key: 'amount' },
+      { key: 'id' },
+      { key: 'customerName', visible: false },
+      { key: 'status' },
+    ];
+    fixture.detectChanges();
+
+    expect(headerTexts()).toEqual(['Amount', 'Invoice', 'Status', 'Issued']);
+    expect(element().querySelector('th.cdk-column-customerName')).toBeNull();
+    expect(element().querySelector('td.cdk-column-customerName')).toBeNull();
+  });
+
+  it('pins start and end columns from columnState', () => {
+    host.columnState = [
+      { key: 'amount', pinned: 'end' },
+      { key: 'id', pinned: 'start' },
+    ];
+    fixture.detectChanges();
+
+    expect(element().querySelector('th.cdk-column-id')?.classList).toContain('mat-mdc-table-sticky');
+    expect(element().querySelector('td.cdk-column-id')?.classList).toContain('mat-mdc-table-sticky');
+    expect(element().querySelector('th.cdk-column-amount')?.classList).toContain('mat-mdc-table-sticky');
+    expect(element().querySelector('td.cdk-column-amount')?.classList).toContain('mat-mdc-table-sticky');
+  });
+
+  it('uses columnState width over definition width', () => {
+    host.definition = {
+      ...INVOICE_DEFINITION,
+      columns: INVOICE_DEFINITION.columns.map((column) =>
+        column.key === 'id' ? { ...column, width: '120px' } : column,
+      ),
+    };
+    host.columnState = [{ key: 'id', width: '18rem' }];
+    fixture.detectChanges();
+
+    expect((element().querySelector('th.cdk-column-id') as HTMLElement).style.width).toBe('18rem');
+  });
+
+  it('drops duplicate and unknown columnState entries with first match winning', () => {
+    host.columnState = [
+      { key: 'unknown' },
+      { key: 'amount' },
+      { key: 'amount', visible: false },
+      { key: 'id' },
+    ];
+    fixture.detectChanges();
+
+    expect(headerTexts()).toEqual(['Amount', 'Invoice', 'Customer', 'Status', 'Issued']);
+  });
+
+  it('re-resolves columnState when the definition changes', () => {
+    host.columnState = [{ key: 'issuedAt' }, { key: 'id' }, { key: 'amount', visible: false }];
+    host.definition = {
+      ...INVOICE_DEFINITION,
+      columns: INVOICE_DEFINITION.columns.filter((column) => column.key !== 'issuedAt'),
+    };
+    fixture.detectChanges();
+
+    expect(headerTexts()).toEqual(['Invoice', 'Customer', 'Status']);
+    expect(element().querySelector('th.cdk-column-issuedAt')).toBeNull();
+    expect(element().querySelector('th.cdk-column-amount')).toBeNull();
   });
 
   it('renders the first page of rows at the default page size', () => {
@@ -319,6 +387,7 @@ describe('DataTableComponent', () => {
       [totalCount]="totalCount"
       [sort]="sort"
       [page]="page"
+      [columnState]="columnState"
       (sortChange)="sortChanges.push($event)"
       (pageChange)="pageChanges.push($event)"
     />
@@ -335,6 +404,7 @@ class ControlledHostComponent {
   totalCount = 42;
   sort: SortState | null = { key: 'amount', direction: 'asc' };
   page: PageState = { index: 0, size: 5 };
+  columnState: readonly ColumnViewState[] | undefined = undefined;
   readonly sortChanges: (SortState | null)[] = [];
   readonly pageChanges: PageState[] = [];
 }
@@ -370,6 +440,9 @@ describe('DataTableComponent (controlled mode)', () => {
   });
 
   it('emits sortChange from header clicks instead of sorting internally', () => {
+    host.columnState = [{ key: 'amount', pinned: 'end' }, { key: 'id', visible: false }];
+    fixture.detectChanges();
+
     const amountSort = element().querySelector(
       'th.cdk-column-amount .mat-sort-header-container',
     ) as HTMLElement;
@@ -381,10 +454,13 @@ describe('DataTableComponent (controlled mode)', () => {
     expect(host.sortChanges).toEqual([{ key: 'amount', direction: 'desc' }]);
     expect(recording.queries.length).toBe(0);
     // Row order is untouched: ordering is the owner's job.
-    expect(element().querySelector('tr[mat-row]')?.textContent).toContain('INV-0001');
+    expect(element().querySelector('tr[mat-row]')?.textContent).toContain('Acme Corp 1');
   });
 
   it('emits pageChange from the paginator instead of paging internally', () => {
+    host.columnState = [{ key: 'amount', pinned: 'end' }, { key: 'id', visible: false }];
+    fixture.detectChanges();
+
     const next = element().querySelector(
       'button.mat-mdc-paginator-navigation-next',
     ) as HTMLButtonElement;

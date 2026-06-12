@@ -19,13 +19,26 @@
   }
 
   table {
-    width: 100%;
+    width: max-content;
+    min-width: 100%;
   }
 
   // Dense tables keep their analytical width; on narrow viewports the
   // table scrolls within its own container instead of panning the page.
   &__scroll {
     overflow-x: auto;
+  }
+
+  &__cell--pinned-start-edge {
+    border-right: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  &__cell--pinned-end-edge {
+    border-left: 1px solid var(--mat-sys-outline-variant);
+  }
+
+  :is(th, td).mat-mdc-table-sticky {
+    background: var(--mat-sys-surface);
   }
 
   &__row {

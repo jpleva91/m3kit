@@ -14,29 +14,38 @@
     [matSortDirection]="sortDirection()"
     (matSortChange)="onSortChange($event)"
   >
-    @for (column of columns(); track column.key) {
-      <ng-container [matColumnDef]="column.key">
+    @for (column of columns(); track column.def.key) {
+      <ng-container
+        [matColumnDef]="column.def.key"
+        [sticky]="column.pinned === 'start'"
+        [stickyEnd]="column.pinned === 'end'"
+      >
         <th
           mat-header-cell
           *matHeaderCellDef
           mat-sort-header
-          [disabled]="!column.sortable"
+          [disabled]="!column.def.sortable"
           [style.width]="column.width ?? null"
-          [class]="'m3k-align-' + (column.align ?? 'start')"
+          [class]="'m3k-align-' + (column.def.align ?? 'start')"
+          [class.m3k-data-table__cell--pinned-start-edge]="isPinnedStartEdge(column)"
+          [class.m3k-data-table__cell--pinned-end-edge]="isPinnedEndEdge(column)"
         >
-          {{ column.header }}
+          {{ column.def.header }}
         </th>
         <td
           mat-cell
           *matCellDef="let row"
-          [class]="'m3k-align-' + (column.align ?? 'start') + ' m3k-type-' + column.type"
+          [style.width]="column.width ?? null"
+          [class]="'m3k-align-' + (column.def.align ?? 'start') + ' m3k-type-' + column.def.type"
+          [class.m3k-data-table__cell--pinned-start-edge]="isPinnedStartEdge(column)"
+          [class.m3k-data-table__cell--pinned-end-edge]="isPinnedEndEdge(column)"
         >
-          @if (column.type === 'badge') {
-            <span class="m3k-badge" [attr.data-color]="badgeColor(row, column)">
-              {{ formatCell(row, column) }}
+          @if (column.def.type === 'badge') {
+            <span class="m3k-badge" [attr.data-color]="badgeColor(row, column.def)">
+              {{ formatCell(row, column.def) }}
             </span>
           } @else {
-            {{ formatCell(row, column) }}
+            {{ formatCell(row, column.def) }}
           }
         </td>
       </ng-container>
