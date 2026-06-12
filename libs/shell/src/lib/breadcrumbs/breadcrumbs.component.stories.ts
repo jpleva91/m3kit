@@ -9,7 +9,7 @@ import { BreadcrumbsComponent } from './breadcrumbs.component';
 
 const meta: Meta<BreadcrumbsComponent> = {
   component: BreadcrumbsComponent,
-  title: 'Shell/Breadcrumbs',
+  title: 'Molecules/Breadcrumbs',
   decorators: [
     applicationConfig({
       providers: [provideRouter([], withDisabledInitialNavigation())],

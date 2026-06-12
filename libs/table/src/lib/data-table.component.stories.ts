@@ -67,7 +67,7 @@ const PENDING_DATA_SOURCE: TableDataSource<InvoiceRow> = {
 
 const meta: Meta<DataTableComponent<InvoiceRow>> = {
   component: DataTableComponent,
-  title: 'Table/DataTable',
+  title: 'Organisms/DataTable',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

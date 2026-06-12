@@ -1,0 +1,80 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as DonutChartStories from './donut-chart.component.stories';
+
+<Meta of={DonutChartStories} />
+
+# DonutChart
+
+`m3k-donut-chart` is a dependency-free SVG donut chart drawn with the
+stroke-dasharray circle technique (`pathLength="100"`, so dash values are exact
+percentages). Use it for a single part-to-whole composition with a handful of
+slices (invoice status mix); use `m3k-bar-chart` when comparing across categories
+or when there are many slices. An optional headline figure renders in the donut
+hole in the brand display face.
+
+**Atomic level:** Organism — composed from the `donutSegments()` /
+`chartSeriesColor()` helpers in `internal/scale.ts`; it renders no child
+components. Typically projected inside `m3k-chart-card` with a `m3k-chart-legend`.
+
+<Canvas of={DonutChartStories.Default} />
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { DonutChartComponent, DonutChartSlice } from '@m3kit/charts';
+
+@Component({
+  selector: 'app-invoice-mix',
+  imports: [DonutChartComponent],
+  template: `
+    <m3k-donut-chart
+      [slices]="slices"
+      centerLabel="Invoices"
+      centerValue="110"
+      ariaLabel="Invoices by status"
+    />
+  `,
+})
+export class InvoiceMixComponent {
+  readonly slices: readonly DonutChartSlice[] = [
+    { label: 'Paid', value: 96 },
+    { label: 'Overdue', value: 14 },
+  ];
+}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `slices` | `readonly DonutChartSlice[]` | required | Slices in display order, clockwise from 12 o'clock. Zero-value slices are dropped. Each slice may pin an explicit `colorToken` (1–6); otherwise colors cycle by index. |
+| `centerLabel` | `string \| null` | `null` | Small uppercase caption under the center value. |
+| `centerValue` | `string \| null` | `null` | Headline figure in the donut hole (brand display face). |
+| `height` | `number` | `240` | Rendered height in px; the square donut scales to fit (aspect preserved — the circle never distorts). |
+| `ariaLabel` | `string` | `'Donut chart'` | Accessible description; the SVG renders with `role="img"`. |
+
+No outputs.
+
+## Theming
+
+Token-only styling — the component consumes:
+
+| Token | Used for |
+| --- | --- |
+| `--app-chart-1..6` | Slice colors — cycled by slice index, or pinned per slice via `colorToken` (values outside 1–6 fold back into the palette). |
+| `--mat-sys-display-large-font` | Center value (DESIGN.md signature move: headline figures in the brand display family). |
+| `--mat-sys-on-surface` | Center value fill. |
+| `--mat-sys-on-surface-variant` | Center label fill. |
+
+## Do / Don't
+
+- **Do** pin `colorToken` when a slice has fixed semantics across charts (e.g. "Overdue" always on `--app-chart-2`) so the same status keeps the same color everywhere.
+- **Don't** add raw hex or hard-coded slice colors — the closed `--app-chart-1..6` contract is what lets all twelve brands reskin the donut without touching component code.
+
+## Related
+
+- [ChartCard](?path=/docs/organisms-chartcard--docs) — titled card frame with loading/empty states
+- [ChartLegend](?path=/docs/molecules-chartlegend--docs) — swatch legend (pass matching `colorIndex`)
+- [BarChart](?path=/docs/organisms-barchart--docs) — categorical comparison
+- [LineChart](?path=/docs/organisms-linechart--docs) — trends over a continuous axis

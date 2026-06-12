@@ -12,7 +12,7 @@ import { PageHeaderComponent } from './page-header.component';
 
 const meta: Meta<PageHeaderComponent> = {
   component: PageHeaderComponent,
-  title: 'Shell/PageHeader',
+  title: 'Molecules/PageHeader',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatButtonModule, MatIconModule] }),

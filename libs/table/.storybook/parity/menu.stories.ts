@@ -82,7 +82,7 @@ class ParityMenuDemoComponent {}
 
 const meta: Meta<ParityMenuDemoComponent> = {
   component: ParityMenuDemoComponent,
-  title: 'Material Parity/Menu',
+  title: 'Atoms/Menu',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

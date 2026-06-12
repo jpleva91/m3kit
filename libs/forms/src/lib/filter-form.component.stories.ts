@@ -38,7 +38,7 @@ const STATUS_OPTIONS = {
 
 const meta: Meta<FilterFormComponent<OrderRow>> = {
   component: FilterFormComponent,
-  title: 'Forms/FilterForm',
+  title: 'Organisms/FilterForm',
   decorators: [
     applicationConfig({ providers: [provideAnimations(), provideNativeDateAdapter()] }),
   ],

@@ -1,0 +1,66 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as ContentLayoutStories from './content-layout.component.stories';
+
+<Meta of={ContentLayoutStories} />
+
+# ContentLayout
+
+`m3k-content-layout` is a page-body width helper that applies one of three width
+strategies to routed content: `full` (data wants width), `centered` (a readable
+column capped at 1080px), or `split` (primary region beside a narrower aside,
+stacking to one column at handset width). Use it as the outermost wrapper of each
+routed page inside `m3k-app-shell` so width policy stays consistent across pages.
+
+**Atomic level:** Template — a pure layout primitive (CSS grid + `ng-content`
+projection); it renders no child components and pairs with `m3k-app-shell`,
+which owns the surrounding chrome.
+
+<Canvas of={ContentLayoutStories.Split} />
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { ContentLayoutComponent } from '@m3kit/shell';
+
+@Component({
+  selector: 'app-invoices-page',
+  imports: [ContentLayoutComponent],
+  template: `
+    <m3k-content-layout mode="split">
+      <section>Invoice table…</section>
+      <aside m3kContentAside>Filters…</aside>
+    </m3k-content-layout>
+  `,
+})
+export class InvoicesPageComponent {}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `mode` | `'full' \| 'centered' \| 'split'` | `'full'` | Width strategy: span the available width; constrain to a centered 1080px column; or grid the default slot beside a `minmax(240px, 320px)` aside with a 24px gap, stacking primary-first at ≤959px. |
+
+No outputs.
+
+**Content slots:** default slot — the page body; `[m3kContentAside]` — the aside
+region (rendered only in `split` mode).
+
+## Theming
+
+This component consumes **no theme tokens** — it is pure layout (grid columns,
+the 1080px centered max-width from DESIGN.md, 24px gap, 959px handset
+breakpoint). Color, type, and shape come entirely from the projected content,
+so it is brand-neutral by construction.
+
+## Do / Don't
+
+- **Do** keep the aside genuinely secondary (filters, summaries, metadata) — `split` caps it at 320px and stacks it after the primary region on handsets.
+- **Don't** put data tables in `centered` mode — tables want width; use `full` (or `split` when a filter rail rides along) and reserve `centered` for prose-like detail pages.
+
+## Related
+
+- [AppShell](?path=/docs/templates-appshell--docs) — the chrome this lays pages out inside
+- [PageHeader](?path=/docs/molecules-pageheader--docs) — title row at the top of the page body
+- [DashboardGrid](?path=/docs/organisms-dashboardgrid--docs) — card grid for `full`-width dashboard pages

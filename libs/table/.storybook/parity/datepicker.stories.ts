@@ -104,7 +104,7 @@ class DateRangeComponent {
 }
 
 const meta: Meta = {
-  title: 'Material Parity/Datepicker',
+  title: 'Atoms/Datepicker',
   decorators: [
     applicationConfig({
       providers: [provideAnimations(), provideNativeDateAdapter()],

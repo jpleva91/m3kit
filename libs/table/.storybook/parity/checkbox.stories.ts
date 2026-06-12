@@ -33,7 +33,7 @@ import {
 class CheckboxStatesComponent {}
 
 const meta: Meta = {
-  title: 'Material Parity/Checkbox',
+  title: 'Atoms/Checkbox',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [CheckboxStatesComponent] }),

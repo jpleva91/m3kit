@@ -49,7 +49,7 @@ const TOOLBAR_ACTIONS = `
 
 const meta: Meta<AppShellComponent> = {
   component: AppShellComponent,
-  title: 'Shell/AppShell',
+  title: 'Templates/AppShell',
   decorators: [
     applicationConfig({
       providers: [

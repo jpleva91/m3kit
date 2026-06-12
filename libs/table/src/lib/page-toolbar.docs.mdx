@@ -1,0 +1,72 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PageToolbarStories from './page-toolbar.component.stories';
+
+<Meta of={PageToolbarStories} />
+
+# PageToolbar
+
+`m3k-page-toolbar` is the header toolbar for a report view: an `h1` title,
+an optional row-count badge, and a content-projection slot for action
+buttons (export, refresh, …) pushed to the end. Use it at the top of a
+table-centric page where the row count is part of the story; for general
+routed pages prefer `m3k-page-header`.
+
+**Atomic level:** Molecule — composed from `mat-toolbar`, a heading, a
+count badge, and projected action buttons.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { PageToolbarComponent } from '@m3kit/table';
+
+@Component({
+  selector: 'app-orders-page',
+  imports: [PageToolbarComponent, MatButtonModule],
+  template: `
+    <m3k-page-toolbar [title]="'Orders'" [rowCount]="totalCount()">
+      <button mat-stroked-button>Export</button>
+    </m3k-page-toolbar>
+  `,
+})
+export class OrdersPageComponent {
+  // e.g. totalCount = table.totalCount
+}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | required | Page title rendered as an `h1` at the start of the toolbar. |
+| `rowCount` | `number \| null` | `null` | Optional "*n* rows" badge; hidden when `null`. |
+
+No outputs. Projected content renders after the spacer, end-aligned.
+
+## Theming
+
+Token-only styling; consumes:
+
+- `--mat-sys-display-large-font` (fallback `'DM Serif Display'`) — title
+  font family, the brand display face per DESIGN.md
+- `--app-radius-badge` (fallback `999px`) — row-count badge radius, from the
+  `--app-*` contract
+- `--mat-sys-surface-container-high` — row-count badge background
+
+The toolbar surface itself is the themed `mat-toolbar`.
+
+## Do / Don't
+
+- **Do** pass the table's live total (e.g. `table.totalCount()`) so the
+  badge tracks filtering.
+- **Don't** stack it with `m3k-page-header` on the same view — both render
+  an `h1`; pick one per page.
+
+## Related
+
+- [DataTable](?path=/docs/organisms-datatable--docs) — the table it usually heads
+- [TableFilterBar](?path=/docs/molecules-tablefilterbar--docs) — free-text search beside it
+- [PageHeader](?path=/docs/molecules-pageheader--docs) — shell-level alternative for routed pages
+
+<Stories />

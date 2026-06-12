@@ -14,7 +14,7 @@ const ITEMS: readonly KpiStripItem[] = [
 
 const meta: Meta<KpiStripComponent> = {
   component: KpiStripComponent,
-  title: 'Dashboard/KpiStrip',
+  title: 'Molecules/KpiStrip',
 };
 export default meta;
 type Story = StoryObj<KpiStripComponent>;

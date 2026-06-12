@@ -199,7 +199,7 @@ class ParityTreeDemoComponent {
 
 const meta: Meta<ParityTreeDemoComponent> = {
   component: ParityTreeDemoComponent,
-  title: 'Material Parity/Tree',
+  title: 'Atoms/Tree',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

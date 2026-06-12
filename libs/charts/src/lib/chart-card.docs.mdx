@@ -1,0 +1,85 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as ChartCardStories from './chart-card.component.stories';
+
+<Meta of={ChartCardStories} />
+
+# ChartCard
+
+`m3k-chart-card` is a titled `mat-card` frame for a projected chart, with an
+optional legend slot and built-in loading / empty states. Use it whenever a chart
+appears on a dashboard or report page so titles, radii, and state handling stay
+consistent; skip it only for bare inline sparkline-style charts.
+
+**Atomic level:** Organism — composed from Material `mat-card` and
+`mat-progress-bar`, framing any projected chart (`m3k-line-chart`,
+`m3k-bar-chart`, `m3k-donut-chart`) plus an optional `m3k-chart-legend` in the
+`[m3kChartCardLegend]` slot.
+
+<Canvas of={ChartCardStories.Default} />
+
+## Usage
+
+```ts
+import { Component, signal } from '@angular/core';
+import {
+  ChartCardComponent,
+  ChartLegendComponent,
+  LineChartComponent,
+} from '@m3kit/charts';
+
+@Component({
+  selector: 'app-revenue-card',
+  imports: [ChartCardComponent, LineChartComponent, ChartLegendComponent],
+  template: `
+    <m3k-chart-card title="Revenue" subtitle="Last 6 months" [loading]="loading()">
+      <m3k-line-chart [series]="series()" />
+      <m3k-chart-legend m3kChartCardLegend [items]="legend()" />
+    </m3k-chart-card>
+  `,
+})
+export class RevenueCardComponent {
+  readonly loading = signal(false);
+  readonly series = signal([{ name: 'Revenue', points: [{ x: 'Jan', y: 4200 }] }]);
+  readonly legend = signal([{ label: 'Revenue', colorIndex: 0 }]);
+}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | required | Card title, rendered as an `h2` in the brand display face. |
+| `subtitle` | `string \| null` | `null` | Optional subtitle under the title. |
+| `loading` | `boolean` | `false` | Replaces the projected chart with an indeterminate progress bar. |
+| `empty` | `boolean` | `false` | Replaces the chart with the empty message (ignored while `loading` is true). |
+| `emptyMessage` | `string` | `'No data to display.'` | Message shown in the empty state. |
+
+No outputs.
+
+**Content slots:** default slot — the chart; `[m3kChartCardLegend]` — legend row
+rendered under the chart.
+
+## Theming
+
+Token-only styling — the component consumes:
+
+| Token | Used for |
+| --- | --- |
+| `--app-radius-card` | Card corner radius (brand shape contract). |
+| `--mat-sys-display-large-font` | Card title (DESIGN.md signature move: titles in the brand display family). |
+| `--mat-sys-on-surface` | Title color. |
+| `--mat-sys-on-surface-variant` | Subtitle and empty-state text. |
+
+The card body (`mat-card` outlined appearance, progress bar palette) inherits the
+brand's Material token overrides.
+
+## Do / Don't
+
+- **Do** drive `loading`/`empty` from your datasource state — the card swaps the chart out for you, so charts never render against missing data.
+- **Don't** wrap the card in extra bespoke chrome (custom borders, shadows, radii) — the card already carries the brand shape contract; doubling up breaks reskinning.
+
+## Related
+
+- [LineChart](?path=/docs/organisms-linechart--docs), [BarChart](?path=/docs/organisms-barchart--docs), [DonutChart](?path=/docs/organisms-donutchart--docs) — the charts it frames
+- [ChartLegend](?path=/docs/molecules-chartlegend--docs) — for the `[m3kChartCardLegend]` slot
+- [DashboardGrid](?path=/docs/organisms-dashboardgrid--docs) — places chart cards on a dashboard

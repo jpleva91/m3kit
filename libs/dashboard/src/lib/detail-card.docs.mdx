@@ -1,0 +1,84 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as DetailCardStories from './detail-card.component.stories';
+
+{/* Attached docs page: renders as Molecules/DetailCard/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={DetailCardStories} />
+
+# DetailCard
+
+`m3k-detail-card` is a titled card listing label/value rows, with
+content-projection slots for header actions and a footer. Use it for compact
+record summaries on dashboards — a latest invoice, a top customer — where a
+handful of facts matter more than a full table. An empty `rows` list renders a
+placeholder message instead of an empty card.
+
+**Atomic level:** Molecule — composed from Material `mat-card` (outlined,
+header/content/footer) wrapping a semantic `<dl>` of rows.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { DetailCardComponent, DetailCardRow } from '@m3kit/dashboard';
+
+@Component({
+  selector: 'app-latest-invoice',
+  imports: [DetailCardComponent],
+  template: `
+    <m3k-detail-card title="Latest invoice" subtitle="INV-2026-0042" [rows]="rows">
+      <button m3kDetailCardActions mat-icon-button aria-label="More">…</button>
+      <a m3kDetailCardFooter mat-button>View all invoices</a>
+    </m3k-detail-card>
+  `,
+})
+export class LatestInvoiceComponent {
+  readonly rows: readonly DetailCardRow[] = [
+    { label: 'Customer', value: 'Acme Corp' },
+    { label: 'Amount', value: '$12,400.00' },
+    { label: 'Status', value: 'Sent' },
+  ];
+}
+```
+
+<Canvas of={DetailCardStories.WithSubtitle} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | required | Card title (renders as `h2` in the brand display face). |
+| `subtitle` | `string \| null` | `null` | Optional subtitle under the title. |
+| `rows` | `readonly DetailCardRow[]` | required | Label/value rows (`{ label: string; value: string \| number }`); an empty list renders a placeholder message. |
+
+Outputs: none.
+
+**Projection slots:** `[m3kDetailCardActions]` (top-right header actions) and
+`[m3kDetailCardFooter]` (card footer).
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--app-radius-card` | Card border radius. |
+| `--mat-sys-display-large-font` | Title font family (matches `m3k-chart-card`). |
+| `--mat-sys-on-surface` | Title and row values. |
+| `--mat-sys-on-surface-variant` | Row labels and the empty-state message. |
+| `--mat-sys-outline-variant` | Hairline dividers between rows. |
+
+Card surface, outline, and padding come from the Material card theme.
+
+## Do / Don't
+
+- **Do** keep rows to a handful of scannable facts and link out via the
+  `[m3kDetailCardFooter]` slot ("View all invoices") for the full record.
+- **Don't** use it as a substitute for a table — many rows or multi-column
+  data belong in [DataTable](?path=/docs/organisms-datatable--docs).
+
+## Related
+
+- [KpiCard](?path=/docs/molecules-kpicard--docs) — single-metric tile sibling.
+- [DashboardGrid](?path=/docs/organisms-dashboardgrid--docs) — responsive grid these cards live in.
+- [DataTable](?path=/docs/organisms-datatable--docs) — for full tabular records.

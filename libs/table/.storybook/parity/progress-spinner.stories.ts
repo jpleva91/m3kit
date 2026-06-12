@@ -34,7 +34,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/ProgressSpinner',
+  title: 'Atoms/ProgressSpinner',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatProgressSpinnerModule] }),

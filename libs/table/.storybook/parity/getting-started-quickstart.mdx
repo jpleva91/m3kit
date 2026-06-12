@@ -1,0 +1,134 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Getting Started/Quickstart" />
+
+# Quickstart
+
+Run the repo, then build your first page — about five minutes end to end.
+
+## 1. Clone and install
+
+```sh
+git clone https://github.com/jpleva91/m3kit.git
+cd m3kit
+pnpm install
+```
+
+## 2. Run the demo app
+
+```sh
+npx nx serve demo-reporting     # http://localhost:4200
+```
+
+The demo is a synthetic-data reporting app (dashboard + invoice/customer
+reports) composing every library. Use its theme picker to flip through all
+twelve brands, light and dark.
+
+## 3. Run this Storybook
+
+```sh
+npx nx run m3kit-table:storybook   # http://localhost:4400
+```
+
+One Storybook host collects stories from every library plus the demo app.
+
+## 4. Your first page
+
+A complete page is an `AppShell` (Template) wrapping a `DataTable`
+(Organism). The shell owns 100% of the chrome; you own routing and data.
+
+```ts
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import { AppShellComponent, ShellNavItem } from '@m3kit/shell';
+
+@Component({
+  selector: 'app-root',
+  imports: [AppShellComponent, RouterOutlet],
+  template: `
+    <m3k-app-shell preset="sidenav" [nav]="nav" title="my-app">
+      <router-outlet />
+    </m3k-app-shell>
+  `,
+})
+export class AppComponent {
+  protected readonly nav: readonly ShellNavItem[] = [
+    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+    { path: '/invoices', label: 'Invoices', icon: 'table_chart' },
+  ];
+}
+```
+
+Then a routed page: declare the table once as a `TableDefinition`, hand it
+rows through a `TableDataSource` (here the in-memory one), and `DataTable`
+does sorting, paging, formatting, and status badges.
+
+```ts
+import { Component } from '@angular/core';
+import {
+  InMemoryTableDataSource,
+  TableDefinition,
+} from '@m3kit/core';
+import { DataTableComponent } from '@m3kit/table';
+
+interface InvoiceRow {
+  readonly id: string;
+  readonly customerName: string;
+  readonly amount: number;
+  readonly status: 'draft' | 'sent' | 'paid' | 'overdue';
+}
+
+@Component({
+  selector: 'app-invoices-page',
+  imports: [DataTableComponent],
+  template: `
+    <m3k-data-table [definition]="definition" [dataSource]="dataSource" />
+  `,
+})
+export class InvoicesPageComponent {
+  protected readonly definition: TableDefinition<InvoiceRow> = {
+    id: 'invoices',
+    title: 'Invoices',
+    columns: [
+      { key: 'id', header: 'Invoice', type: 'text', sortable: true },
+      { key: 'customerName', header: 'Customer', type: 'text', sortable: true },
+      {
+        key: 'amount',
+        header: 'Amount',
+        type: 'currency',
+        sortable: true,
+        align: 'end',
+        format: { currencyCode: 'USD', digitsInfo: '1.2-2' },
+      },
+      { key: 'status', header: 'Status', type: 'badge' },
+    ],
+    defaultPageSize: 10,
+  };
+
+  protected readonly dataSource = new InMemoryTableDataSource<InvoiceRow>([
+    { id: 'INV-0001', customerName: 'Acme Corp', amount: 1250, status: 'sent' },
+    { id: 'INV-0002', customerName: 'Globex', amount: 840.5, status: 'paid' },
+    { id: 'INV-0003', customerName: 'Initech', amount: 312, status: 'overdue' },
+  ]);
+}
+```
+
+Real backend later? Implement the two-method `TableDataSource` interface
+against your API and swap it in — the definition and template don't change.
+
+See **Pages → FullDashboard** and **Pages → SettingsForm** in the sidebar
+for larger compositions with visible source.
+
+## 5. Verify your workspace
+
+```sh
+npx nx run-many -t lint test build
+npx nx run m3kit-table:build-storybook
+```
+
+## Adopting into your own workspace
+
+Copy the `libs/*` you need, wire the TypeScript path aliases and the SCSS
+`includePaths` for `libs/theme`, and re-create the boundary rules. Full
+procedure: `docs/ADOPTION_GUIDE.md` in the
+[repository](https://github.com/jpleva91/m3kit).

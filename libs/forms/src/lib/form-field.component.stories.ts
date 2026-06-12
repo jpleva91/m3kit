@@ -7,7 +7,7 @@ import { FormFieldComponent } from './form-field.component';
 
 const meta: Meta<FormFieldComponent> = {
   component: FormFieldComponent,
-  title: 'Forms/FormField',
+  title: 'Molecules/FormField',
   decorators: [
     applicationConfig({ providers: [provideAnimations(), provideNativeDateAdapter()] }),
   ],

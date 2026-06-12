@@ -82,7 +82,7 @@ class AutocompleteComponent {
 
 const meta: Meta<AutocompleteComponent> = {
   component: AutocompleteComponent,
-  title: 'Material Parity/Autocomplete',
+  title: 'Atoms/Autocomplete',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [AutocompleteComponent] }),

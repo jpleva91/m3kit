@@ -30,7 +30,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/Tooltip',
+  title: 'Atoms/Tooltip',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatTooltipModule, MatButtonModule, MatIconModule] }),

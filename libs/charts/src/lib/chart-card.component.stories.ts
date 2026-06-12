@@ -20,7 +20,7 @@ const COSTS: LineChartSeries = {
 
 const meta: Meta<ChartCardComponent> = {
   component: ChartCardComponent,
-  title: 'Charts/ChartCard',
+  title: 'Organisms/ChartCard',
   decorators: [
     moduleMetadata({
       imports: [ChartLegendComponent, DonutChartComponent, LineChartComponent],

@@ -12,7 +12,7 @@ const STATUS_ITEMS: readonly ChartLegendItem[] = [
 
 const meta: Meta<ChartLegendComponent> = {
   component: ChartLegendComponent,
-  title: 'Charts/ChartLegend',
+  title: 'Molecules/ChartLegend',
 };
 export default meta;
 type Story = StoryObj<ChartLegendComponent>;

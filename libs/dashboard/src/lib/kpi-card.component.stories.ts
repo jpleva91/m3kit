@@ -7,7 +7,7 @@ const REVENUE_SPARKLINE: readonly number[] = [4200, 5100, 4800, 6200, 5900, 7400
 
 const meta: Meta<KpiCardComponent> = {
   component: KpiCardComponent,
-  title: 'Dashboard/KpiCard',
+  title: 'Molecules/KpiCard',
 };
 export default meta;
 type Story = StoryObj<KpiCardComponent>;

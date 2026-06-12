@@ -92,7 +92,7 @@ class ChipsInputComponent {
 class ChipsListboxComponent {}
 
 const meta: Meta = {
-  title: 'Material Parity/Chips',
+  title: 'Atoms/Chips',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [ChipsInputComponent, ChipsListboxComponent] }),

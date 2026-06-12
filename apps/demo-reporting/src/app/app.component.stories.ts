@@ -8,7 +8,8 @@ import { appRoutes } from './app.routes';
 
 const meta: Meta<AppComponent> = {
   component: AppComponent,
-  title: 'App/AppComponent',
+  title: 'Pages/AppComponent',
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({
       providers: [

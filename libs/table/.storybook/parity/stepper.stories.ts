@@ -121,7 +121,7 @@ class ParityStepperDemoComponent {
 
 const meta: Meta<ParityStepperDemoComponent> = {
   component: ParityStepperDemoComponent,
-  title: 'Material Parity/Stepper',
+  title: 'Atoms/Stepper',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

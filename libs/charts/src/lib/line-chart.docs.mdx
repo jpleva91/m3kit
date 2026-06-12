@@ -1,0 +1,86 @@
+import { Meta, Canvas, Controls } from '@storybook/blocks';
+import * as LineChartStories from './line-chart.component.stories';
+
+<Meta of={LineChartStories} />
+
+# LineChart
+
+`m3k-line-chart` is a dependency-free, hand-written SVG line chart for plotting one
+or more series over a numeric, string, or `Date` x axis. Use it for trends over
+time (revenue by month, tickets per week); use `m3k-bar-chart` instead when
+comparing discrete categories. The SVG fills the host width and uses the measured
+width as its viewBox, so one SVG unit equals one CSS px and labels never stretch.
+
+**Atomic level:** Organism — composed from the pure scale/tick/path helpers in
+`internal/scale.ts` and the `injectHostWidth()` ResizeObserver signal; it renders
+no child components. Typically projected inside `m3k-chart-card`.
+
+<Canvas of={LineChartStories.Default} />
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { LineChartComponent, LineChartSeries } from '@m3kit/charts';
+
+@Component({
+  selector: 'app-revenue-trend',
+  imports: [LineChartComponent],
+  template: `
+    <m3k-line-chart
+      [series]="series"
+      [area]="true"
+      ariaLabel="Revenue by month"
+    />
+  `,
+})
+export class RevenueTrendComponent {
+  readonly series: readonly LineChartSeries[] = [
+    {
+      name: 'Revenue',
+      points: [
+        { x: 'Jan', y: 4200 },
+        { x: 'Feb', y: 5100 },
+        { x: 'Mar', y: 4800 },
+      ],
+    },
+  ];
+}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `series` | `readonly LineChartSeries[]` | required | Series to plot. Each point's `x` may be a `number` (used as-is), `Date` (epoch ms), or `string` (positioned by index). A single-point series renders a marker dot instead of a line. |
+| `area` | `boolean` | `false` | Fills under each line with a translucent `color-mix()` tint of its series color. |
+| `showAxes` | `boolean` | `true` | Renders axis lines and tick labels (off switches to slim 4px margins — a bare sparkline shape). |
+| `showGrid` | `boolean` | `true` | Renders hairline horizontal grid lines at the y ticks. |
+| `height` | `number` | `240` | Rendered height in px (also the viewBox height). |
+| `ariaLabel` | `string` | `'Line chart'` | Accessible description; the SVG renders with `role="img"`. |
+
+No outputs.
+
+## Theming
+
+Token-only styling — the component consumes:
+
+| Token | Used for |
+| --- | --- |
+| `--app-chart-1..6` | Series stroke colors, cycled by series index via `chartSeriesColor(i)` (series 7 wraps to `--app-chart-1`); the `area` fill is a 20% `color-mix()` of the same token. |
+| `--app-font-data` | Tick numerals (brand data/mono stack). |
+| `--mat-sys-outline-variant` | Hairline grid lines. |
+| `--mat-sys-outline` | Axis lines. |
+| `--mat-sys-on-surface-variant` | Tick label fill. |
+
+## Do / Don't
+
+- **Do** pass the same series order to `m3k-chart-legend` (`colorIndex` = series index) so legend swatches match line colors.
+- **Don't** style series colors yourself (no `[style.stroke]`, no per-brand CSS) — colors come only from the closed `--app-chart-1..6` contract so every brand reskins the chart for free.
+
+## Related
+
+- [ChartCard](?path=/docs/organisms-chartcard--docs) — titled card frame with loading/empty states
+- [ChartLegend](?path=/docs/molecules-chartlegend--docs) — matching swatch legend
+- [BarChart](?path=/docs/organisms-barchart--docs) — categorical comparison
+- [DonutChart](?path=/docs/organisms-donutchart--docs) — part-to-whole composition

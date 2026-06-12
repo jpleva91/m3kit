@@ -1,0 +1,87 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as KpiStripStories from './kpi-strip.component.stories';
+
+{/* Attached docs page: renders as Molecules/KpiStrip/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={KpiStripStories} />
+
+# KpiStrip
+
+`m3k-kpi-strip` is an inline, hairline-divided row of label-over-value
+readouts with optional deltas and sparklines — the dense, full-width sibling
+of [KpiCard](?path=/docs/molecules-kpicard--docs). Values render in the brand
+data (mono) stack with tabular figures so adjacent readouts align like an
+instrument panel. Use it for a summary band above a table or chart; readouts
+wrap on narrow viewports.
+
+**Atomic level:** Molecule — composed from `mat-icon` (trend arrows) plus a
+hand-built inline SVG sparkline; no card chrome (the host is the flex
+container).
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { KpiStripComponent, KpiStripItem } from '@m3kit/dashboard';
+
+@Component({
+  selector: 'app-invoice-summary',
+  imports: [KpiStripComponent],
+  template: `<m3k-kpi-strip [items]="items" />`,
+})
+export class InvoiceSummaryComponent {
+  readonly items: readonly KpiStripItem[] = [
+    { label: 'Total revenue', value: 1284902.44, format: 'currency', delta: 4.2 },
+    { label: 'Open invoices', value: 38, delta: 6, sparkline: [3, 5, 4, 8] },
+    { label: 'Refund rate', value: 0.042, format: 'percent', delta: -1.5 },
+  ];
+}
+```
+
+<Canvas of={KpiStripStories.WithSparkline} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly KpiStripItem[]` | required | Readouts rendered left to right, separated by hairline dividers. |
+| `currencyCode` | `string` | `'USD'` | ISO currency code used by the `currency` format. |
+
+Outputs: none.
+
+`KpiStripItem` fields:
+
+| Field | Type | Description |
+| --- | --- | --- |
+| `label` | `string` | Short metric name shown above the value. |
+| `value` | `string \| number` | Metric value; numbers can be formatted via `format`. |
+| `format?` | `'number' \| 'currency' \| 'percent'` | Numeric format; ignored for string values. |
+| `delta?` | `number \| null` | Change vs previous period; omitted/`null` hides the delta. |
+| `sparkline?` | `readonly number[] \| null` | Inline SVG polyline series; needs ≥ 2 points. |
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--app-font-data` | Value font (mono, tabular figures). |
+| `--mat-sys-on-surface` | Value text. |
+| `--mat-sys-on-surface-variant` | Labels and neutral delta text. |
+| `--mat-sys-outline-variant` | Hairline dividers between readouts. |
+| `--mat-sys-tertiary` | Positive delta. |
+| `--mat-sys-error` | Negative delta. |
+| `--mat-sys-primary` | Sparkline stroke. |
+
+## Do / Don't
+
+- **Do** use the strip when several related metrics share one glanceable
+  band — totals above a [DataTable](?path=/docs/organisms-datatable--docs), for example.
+- **Don't** mix it with [KpiCard](?path=/docs/molecules-kpicard--docs) tiles
+  for the same metric group — pick the card grid or the strip, not both.
+
+## Related
+
+- [KpiCard](?path=/docs/molecules-kpicard--docs) — card-per-metric sibling.
+- [DetailCard](?path=/docs/molecules-detailcard--docs) — label/value rows in a titled card.
+- [DashboardGrid](?path=/docs/organisms-dashboardgrid--docs) — dashboard layout host.

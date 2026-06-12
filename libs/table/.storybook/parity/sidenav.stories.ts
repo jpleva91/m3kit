@@ -110,7 +110,7 @@ class ParitySidenavDemoComponent {}
 
 const meta: Meta<ParitySidenavDemoComponent> = {
   component: ParitySidenavDemoComponent,
-  title: 'Material Parity/Sidenav',
+  title: 'Atoms/Sidenav',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

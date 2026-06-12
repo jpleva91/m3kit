@@ -1,0 +1,77 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as FormSectionStories from './form-section.component.stories';
+
+<Meta of={FormSectionStories} />
+
+# FormSection
+
+`m3k-form-section` is a titled layout block for grouping related form
+fields: a heading, an optional description, and a content-projection slot
+for the fields themselves. Use it to break a long form into scannable,
+semantically outlined groups (e.g. "Billing", "Shipping") rather than
+hand-rolling headings per page.
+
+**Atomic level:** Molecule — composed from plain semantic markup (heading,
+description, projected content); no Material components. Pairs with
+`m3k-form-field`.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { FormControl } from '@angular/forms';
+import { FormFieldComponent, FormSectionComponent } from '@m3kit/forms';
+
+@Component({
+  selector: 'app-billing',
+  imports: [FormSectionComponent, FormFieldComponent],
+  template: `
+    <m3k-form-section
+      title="Billing"
+      description="Where invoices are sent."
+      [headingLevel]="2"
+    >
+      <m3k-form-field label="Company" type="text" [control]="company" required />
+      <m3k-form-field label="Email" type="text" [control]="email" />
+    </m3k-form-section>
+  `,
+})
+export class BillingComponent {
+  readonly company = new FormControl<string | null>(null);
+  readonly email = new FormControl<string | null>(null);
+}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | required | Section heading (rendered via `role="heading"`). |
+| `description` | `string` | `''` | Optional supporting text under the heading. |
+| `headingLevel` | `2 \| 3 \| 4` | `3` | `aria-level` of the heading, so sections nest correctly under the host page's outline. |
+
+No outputs. Projected content (`<ng-content>`) renders below the header.
+
+## Theming
+
+Token-only styling; consumes M3 system tokens exclusively:
+
+- `--mat-sys-title-medium` / `--mat-sys-on-surface` — section title
+- `--mat-sys-body-medium` / `--mat-sys-on-surface-variant` — description
+
+No `--app-*` contract tokens.
+
+## Do / Don't
+
+- **Do** set `headingLevel` to fit the host page's outline (e.g. `2` when
+  the section sits directly under the page's `h1`).
+- **Don't** use FormSection as a page header — it is a within-form grouping;
+  page titles belong to [PageHeader](?path=/docs/molecules-pageheader--docs).
+
+## Related
+
+- [FormField](?path=/docs/molecules-formfield--docs) — the fields a section groups
+- [FilterForm](?path=/docs/organisms-filterform--docs) — schema-driven form organism
+- [DetailCard](?path=/docs/molecules-detailcard--docs) — read-only counterpart for record display
+
+<Stories />

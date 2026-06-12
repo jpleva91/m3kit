@@ -31,7 +31,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/Button',
+  title: 'Atoms/Button',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatButtonModule, MatIconModule] }),

@@ -23,7 +23,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/ProgressBar',
+  title: 'Atoms/ProgressBar',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatProgressBarModule] }),

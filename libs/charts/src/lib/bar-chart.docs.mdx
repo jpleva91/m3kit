@@ -1,0 +1,81 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as BarChartStories from './bar-chart.component.stories';
+
+<Meta of={BarChartStories} />
+
+# BarChart
+
+`m3k-bar-chart` is a dependency-free, hand-written SVG bar chart for comparing
+values across discrete categories — grouped or stacked, vertical or horizontal.
+Use it for categorical comparison (invoices by status per quarter); use
+`m3k-line-chart` for continuous trends and `m3k-donut-chart` for a single
+part-to-whole breakdown. The SVG fills the host width (one SVG unit = one CSS px).
+
+**Atomic level:** Organism — composed from the pure scale/tick helpers in
+`internal/scale.ts` and the `injectHostWidth()` ResizeObserver signal; it renders
+no child components. Typically projected inside `m3k-chart-card`.
+
+<Canvas of={BarChartStories.Default} />
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { BarChartComponent, BarChartSeries } from '@m3kit/charts';
+
+@Component({
+  selector: 'app-quarterly-invoices',
+  imports: [BarChartComponent],
+  template: `
+    <m3k-bar-chart
+      [categories]="categories"
+      [series]="series"
+      mode="stacked"
+      ariaLabel="Invoices by status per quarter"
+    />
+  `,
+})
+export class QuarterlyInvoicesComponent {
+  readonly categories = ['Q1', 'Q2', 'Q3'];
+  readonly series: readonly BarChartSeries[] = [
+    { name: 'Paid', values: [42, 38, 51] },
+    { name: 'Overdue', values: [7, 11, 6] },
+  ];
+}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `categories` | `readonly string[]` | required | Category labels along the category axis. |
+| `series` | `readonly BarChartSeries[]` | required | Series; each `values[i]` pairs with `categories[i]` (missing values count as 0). |
+| `mode` | `'grouped' \| 'stacked'` | `'grouped'` | Bars side by side per category, or stacked into one segmented bar. Stacking clamps negative values to zero; grouped mode renders negatives below the zero baseline. |
+| `horizontal` | `boolean` | `false` | Lays categories on the y axis and values on the x axis (left gutter widens to fit category names). |
+| `height` | `number` | `240` | Rendered height in px (also the viewBox height). |
+| `ariaLabel` | `string` | `'Bar chart'` | Accessible description; the SVG renders with `role="img"`. |
+
+No outputs.
+
+## Theming
+
+Token-only styling — the component consumes:
+
+| Token | Used for |
+| --- | --- |
+| `--app-chart-1..6` | Bar fills, cycled by series index via `chartSeriesColor(i)`. |
+| `--app-font-data` | Tick numerals and category labels (brand data/mono stack). |
+| `--mat-sys-outline-variant` | Hairline value-axis grid lines. |
+| `--mat-sys-on-surface-variant` | Tick label fill. |
+
+## Do / Don't
+
+- **Do** switch to `[horizontal]="true"` when category names are long — the wider left gutter (88px) is sized for readable labels.
+- **Don't** use `mode="stacked"` with negative values expecting them to render — stacked segments clamp negatives to zero by design; use grouped mode for signed data.
+
+## Related
+
+- [ChartCard](?path=/docs/organisms-chartcard--docs) — titled card frame with loading/empty states
+- [ChartLegend](?path=/docs/molecules-chartlegend--docs) — matching swatch legend
+- [LineChart](?path=/docs/organisms-linechart--docs) — trends over a continuous axis
+- [DonutChart](?path=/docs/organisms-donutchart--docs) — part-to-whole composition

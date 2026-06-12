@@ -1,0 +1,80 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Getting Started/Architecture" />
+
+# Architecture
+
+An Nx monorepo of seven libraries and one demo app. Libraries are
+non-buildable by design — they are copy-in source, compiled by whatever
+consumes them.
+
+## Library graph
+
+```
+                    apps/demo-reporting
+                            │  (may depend on everything)
+   ┌────────┬────────┬──────┼──────┬─────────┬─────────┐
+   ▼        ▼        ▼      ▼      ▼         ▼         ▼
+ table  dashboard  charts  forms  shell   testing   theme (SCSS-only)
+   │        │        │      │      │         │
+   └────────┴────────┴──────┴──────┴─────────┘
+                            ▼
+                          core        (depends on nothing)
+```
+
+| Project | Alias | May depend on (internal) | Contents |
+| --- | --- | --- | --- |
+| `libs/core` | `@m3kit/core` | nothing | Framework-agnostic contracts: `TableDefinition`, `ColumnDef`, `DataQuery`, `DataPage`, `TableDataSource`, `InMemoryTableDataSource`, query engine. |
+| `libs/theme` | none (SCSS-only) | nothing | Token contract (`--app-*`) + the default Instruments brand. |
+| `libs/table` | `@m3kit/table` | core, theme | `DataTable`, `TableFilterBar`, `PageToolbar`. |
+| `libs/dashboard` | `@m3kit/dashboard` | core, theme | `DashboardGrid`, `KpiCard`, `KpiStrip`, `DetailCard`. |
+| `libs/charts` | `@m3kit/charts` | core, theme | Hand-built SVG: `LineChart`, `BarChart`, `DonutChart`, `ChartLegend`, `ChartCard`. |
+| `libs/forms` | `@m3kit/forms` | core, theme | `FormField`, `FormSection`, `FilterForm`. |
+| `libs/shell` | `@m3kit/shell` | core, theme | `AppShell` (four chrome presets), `PageHeader`, `Breadcrumbs`, `ContentLayout`, toolbar/rail template slots. |
+| `libs/testing` | `@m3kit/testing` | core, theme | Seeded synthetic-data factories and sample table definitions. |
+| `apps/demo-reporting` | — | all of the above | The composed reporting demo. |
+
+## Boundaries are machine-enforced
+
+`@nx/enforce-module-boundaries` in the root `eslint.config.mjs` encodes the
+table above with no permissive catch-all — any other dependency direction
+fails lint. Code that needs a forbidden edge is wrong by definition.
+
+`theme` sits outside the TypeScript graph entirely: it has no tsconfig
+alias and is resolved via SCSS `includePaths`
+(`stylePreprocessorOptions.includePaths: ["libs/theme/src"]`) as
+`@use 'm3kit-theme'`.
+
+## Atomic design mapping
+
+The docs taxonomy maps onto the libraries like this:
+
+| Level | What | Where |
+| --- | --- | --- |
+| **Atoms** | Themed raw Material primitives (the parity gallery — regression surface for all 12 brands) | `libs/table/.storybook/parity/` |
+| **Molecules** | `KpiCard`, `KpiStrip`, `DetailCard`, `FormField`, `FormSection`, `TableFilterBar`, `PageToolbar`, `Breadcrumbs`, `PageHeader`, `ChartLegend` | dashboard, forms, table, shell, charts |
+| **Organisms** | `DataTable`, `FilterForm`, `DashboardGrid`, `LineChart`, `BarChart`, `DonutChart`, `ChartCard` | table, forms, dashboard, charts |
+| **Templates** | `AppShell` (sidenav / command-bar / contents-rail / pill-tabs), `ContentLayout` | shell |
+| **Pages** | Composed examples (`FullDashboard`, `SettingsForm`, the demo app's routed pages) | this Storybook + `apps/demo-reporting` |
+
+## The coverage bar
+
+Every exported component ships three artifacts beside it in `src/lib/`: a
+Vitest unit spec (`*.spec.ts`), a Storybook story (`*.stories.ts`, collected
+by this single host), and a Cypress component test (`*.cy.ts`).
+
+```sh
+npx nx run-many -t lint test build          # the gate
+npx nx run m3kit-table:build-storybook      # must compile clean
+```
+
+## Other binding rules
+
+- **Material is the engine, not the API** — the public surface is `m3k-*`
+  plus the token contract; see **Getting Started → Theming**.
+- **No chart/UI library dependencies** — charts are hand-written SVG over
+  pure scale/tick/path helpers (`libs/charts/src/lib/internal/`).
+- **Synthetic data only** — all demo data comes from `@m3kit/testing`
+  factories (customers, orders, invoices, support tickets, products).
+- **`DESIGN.md` is binding** for visual decisions; `docs/DECISIONS.md`
+  logs the ADRs.

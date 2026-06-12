@@ -39,4 +39,19 @@ export default [
       '@angular-eslint/component-selector': 'off',
     },
   },
+  {
+    // Pages-level composed examples (atomic-design "Pages") live in the
+    // Storybook host, which is already the one sanctioned cross-lib surface
+    // (main.ts globs every lib). These two story files are disposable
+    // storybook scaffolding, not table lib code, so the table scope
+    // constraint doesn't apply to them. Component code under src/ stays
+    // fully boundary-enforced.
+    files: [
+      '**/.storybook/parity/full-dashboard.stories.ts',
+      '**/.storybook/parity/settings-form.stories.ts',
+    ],
+    rules: {
+      '@nx/enforce-module-boundaries': 'off',
+    },
+  },
 ];

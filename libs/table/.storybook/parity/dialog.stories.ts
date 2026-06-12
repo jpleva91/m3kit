@@ -170,7 +170,7 @@ class ParityDialogLauncherComponent {
 
 const meta: Meta<ParityDialogLauncherComponent> = {
   component: ParityDialogLauncherComponent,
-  title: 'Material Parity/Dialog',
+  title: 'Atoms/Dialog',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

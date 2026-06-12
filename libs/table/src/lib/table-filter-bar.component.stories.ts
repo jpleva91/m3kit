@@ -22,7 +22,7 @@ const TICKET_DEFINITION: TableDefinition<SupportTicketRow> = {
 
 const meta: Meta<TableFilterBarComponent<SupportTicketRow>> = {
   component: TableFilterBarComponent,
-  title: 'Table/TableFilterBar',
+  title: 'Molecules/TableFilterBar',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

@@ -22,6 +22,23 @@ const BRANDS = [
  * storybook-theme.scss switch between all registered brands and light/dark.
  */
 const preview: Preview = {
+  parameters: {
+    options: {
+      // Atomic-design sidebar order; groups not listed sort after these.
+      storySort: {
+        order: [
+          'Getting Started',
+          'Atoms',
+          'Molecules',
+          'Organisms',
+          'Templates',
+          'Pages',
+          'Theming',
+          'Docs',
+        ],
+      },
+    },
+  },
   globalTypes: {
     brand: {
       description: 'Brand theme',

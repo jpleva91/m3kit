@@ -48,7 +48,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/Divider',
+  title: 'Atoms/Divider',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatDividerModule, MatListModule, MatIconModule] }),

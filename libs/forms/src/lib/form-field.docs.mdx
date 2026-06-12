@@ -1,0 +1,132 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as FormFieldStories from './form-field.component.stories';
+
+<Meta of={FormFieldStories} />
+
+# FormField
+
+`m3k-form-field` is a generic Material form field bound to a typed reactive
+`FormControl`. One component covers all fourteen input control types used by
+the kit's forms — pass a `type` and it renders the right Material control with
+consistent label, hint, and error chrome. Use it for every field in a filter
+panel or record form instead of hand-assembling `mat-form-field` markup.
+
+**Atomic level:** Molecule — composed from themed Material atoms
+(`mat-form-field`, `matInput`, `mat-select`, `mat-autocomplete`,
+`mat-chip-grid`, `mat-datepicker`, `mat-checkbox`, `mat-slide-toggle`,
+`mat-radio-group`, `mat-slider`, `mat-button-toggle-group`).
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { provideNativeDateAdapter } from '@angular/material/core';
+import { FormFieldComponent, DateRangeGroup } from '@m3kit/forms';
+
+@Component({
+  selector: 'app-invoice-form',
+  imports: [FormFieldComponent],
+  providers: [provideNativeDateAdapter()], // needed by `date` / `date-range`
+  template: `
+    <m3k-form-field label="Customer" type="text" [control]="customer" required />
+    <m3k-form-field
+      label="Status"
+      type="select"
+      [control]="status"
+      [options]="[
+        { value: 'draft', label: 'Draft' },
+        { value: 'paid', label: 'Paid' },
+      ]"
+    />
+    <m3k-form-field label="Amount" type="currency" [control]="amount" hint="USD" />
+    <m3k-form-field label="Billing period" type="date-range" [range]="period" />
+  `,
+})
+export class InvoiceFormComponent {
+  readonly customer = new FormControl<string | null>(null, Validators.required);
+  readonly status = new FormControl<string | null>(null);
+  readonly amount = new FormControl<number | null>(null);
+  readonly period: DateRangeGroup = new FormGroup({
+    start: new FormControl<Date | null>(null),
+    end: new FormControl<Date | null>(null),
+  });
+}
+```
+
+## The 14 field types
+
+Every type except `date-range` binds the `control` input; `date-range` binds
+the `range` input (a typed `{ start, end }` `FormGroup`) instead.
+
+| `type` | Typical control value | Renders | Notes |
+| --- | --- | --- | --- |
+| `text` | `string \| null` | outlined `matInput type="text"` | the default |
+| `number` | `number \| null` | `matInput type="number"` | |
+| `currency` | `number \| null` | `matInput type="number"` with `step="0.01"`, `inputmode="decimal"` | no symbol prefix — label/hint carry the unit |
+| `date` | `Date \| null` | `matInput` + `mat-datepicker` with suffix toggle | requires a `DateAdapter` (e.g. `provideNativeDateAdapter()`) |
+| `select` | option value | `mat-select` over `options` | prepends a null "—" option (aria: "No filter") for clearing |
+| `textarea` | `string \| null` | `<textarea matInput>` | visible rows from the `rows` input (default 3) |
+| `autocomplete` | option value or free text | `matInput` + `mat-autocomplete` | filters `options` live against the typed text; selected value displays with its option label |
+| `chips` | `string[]` | `mat-chip-grid` + autocomplete | adds chips from free text (Enter) or from `options`; duplicates and blanks are ignored |
+| `checkbox` | `boolean` | `mat-checkbox` in wrapper chrome | |
+| `toggle` | `boolean` | `mat-slide-toggle` in wrapper chrome | |
+| `radio` | option value | `mat-radio-group` over `options` in wrapper chrome | |
+| `slider` | `number` | discrete `mat-slider` in wrapper chrome | bounds from `min`/`max`/`step` inputs |
+| `button-toggle` | option value | `mat-button-toggle-group` over `options` in wrapper chrome | |
+| `date-range` | `DateRangeGroup` via `range` | `mat-date-range-input` + range picker | requires a `DateAdapter`; errors checked on the group and both controls |
+
+"Wrapper chrome" types (`checkbox`, `toggle`, `radio`, `slider`,
+`button-toggle`) do not fit `mat-form-field` structurally, so they render in
+a wrapper that mirrors the Material label/hint/error treatment and aligns
+with sibling outlined fields in a form row.
+
+Validation errors for `required`, `requiredTrue`, `min`, and `max` are shown
+once the control is touched, with messages built from the field's `label`.
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | required | Floating label of the field. |
+| `control` | `FormControl<V>` | — | Typed control the field reads/writes. Required for every type except `date-range`. |
+| `range` | `DateRangeGroup` | — | Typed `{ start, end }` `FormGroup`; required by (and only used by) `date-range`. |
+| `type` | `FormFieldType` | `'text'` | Which input control to render. |
+| `options` | `readonly FormFieldOption[]` | `[]` | Choices for `select`, `autocomplete`, `chips`, `radio`, `button-toggle`; ignored otherwise. |
+| `hint` | `string` | `''` | Optional hint under the field. |
+| `required` | `boolean` | `false` | Shows the Material required indicator. |
+| `rows` | `number` | `3` | Visible rows of a `textarea` field. |
+| `min` | `number` | `0` | Lower bound of a `slider` field. |
+| `max` | `number` | `100` | Upper bound of a `slider` field. |
+| `step` | `number` | `1` | Step increment of a `slider` field. |
+
+No outputs — state flows through the bound `FormControl` / `FormGroup`.
+
+## Theming
+
+Token-only styling. The component's own stylesheet consumes:
+
+- `--mat-sys-body-large` / `--mat-sys-on-surface` — wrapper-control text
+- `--mat-sys-body-small` / `--mat-sys-on-surface-variant` — labels and hints
+- `--mat-sys-error` — error text and the required asterisk
+
+It also re-emits Material density `-1` scoped to the host (forms are
+deliberately roomier than tables, per DESIGN.md), and the embedded Material
+controls draw everything else from the active brand's `--mat-sys-*` theme.
+No `--app-*` contract tokens are consumed directly.
+
+## Do / Don't
+
+- **Do** bind a typed `FormControl` (and `range` for `date-range`) and let
+  the component own the label, hint, and error chrome.
+- **Don't** wrap your own `mat-form-field` around raw Material inputs for a
+  form the kit covers — you lose the density split, error wiring, and
+  brand-consistent chrome, and the two styles drift apart.
+
+## Related
+
+- [FormSection](?path=/docs/molecules-formsection--docs) — titled grouping around a set of fields
+- [FilterForm](?path=/docs/organisms-filterform--docs) — schema-driven form built from these fields
+- [TableFilterBar](?path=/docs/molecules-tablefilterbar--docs) — single-purpose free-text search field
+
+<Stories />

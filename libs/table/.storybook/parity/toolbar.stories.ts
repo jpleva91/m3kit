@@ -17,7 +17,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/Toolbar',
+  title: 'Atoms/Toolbar',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatToolbarModule, MatButtonModule, MatIconModule] }),

@@ -1,0 +1,96 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as AppShellStories from './app-shell.component.stories';
+
+<Meta of={AppShellStories} />
+
+# AppShell
+
+`m3k-app-shell` is a preset-driven application shell: it renders one of four
+complete chrome arrangements (`sidenav`, `command-bar`, `contents-rail`,
+`pill-tabs`) from a navigation model and a title. Use it as the single root
+layout of an app — the shell owns 100% of the chrome (nav links, active-route
+marking via `aria-current="page"`, mastheads, footlines, the ≤959px handset
+adaptations) while the consumer owns routing and policy.
+
+**Atomic level:** Template — composed from Material `mat-toolbar`,
+`mat-sidenav`, `mat-nav-list`, `mat-icon`, and `mat-button`, plus the
+`ShellToolbarActionsDirective` / `ShellRailFooterDirective` template slots and
+CDK `BreakpointObserver` for the handset switch.
+
+<Canvas of={AppShellStories.Sidenav} />
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { RouterOutlet } from '@angular/router';
+import {
+  AppShellComponent,
+  ShellNavItem,
+  ShellToolbarActionsDirective,
+} from '@m3kit/shell';
+
+@Component({
+  selector: 'app-root',
+  imports: [AppShellComponent, ShellToolbarActionsDirective, RouterOutlet],
+  template: `
+    <m3k-app-shell preset="sidenav" [nav]="nav" title="demo-reporting">
+      <ng-template m3kShellToolbarActions>
+        <!-- consumer controls, e.g. a theme toggle -->
+      </ng-template>
+      <router-outlet />
+    </m3k-app-shell>
+  `,
+})
+export class AppComponent {
+  readonly nav: readonly ShellNavItem[] = [
+    { path: '/dashboard', label: 'Dashboard', icon: 'dashboard' },
+    { path: '/invoices', label: 'Invoices', icon: 'receipt_long' },
+  ];
+}
+```
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `preset` | `'sidenav' \| 'command-bar' \| 'contents-rail' \| 'pill-tabs'` | `'sidenav'` | Which chrome arrangement to render: toolbar + responsive side navigation; single top command bar with inline nav + status footline; editorial left rail with a contents-style nav list; or top toolbar with centered pill tabs. |
+| `nav` | `readonly ShellNavItem[]` | `[]` | Primary navigation destinations (`{ path, label, icon?, exact? }`). `icon` is consumed only by icon-bearing presets (`sidenav`); `exact` controls active-route matching (default `false`). |
+| `title` | `string` | `''` | Application title shown in each preset's masthead position. |
+
+No outputs.
+
+**Content slots:** default slot — the routed page body (project your own
+`<router-outlet />`); `<ng-template m3kShellToolbarActions>` — consumer controls
+stamped at each preset's controls position (toolbar end for
+`sidenav`/`pill-tabs`, bordered controls cell for `command-bar`, rail foot for
+`contents-rail`); `<ng-template m3kShellRailFooter>` — optional rail-foot
+override for the `contents-rail` preset (falls back to the toolbar-actions
+template when absent).
+
+## Theming
+
+Token-only styling — the shell consumes:
+
+| Token | Used for |
+| --- | --- |
+| `--mat-sys-surface`, `--mat-sys-surface-container`, `--mat-sys-surface-container-high` | Chrome surfaces (command bar, rail, pill-tab track). |
+| `--mat-sys-primary`, `--mat-sys-primary-container`, `--mat-sys-on-primary-container` | Active-route marking and the active pill tab. |
+| `--mat-sys-tertiary` | Active rail-folio accent in the `contents-rail` preset. |
+| `--mat-sys-outline`, `--mat-sys-outline-variant` | Hairline chrome borders (command-bar cells, rail rules, footlines). |
+| `--mat-sys-on-surface`, `--mat-sys-on-surface-variant` | Nav-link and footline text. |
+| `--mat-sys-display-large-font` | Editorial masthead and folio numerals (`contents-rail`). |
+| `--mat-sys-title-large`, `--mat-sys-title-medium`, `--mat-sys-label-large` | Masthead/nav type roles. |
+| `--app-font-data` | Command-bar nav and status footline (data/mono stack). |
+| `--app-radius-badge` | Pill-tab track and pill shapes. |
+
+## Do / Don't
+
+- **Do** pick the preset as app policy (per brand, per product) and feed the same `nav` model — all four presets render the same destinations, so switching chrome is a one-attribute change.
+- **Don't** wrap the shell in (or stuff it with) extra chrome — toolbars, rails, and footlines belong to the shell; the projected default slot is for page content only, and per-brand shell CSS is forbidden.
+
+## Related
+
+- [ContentLayout](?path=/docs/templates-contentlayout--docs) — width strategy for the routed page body
+- [PageHeader](?path=/docs/molecules-pageheader--docs) — per-page title row inside the shell
+- [Breadcrumbs](?path=/docs/molecules-breadcrumbs--docs) — hierarchical trail under the chrome

@@ -69,7 +69,7 @@ class ParityMatPaginatorHostComponent {}
 
 const meta: Meta<ParityMatPaginatorHostComponent> = {
   component: ParityMatPaginatorHostComponent,
-  title: 'Material Parity/Paginator',
+  title: 'Atoms/Paginator',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

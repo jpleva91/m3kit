@@ -1,0 +1,89 @@
+import { Meta } from '@storybook/blocks';
+import * as DashboardGridStories from './dashboard-grid.component.stories';
+
+<Meta of={DashboardGridStories} />
+
+# DashboardGrid
+
+`m3k-dashboard-grid` is a responsive, dependency-free CSS-grid container:
+columns auto-fill at a configurable minimum width, and any direct child can
+span multiple columns (or the full row) via the companion `m3kGridSpan`
+directive. Use it as the layout backbone of a dashboard or report page —
+KPI rows, detail cards, and chart cards drop in as children with no
+per-breakpoint markup. Below 600&nbsp;px it collapses to a single column and
+neutralizes explicit spans so wide items can never force horizontal scroll.
+
+**Atomic level:** Organism — a pure layout shell composed of projected
+children (typically `m3k-kpi-card`, `m3k-detail-card`, and `m3k-chart-card`
+molecules/organisms) plus the `GridSpanDirective`.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import {
+  DashboardGridComponent,
+  GridSpanDirective,
+  KpiCardComponent,
+  DetailCardComponent,
+} from '@m3kit/dashboard';
+
+@Component({
+  selector: 'app-overview',
+  imports: [DashboardGridComponent, GridSpanDirective, KpiCardComponent, DetailCardComponent],
+  template: `
+    <m3k-dashboard-grid minColumnWidth="14rem" gap="1.5rem">
+      <m3k-kpi-card label="Total revenue" [value]="384200" format="currency" />
+      <m3k-kpi-card label="Open orders" [value]="127" />
+      <m3k-detail-card m3kGridSpan="2" heading="Top customers" [fields]="fields" />
+      <m3k-detail-card m3kGridSpan="full" heading="Notes" [fields]="notes" />
+    </m3k-dashboard-grid>
+  `,
+})
+export class OverviewComponent {
+  readonly fields = [];
+  readonly notes = [];
+}
+```
+
+## Inputs and outputs
+
+`m3k-dashboard-grid` (`DashboardGridComponent`):
+
+| Name | Kind | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `minColumnWidth` | input | `string` | `'16rem'` | Minimum column width fed into the auto-fill `minmax()` track (any CSS length). |
+| `gap` | input | `string` | `'1rem'` | Gap between grid cells. |
+
+`[m3kGridSpan]` (`GridSpanDirective`, applied to direct children):
+
+| Name | Kind | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `m3kGridSpan` | input (required) | `DashboardGridSpan` = `number \| 'full'` | — | Columns to span; `'full'` stretches across the entire row (`grid-column: 1 / -1`). |
+
+No outputs.
+
+## Theming
+
+Pure layout — the stylesheet consumes no `--app-*` or `--mat-sys-*` tokens
+and paints nothing, so the grid is brand-neutral by construction. The only
+custom property involved is the private
+`--m3k-dashboard-grid-min-column-width` bridge that carries the
+`minColumnWidth` input into the `grid-template-columns` track; surfaces,
+radii, and colors all come from the projected children's own tokens.
+
+## Do / Don't
+
+- **Do** size items with `minColumnWidth` plus per-child `m3kGridSpan` and
+  let auto-fill decide the column count — the same markup reflows from
+  ultrawide to mobile, where spans are neutralized automatically.
+- **Don't** set `grid-column`, widths, or media queries on children to
+  control placement; explicit styles fight the directive's inline
+  `grid-column` and bypass the sub-600&nbsp;px single-column safeguard.
+
+## Related
+
+- [Molecules/KpiCard](?path=/docs/molecules-kpicard--docs) — single-metric tile for KPI rows
+- [Molecules/KpiStrip](?path=/docs/molecules-kpistrip--docs) — pre-composed KPI row alternative
+- [Molecules/DetailCard](?path=/docs/molecules-detailcard--docs) — labeled field-list card, commonly spanned
+- [Organisms/ChartCard](?path=/docs/organisms-chartcard--docs) — chart wrapper that slots into wide cells

@@ -1,0 +1,90 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as KpiCardStories from './kpi-card.component.stories';
+
+{/* Attached docs page: renders as Molecules/KpiCard/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={KpiCardStories} />
+
+# KpiCard
+
+`m3k-kpi-card` is a compact KPI tile for dashboards: a label, an optionally
+formatted value, an optional delta with a trend arrow, an optional inline SVG
+sparkline, a leading icon, and an optional sentiment-tinted corner accent. Use
+it when a metric deserves its own card in a dashboard grid; for a dense,
+full-width row of readouts use [KpiStrip](?path=/docs/molecules-kpistrip--docs)
+instead.
+
+**Atomic level:** Molecule — composed from Material `mat-card` (outlined) +
+`mat-icon`, plus a hand-built inline SVG sparkline.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { KpiCardComponent } from '@m3kit/dashboard';
+
+@Component({
+  selector: 'app-revenue-kpi',
+  imports: [KpiCardComponent],
+  template: `
+    <m3k-kpi-card
+      label="Total revenue"
+      [value]="384200"
+      format="currency"
+      [delta]="12"
+      [sparkline]="[3, 5, 4, 8, 7, 9]"
+      icon="payments"
+    />
+  `,
+})
+export class RevenueKpiComponent {}
+```
+
+<Canvas of={KpiCardStories.Currency} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `label` | `string` | required | Short metric name shown above the value. |
+| `value` | `string \| number` | required | Metric value; numbers can be formatted via `format`. |
+| `format` | `'number' \| 'currency' \| 'percent' \| null` | `null` | Numeric format; ignored for string values. |
+| `currencyCode` | `string` | `'USD'` | ISO currency code used by the `currency` format. |
+| `delta` | `number \| null` | `null` | Change vs previous period. Positive renders an upward arrow (tertiary color), negative a downward arrow (error color); `null` hides the delta. |
+| `sparkline` | `readonly number[] \| null` | `null` | Series rendered as an inline SVG polyline; needs ≥ 2 points. |
+| `icon` | `string \| null` | `null` | Material icon name shown next to the label. |
+| `cornerAccent` | `'positive' \| 'negative' \| 'neutral' \| null` | `null` | Decorative rotated-square accent clipped to the top-right corner, tinted by sentiment. |
+
+Outputs: none.
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--app-radius-card` | Card border radius (and corner-accent radius, ×2). |
+| `--mat-sys-display-large-font` | KPI value font family (brand display face). |
+| `--mat-sys-on-surface` | Value text. |
+| `--mat-sys-on-surface-variant` | Label and neutral delta text. |
+| `--mat-sys-primary` | Icon, sparkline stroke, neutral accent offset layer. |
+| `--mat-sys-primary-container` | Neutral corner-accent base. |
+| `--mat-sys-tertiary` | Positive delta (M3 has no success role). |
+| `--mat-sys-error` | Negative delta. |
+| `--app-status-paid-bg` / `--app-status-paid-fg` | Positive corner accent base / offset. |
+| `--app-status-overdue-bg` / `--app-status-overdue-fg` | Negative corner accent base / offset. |
+
+Card surface, outline, and padding come from the Material card theme.
+
+## Do / Don't
+
+- **Do** pass raw numbers with a `format` (`[value]="384200" format="currency"`)
+  so locale and currency formatting stay consistent across the dashboard.
+- **Don't** pre-format values into strings (`value="$384,200.00"`) — string
+  values bypass `format`/`currencyCode` and won't follow the active locale.
+
+## Related
+
+- [KpiStrip](?path=/docs/molecules-kpistrip--docs) — dense, hairline-divided row sibling.
+- [DetailCard](?path=/docs/molecules-detailcard--docs) — label/value rows in a titled card.
+- [DashboardGrid](?path=/docs/organisms-dashboardgrid--docs) — responsive grid these tiles live in.

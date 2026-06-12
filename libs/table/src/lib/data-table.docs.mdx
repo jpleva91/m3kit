@@ -1,0 +1,126 @@
+import { Meta } from '@storybook/blocks';
+import * as DataTableStories from './data-table.component.stories';
+
+<Meta of={DataTableStories} />
+
+# DataTable
+
+`m3k-data-table` renders a Material table from a declarative
+`TableDefinition<T>` backed by any `TableDataSource<T>`, owning the full
+query state (text filter, field filters, sort, page) as signals and
+re-fetching on every change. Use it for any tabular report where columns,
+formatting, sorting, and pagination should be driven by data rather than
+hand-written templates. It ships type-aware cell formatting (`text`,
+`number`, `date`, `currency`, `badge`), a loading bar, an empty state, and a
+distinct error state.
+
+**Atomic level:** Organism — composed from Material table, sort header,
+paginator, and progress bar atoms, plus the `@m3kit/core` query contracts.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { InMemoryTableDataSource, TableDefinition } from '@m3kit/core';
+import { DataTableComponent } from '@m3kit/table';
+
+interface InvoiceRow {
+  readonly id: string;
+  readonly customerName: string;
+  readonly amount: number;
+  readonly status: 'draft' | 'sent' | 'paid' | 'overdue';
+  readonly issuedAt: Date;
+}
+
+@Component({
+  selector: 'app-invoices',
+  imports: [DataTableComponent],
+  template: `
+    <m3k-data-table
+      [definition]="definition"
+      [dataSource]="dataSource"
+      [textFilter]="''"
+      (rowClicked)="open($event)"
+    />
+  `,
+})
+export class InvoicesComponent {
+  readonly definition: TableDefinition<InvoiceRow> = {
+    id: 'invoices',
+    title: 'Invoices',
+    columns: [
+      { key: 'id', header: 'Invoice #', type: 'text', sortable: true },
+      { key: 'customerName', header: 'Customer', type: 'text', sortable: true, filterable: true },
+      {
+        key: 'amount',
+        header: 'Amount',
+        type: 'currency',
+        sortable: true,
+        align: 'end',
+        format: { currencyCode: 'USD', digitsInfo: '1.2-2' },
+      },
+      {
+        key: 'status',
+        header: 'Status',
+        type: 'badge',
+        filterable: true,
+        format: { badgeColors: { draft: 'default', sent: 'info', paid: 'success', overdue: 'warn' } },
+      },
+      { key: 'issuedAt', header: 'Issued', type: 'date', sortable: true },
+    ],
+    defaultSort: { key: 'issuedAt', direction: 'desc' },
+    defaultPageSize: 10,
+  };
+
+  readonly dataSource = new InMemoryTableDataSource<InvoiceRow>(rows);
+
+  open(row: InvoiceRow): void {
+    // navigate to detail
+  }
+}
+```
+
+## Inputs and outputs
+
+| Name | Kind | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `definition` | input (required) | `TableDefinition<T>` | — | Declarative report definition driving columns, formatting, default sort, and default page size. |
+| `dataSource` | input (required) | `TableDataSource<T>` | — | Source the table fetches pages from on every query change. |
+| `textFilter` | input | `string` | `''` | Free-text filter applied across searchable fields (wire to `m3k-table-filter-bar`'s `filterChange`). |
+| `fieldFilters` | input | `Readonly<Record<string, unknown>>` | `{}` | Per-field exact-match filters, keyed by row property (wire to `m3k-filter-form`'s `filtersChange`). |
+| `rowClicked` | output | `T` | — | Emits the clicked (or Enter/Space-activated) row. |
+
+Public API beyond inputs: `applyTextFilter(text)` and
+`applyFieldFilters(fields)` set filters imperatively (overriding the
+inputs); `loading`, `error`, and `query` are readable signals.
+
+## Theming
+
+Token-only styling. The component consumes:
+
+- `--mat-sys-surface-container` — row hover background
+- `--mat-sys-primary` — row focus-visible outline
+- `--mat-sys-on-surface-variant` — empty-state cell text
+- `--mat-sys-error` — error-state cell text
+- `--app-font-data` — monospace numerals (tabular figures) in `number`, `currency`, and `date` cells
+- `--app-radius-badge` — badge corner radius
+- `--app-status-{draft,sent,paid,overdue,void}-{bg,fg}` — badge colors, mapped from `badgeColors` values (`default`/`neutral` → draft, `primary`/`info` → sent, `success` → paid, `warn` → overdue, `accent` → void)
+
+Density is locked to `-2` (compact, analytical) via a host-scoped
+`mat.theme` re-emission, per DESIGN.md.
+
+## Do / Don't
+
+- **Do** drive filtering through `textFilter` / `fieldFilters` (or the
+  imperative `apply*` methods) and let the table own sort and page state —
+  it resets to page 1 on any filter or definition change for you.
+- **Don't** pre-filter or pre-sort the rows you hand to the data source to
+  mirror UI state; the table sends the complete `DataQuery` to
+  `TableDataSource.fetch` and duplicating that logic outside desynchronizes
+  the paginator's total count.
+
+## Related
+
+- [Molecules/TableFilterBar](?path=/docs/molecules-tablefilterbar--docs) — debounced free-text search for `textFilter`
+- [Organisms/FilterForm](?path=/docs/organisms-filterform--docs) — generated per-field filters for `fieldFilters`
+- [Molecules/PageToolbar](?path=/docs/molecules-pagetoolbar--docs) — title/actions row typically placed above the table

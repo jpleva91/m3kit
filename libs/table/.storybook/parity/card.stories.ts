@@ -121,7 +121,7 @@ class ParityCardDemoComponent {}
 
 const meta: Meta<ParityCardDemoComponent> = {
   component: ParityCardDemoComponent,
-  title: 'Material Parity/Card',
+  title: 'Atoms/Card',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

@@ -4,7 +4,7 @@ import { PageToolbarComponent } from './page-toolbar.component';
 
 const meta: Meta<PageToolbarComponent> = {
   component: PageToolbarComponent,
-  title: 'Table/PageToolbar',
+  title: 'Molecules/PageToolbar',
 };
 export default meta;
 type Story = StoryObj<PageToolbarComponent>;

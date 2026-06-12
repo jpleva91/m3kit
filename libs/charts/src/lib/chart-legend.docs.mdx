@@ -1,0 +1,70 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as ChartLegendStories from './chart-legend.component.stories';
+
+{/* Attached docs page: renders as Molecules/ChartLegend/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={ChartLegendStories} />
+
+# ChartLegend
+
+`m3k-chart-legend` is a wrapping swatch-and-label legend for the m3kit chart
+components. Swatches cycle the closed `--app-chart-1..6` brand palette by
+zero-based series index — pass the same indices the chart used so colors line
+up. Use it next to a multi-series chart; single-series charts usually don't
+need one.
+
+**Atomic level:** Molecule — a plain semantic `<ul>` of swatch + label pairs;
+no Material dependency.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { ChartLegendComponent, ChartLegendItem } from '@m3kit/charts';
+
+@Component({
+  selector: 'app-status-legend',
+  imports: [ChartLegendComponent],
+  template: `<m3k-chart-legend [items]="items" />`,
+})
+export class StatusLegendComponent {
+  readonly items: readonly ChartLegendItem[] = [
+    { label: 'Paid', colorIndex: 0 },
+    { label: 'Overdue', colorIndex: 1 },
+  ];
+}
+```
+
+<Canvas of={ChartLegendStories.Default} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly ChartLegendItem[]` | required | Legend rows in series order (`{ label: string; colorIndex: number }`). |
+
+Outputs: none.
+
+`colorIndex` is the zero-based series index; index 6 wraps back to
+`--app-chart-1` (the palette cycles, it never invents colors).
+
+## Theming
+
+Token-only styling. Tokens consumed:
+
+| Token | Used for |
+| --- | --- |
+| `--app-chart-1` … `--app-chart-6` | Swatch fills, resolved by `colorIndex` via the shared series-color cycle. |
+| `--mat-sys-on-surface-variant` | Legend label text. |
+
+## Do / Don't
+
+- **Do** reuse the chart's series order as `colorIndex` (series 0 → index 0)
+  so swatches match the plotted strokes/fills exactly.
+- **Don't** hand-pick indices to get "nicer" colors — the palette is a closed
+  brand contract, and reordering breaks the chart↔legend color mapping.
+
+## Related
+
+- [LineChart](?path=/docs/organisms-linechart--docs), [BarChart](?path=/docs/organisms-barchart--docs), [DonutChart](?path=/docs/organisms-donutchart--docs) — series sources for the legend.
+- [ChartCard](?path=/docs/organisms-chartcard--docs) — titled card wrapper that composes a chart with its legend.

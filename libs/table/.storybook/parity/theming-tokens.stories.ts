@@ -262,7 +262,7 @@ class ParityThemingTokensComponent {
 
 const meta: Meta<ParityThemingTokensComponent> = {
   component: ParityThemingTokensComponent,
-  title: 'Material Parity/Theming Tokens',
+  title: 'Theming/Tokens',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

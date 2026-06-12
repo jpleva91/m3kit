@@ -148,7 +148,7 @@ class ParityMatTableHostComponent implements AfterViewInit {
 
 const meta: Meta<ParityMatTableHostComponent> = {
   component: ParityMatTableHostComponent,
-  title: 'Material Parity/Table',
+  title: 'Atoms/Table',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

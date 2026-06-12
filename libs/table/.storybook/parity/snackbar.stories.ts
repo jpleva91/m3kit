@@ -78,7 +78,7 @@ class ParitySnackbarLauncherComponent {
 
 const meta: Meta<ParitySnackbarLauncherComponent> = {
   component: ParitySnackbarLauncherComponent,
-  title: 'Material Parity/Snackbar',
+  title: 'Atoms/Snackbar',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

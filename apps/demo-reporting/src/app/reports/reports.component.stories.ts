@@ -7,7 +7,8 @@ import { ReportsComponent } from './reports.component';
 
 const meta: Meta<ReportsComponent> = {
   component: ReportsComponent,
-  title: 'App/ReportsComponent',
+  title: 'Pages/ReportsComponent',
+  tags: ['autodocs'],
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations(), provideNativeDateAdapter()] }),
   ],

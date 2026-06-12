@@ -108,7 +108,7 @@ class SelectMultiComponent {
 }
 
 const meta: Meta = {
-  title: 'Material Parity/Select',
+  title: 'Atoms/Select',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [SelectGroupsComponent, SelectMultiComponent] }),

@@ -1,0 +1,74 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as PageHeaderStories from './page-header.component.stories';
+
+<Meta of={PageHeaderStories} />
+
+# PageHeader
+
+`m3k-page-header` is the routed-page header: a single `h1` set in the
+brand's display typography, an optional supporting subtitle, and an
+end-aligned actions slot. Use it once at the top of every routed page so
+titles get the system's signature display-serif treatment consistently
+across brands.
+
+**Atomic level:** Molecule — composed from semantic `header` markup with a
+selector-projected actions slot (`[m3kPageHeaderActions]`); no Material
+components of its own (actions are typically Material buttons).
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { MatButtonModule } from '@angular/material/button';
+import { PageHeaderComponent } from '@m3kit/shell';
+
+@Component({
+  selector: 'app-invoices-page',
+  imports: [PageHeaderComponent, MatButtonModule],
+  template: `
+    <m3k-page-header title="Invoices" subtitle="Billing period June 2026">
+      <button m3kPageHeaderActions mat-stroked-button>Export</button>
+    </m3k-page-header>
+  `,
+})
+export class InvoicesPageComponent {}
+```
+
+Note: actions must carry the `m3kPageHeaderActions` attribute — the slot is
+selector-projected (`<ng-content select="[m3kPageHeaderActions]" />`).
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | required | Page title — rendered as the component's only `h1`. |
+| `subtitle` | `string` | `''` | Optional supporting line beneath the title. |
+
+No outputs.
+
+## Theming
+
+Token-only styling; consumes M3 system tokens exclusively:
+
+- `--mat-sys-display-small` — title (the brand display face, e.g. DM Serif
+  Display on Instruments, flows through this M3 role per DESIGN.md)
+- `--mat-sys-on-surface` — title color
+- `--mat-sys-body-medium` / `--mat-sys-on-surface-variant` — subtitle
+
+No `--app-*` contract tokens.
+
+## Do / Don't
+
+- **Do** use exactly one PageHeader per routed page — it owns the page's
+  `h1`; nest everything else with `headingLevel` on sections.
+- **Don't** restyle the title with a custom font — the display token is the
+  brand's signature move; overriding it breaks reskinning across the twelve
+  brands.
+
+## Related
+
+- [Breadcrumbs](?path=/docs/molecules-breadcrumbs--docs) — wayfinding trail above the header
+- [PageToolbar](?path=/docs/molecules-pagetoolbar--docs) — table-centric alternative with a row count
+- [ContentLayout](?path=/docs/templates-contentlayout--docs) — page scaffold the header sits in
+
+<Stories />

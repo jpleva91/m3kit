@@ -29,7 +29,7 @@ const ASIDE = `
 
 const meta: Meta<ContentLayoutComponent> = {
   component: ContentLayoutComponent,
-  title: 'Shell/ContentLayout',
+  title: 'Templates/ContentLayout',
   render: (args) => ({
     props: args,
     template: `

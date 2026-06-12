@@ -13,7 +13,7 @@ const INVOICE_ROWS: readonly DetailCardRow[] = [
 
 const meta: Meta<DetailCardComponent> = {
   component: DetailCardComponent,
-  title: 'Dashboard/DetailCard',
+  title: 'Molecules/DetailCard',
 };
 export default meta;
 type Story = StoryObj<DetailCardComponent>;

@@ -1,0 +1,77 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TableFilterBarStories from './table-filter-bar.component.stories';
+
+<Meta of={TableFilterBarStories} />
+
+# TableFilterBar
+
+`m3k-table-filter-bar` is a free-text search field for a data table. It
+emits the trimmed search text debounced by 200&nbsp;ms
+(`TABLE_FILTER_DEBOUNCE_MS`) and deduplicated, and shows a clear button when
+text is present — clearing bypasses the debounce and emits immediately,
+cancelling any pending keystroke emission. Composable with, but independent
+of, `m3k-data-table`.
+
+**Atomic level:** Molecule — composed from themed Material atoms
+(`mat-form-field` outline, `matInput`, `mat-icon`, icon button).
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import {
+  DataTableComponent,
+  TableFilterBarComponent,
+  TableFilterBarChange,
+} from '@m3kit/table';
+import { TableDefinition } from '@m3kit/core';
+
+@Component({
+  selector: 'app-orders',
+  imports: [TableFilterBarComponent, DataTableComponent],
+  template: `
+    <m3k-table-filter-bar
+      [definition]="definition"
+      (filterChange)="onFilter($event)"
+    />
+    <m3k-data-table #table [definition]="definition" [dataSource]="dataSource" />
+  `,
+})
+export class OrdersComponent {
+  // definition / dataSource as for m3k-data-table
+  onFilter(change: TableFilterBarChange): void {
+    this.table.applyTextFilter(change.text);
+  }
+}
+```
+
+## Inputs / Outputs
+
+| Name | Kind | Type | Description |
+| --- | --- | --- | --- |
+| `definition` | input (required) | `TableDefinition<T>` | The table the bar filters; its `title` builds the "Search …" label and aria-label. |
+| `filterChange` | output | `TableFilterBarChange` (`{ text: string }`) | Debounced (200 ms), deduplicated, trimmed search text. Clear emits `''` immediately. |
+
+## Theming
+
+The component's own stylesheet sets only layout (full width, `max-width:
+24rem`). All visible chrome — outline, label, icons, focus color — comes
+from the themed Material outline form field, i.e. the active brand's
+`--mat-sys-*` tokens. No direct `--app-*` or `--mat-sys-*` consumption in
+this component's SCSS.
+
+## Do / Don't
+
+- **Do** wire `filterChange` straight to the table — the debounce, trim,
+  and dedupe are already done; don't re-debounce in the consumer.
+- **Don't** use it for structured, multi-field filtering — that's
+  [FilterForm](?path=/docs/organisms-filterform--docs)'s job; the filter bar
+  is free-text only.
+
+## Related
+
+- [DataTable](?path=/docs/organisms-datatable--docs) — the organism this bar typically drives
+- [PageToolbar](?path=/docs/molecules-pagetoolbar--docs) — title/actions row above a table
+- [FilterForm](?path=/docs/organisms-filterform--docs) — structured filter panel
+
+<Stories />

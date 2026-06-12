@@ -12,7 +12,7 @@ const STATUS_SLICES: readonly DonutChartSlice[] = [
 
 const meta: Meta<DonutChartComponent> = {
   component: DonutChartComponent,
-  title: 'Charts/DonutChart',
+  title: 'Organisms/DonutChart',
 };
 export default meta;
 type Story = StoryObj<DonutChartComponent>;

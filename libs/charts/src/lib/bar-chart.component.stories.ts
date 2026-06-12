@@ -13,7 +13,7 @@ const SERIES: readonly BarChartSeries[] = [
 
 const meta: Meta<BarChartComponent> = {
   component: BarChartComponent,
-  title: 'Charts/BarChart',
+  title: 'Organisms/BarChart',
 };
 export default meta;
 type Story = StoryObj<BarChartComponent>;

@@ -76,7 +76,7 @@ class RangeSliderComponent {
 }
 
 const meta: Meta = {
-  title: 'Material Parity/Slider',
+  title: 'Atoms/Slider',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [SlidersComponent, RangeSliderComponent] }),

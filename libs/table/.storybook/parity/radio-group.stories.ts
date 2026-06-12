@@ -58,7 +58,7 @@ class RadioGroupsComponent {
 }
 
 const meta: Meta = {
-  title: 'Material Parity/RadioGroup',
+  title: 'Atoms/RadioGroup',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [RadioGroupsComponent] }),

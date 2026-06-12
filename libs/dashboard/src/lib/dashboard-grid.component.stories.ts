@@ -7,7 +7,7 @@ import { KpiCardComponent } from './kpi-card.component';
 
 const meta: Meta<DashboardGridComponent> = {
   component: DashboardGridComponent,
-  title: 'Dashboard/DashboardGrid',
+  title: 'Organisms/DashboardGrid',
   decorators: [
     moduleMetadata({
       imports: [GridSpanDirective, KpiCardComponent, DetailCardComponent],

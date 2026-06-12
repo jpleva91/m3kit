@@ -22,7 +22,7 @@ const REFUNDS: LineChartSeries = {
 
 const meta: Meta<LineChartComponent> = {
   component: LineChartComponent,
-  title: 'Charts/LineChart',
+  title: 'Organisms/LineChart',
 };
 export default meta;
 type Story = StoryObj<LineChartComponent>;

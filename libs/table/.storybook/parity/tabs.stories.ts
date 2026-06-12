@@ -95,7 +95,7 @@ class ParityTabsDemoComponent {}
 
 const meta: Meta<ParityTabsDemoComponent> = {
   component: ParityTabsDemoComponent,
-  title: 'Material Parity/Tabs',
+  title: 'Atoms/Tabs',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

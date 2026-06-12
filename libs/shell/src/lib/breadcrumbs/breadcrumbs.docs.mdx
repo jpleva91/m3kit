@@ -1,0 +1,74 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as BreadcrumbsStories from './breadcrumbs.component.stories';
+
+<Meta of={BreadcrumbsStories} />
+
+# Breadcrumbs
+
+`m3k-breadcrumbs` renders an accessible breadcrumb trail: a
+`nav[aria-label="Breadcrumb"]` wrapping an ordered list. Items with a
+`path` (all but the last) render as router links; the last item renders as
+plain text marked `aria-current="page"`; the `/` separators are hidden from
+assistive technology. Use it on routed detail pages to show where the user
+is in the hierarchy.
+
+**Atomic level:** Molecule — composed from semantic `nav`/`ol` markup and
+Angular `RouterLink`; no Material components.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { BreadcrumbsComponent, BreadcrumbItem } from '@m3kit/shell';
+
+@Component({
+  selector: 'app-customer-detail',
+  imports: [BreadcrumbsComponent],
+  template: `<m3k-breadcrumbs [items]="trail" />`,
+})
+export class CustomerDetailComponent {
+  readonly trail: BreadcrumbItem[] = [
+    { label: 'Reports', path: '/reports' },
+    { label: 'Customers', path: '/reports/customers' },
+    { label: 'Acme Manufacturing' }, // current page — no path
+  ];
+}
+```
+
+A router must be provided (the links use `routerLink`).
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly BreadcrumbItem[]` | `[]` | Trail entries, root first; the last entry is the current page. `BreadcrumbItem` is `{ label: string; path?: string }`. |
+
+No outputs — navigation happens through the router links.
+
+## Theming
+
+Token-only styling; consumes M3 system tokens exclusively:
+
+- `--mat-sys-label-large` — trail typography
+- `--mat-sys-on-surface-variant` — link and non-link ancestor text
+- `--mat-sys-primary` — link hover color
+- `--mat-sys-on-surface` — current page (bold)
+- `--mat-sys-outline` — separators
+
+No `--app-*` contract tokens.
+
+## Do / Don't
+
+- **Do** omit `path` on the last item — it is the current page and renders
+  as `aria-current="page"` text, not a link.
+- **Don't** put the current page's title only in the breadcrumb — keep the
+  page's `h1` in [PageHeader](?path=/docs/molecules-pageheader--docs); the
+  trail is wayfinding, not the heading.
+
+## Related
+
+- [PageHeader](?path=/docs/molecules-pageheader--docs) — sits directly below the trail
+- [AppShell](?path=/docs/templates-appshell--docs) — chrome the trail lives in
+- [ContentLayout](?path=/docs/templates-contentlayout--docs) — page content scaffold
+
+<Stories />

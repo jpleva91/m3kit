@@ -32,7 +32,7 @@ import {
 class SlideTogglesComponent {}
 
 const meta: Meta = {
-  title: 'Material Parity/SlideToggle',
+  title: 'Atoms/SlideToggle',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [SlideTogglesComponent] }),

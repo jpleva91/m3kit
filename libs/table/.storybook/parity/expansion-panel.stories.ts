@@ -110,7 +110,7 @@ class ParityExpansionDemoComponent {}
 
 const meta: Meta<ParityExpansionDemoComponent> = {
   component: ParityExpansionDemoComponent,
-  title: 'Material Parity/Expansion Panel',
+  title: 'Atoms/Expansion Panel',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

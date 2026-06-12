@@ -107,7 +107,7 @@ class ParityBottomSheetLauncherComponent {
 
 const meta: Meta<ParityBottomSheetLauncherComponent> = {
   component: ParityBottomSheetLauncherComponent,
-  title: 'Material Parity/Bottom Sheet',
+  title: 'Atoms/Bottom Sheet',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

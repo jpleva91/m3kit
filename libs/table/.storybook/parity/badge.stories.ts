@@ -27,7 +27,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/Badge',
+  title: 'Atoms/Badge',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatBadgeModule, MatButtonModule, MatIconModule] }),

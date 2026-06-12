@@ -102,7 +102,7 @@ class ParityListDemoComponent {}
 
 const meta: Meta<ParityListDemoComponent> = {
   component: ParityListDemoComponent,
-  title: 'Material Parity/List',
+  title: 'Atoms/List',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

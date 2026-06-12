@@ -1,0 +1,111 @@
+import { Meta } from '@storybook/blocks';
+import * as FilterFormStories from './filter-form.component.stories';
+
+<Meta of={FilterFormStories} />
+
+# FilterForm
+
+`m3k-filter-form` generates a per-field filter form from the same
+`TableDefinition<T>` that drives a data table: one typed control per column
+whose `filterable` is not `false`, with the input chosen by column type
+(`text` → text, `number`/`currency` → number, `date` → datepicker, `badge` →
+select fed from the `options` map). Use it when a report needs exact-match,
+per-column filtering alongside (or instead of) free-text search. Emissions
+are debounced 250&nbsp;ms (`FILTER_FORM_DEBOUNCE_MS`), deduplicated, and
+contain only dirty, non-empty values; Reset clears the form and emits an
+empty filter immediately.
+
+**Atomic level:** Organism — composed from `m3k-form-field` molecules in a
+responsive auto-fill grid, plus a Material stroked-button Reset action.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { TableDefinition } from '@m3kit/core';
+import { FilterFormComponent, FilterFormValues } from '@m3kit/forms';
+
+interface OrderRow {
+  readonly id: number;
+  readonly productName: string;
+  readonly total: number;
+  readonly placedAt: string;
+  readonly status: string;
+}
+
+@Component({
+  selector: 'app-order-filters',
+  imports: [FilterFormComponent],
+  template: `
+    <m3k-filter-form
+      [definition]="definition"
+      [options]="options"
+      (filtersChange)="filters = $event"
+    />
+  `,
+})
+export class OrderFiltersComponent {
+  readonly definition: TableDefinition<OrderRow> = {
+    id: 'orders',
+    title: 'Orders',
+    columns: [
+      { key: 'id', header: 'Order #', type: 'number', filterable: false },
+      { key: 'productName', header: 'Product', type: 'text', filterable: true },
+      { key: 'total', header: 'Total', type: 'currency', filterable: true },
+      { key: 'placedAt', header: 'Placed', type: 'date', filterable: true },
+      { key: 'status', header: 'Status', type: 'badge', filterable: true },
+    ],
+  };
+
+  // Select choices for each `badge` column, keyed by column key.
+  readonly options = {
+    status: [
+      { value: 'open', label: 'Open' },
+      { value: 'shipped', label: 'Shipped' },
+      { value: 'delivered', label: 'Delivered' },
+    ],
+  };
+
+  filters: FilterFormValues = {};
+}
+```
+
+`date` controls need a Material date adapter in the application config
+(e.g. `provideNativeDateAdapter()`). To filter a table, wire
+`(filtersChange)` to `m3k-data-table`'s `[fieldFilters]` input.
+
+## Inputs and outputs
+
+| Name | Kind | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `definition` | input (required) | `TableDefinition<T>` | — | Report whose filterable columns (`filterable !== false`) drive the generated controls. |
+| `options` | input | `Readonly<Record<string, readonly FormFieldOption[]>>` | `{}` | Select choices per `badge` column key (e.g. distinct status values); `FormFieldOption` is `{ value: unknown; label: string }`. |
+| `filtersChange` | output | `FilterFormValues` (`Readonly<Record<string, unknown>>`) | — | Debounced map of dirty, non-empty filter values, keyed by column key; strings are trimmed, empties dropped. |
+
+## Theming
+
+The component's own stylesheet is pure layout (an auto-fill
+`minmax(14rem, 1fr)` field grid) and consumes no color tokens directly; it
+locks density to `-1` (forms are roomier than tables, per DESIGN.md) via a
+host-scoped `mat.theme` re-emission. Visual theming flows through its
+children: `m3k-form-field` consumes `--mat-sys-body-large`,
+`--mat-sys-body-small`, `--mat-sys-on-surface`,
+`--mat-sys-on-surface-variant`, and `--mat-sys-error`, and the Material
+form-field/button internals follow the active brand's M3 system tokens.
+
+## Do / Don't
+
+- **Do** reuse the exact `TableDefinition` your `m3k-data-table` renders and
+  mark non-filterable columns with `filterable: false` — the form and table
+  then stay in lockstep automatically as the definition evolves.
+- **Don't** debounce, deduplicate, or filter out empty values from
+  `filtersChange` yourself — the form already emits only dirty, non-empty,
+  changed values, and re-debouncing delays the Reset button's immediate
+  empty-filter emission.
+
+## Related
+
+- [Organisms/DataTable](?path=/docs/organisms-datatable--docs) — consumes `filtersChange` via its `fieldFilters` input
+- [Molecules/FormField](?path=/docs/molecules-formfield--docs) — the typed control wrapper rendered per column
+- [Molecules/TableFilterBar](?path=/docs/molecules-tablefilterbar--docs) — free-text complement to per-field filtering
+- [Molecules/FormSection](?path=/docs/molecules-formsection--docs) — grouping wrapper for larger forms

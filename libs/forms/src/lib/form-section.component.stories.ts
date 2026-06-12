@@ -12,7 +12,7 @@ import { FormSectionComponent } from './form-section.component';
 
 const meta: Meta<FormSectionComponent> = {
   component: FormSectionComponent,
-  title: 'Forms/FormSection',
+  title: 'Molecules/FormSection',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({ imports: [FormFieldComponent] }),

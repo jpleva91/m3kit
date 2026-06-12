@@ -133,7 +133,7 @@ class FormFieldHintsErrorsComponent {
 }
 
 const meta: Meta = {
-  title: 'Material Parity/FormField + Input',
+  title: 'Atoms/FormField + Input',
   decorators: [
     applicationConfig({ providers: [provideAnimations()] }),
     moduleMetadata({

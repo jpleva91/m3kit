@@ -87,7 +87,7 @@ class ParityGridListDemoComponent {
 
 const meta: Meta<ParityGridListDemoComponent> = {
   component: ParityGridListDemoComponent,
-  title: 'Material Parity/Grid List',
+  title: 'Atoms/Grid List',
   decorators: [applicationConfig({ providers: [provideAnimations()] })],
 };
 export default meta;

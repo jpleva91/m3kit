@@ -25,7 +25,7 @@ const LAYOUT = `
 `;
 
 const meta: Meta = {
-  title: 'Material Parity/ButtonToggle',
+  title: 'Atoms/ButtonToggle',
   decorators: [
     applicationConfig({ providers: [provideNoopAnimations()] }),
     moduleMetadata({ imports: [MatButtonToggleModule, MatIconModule] }),

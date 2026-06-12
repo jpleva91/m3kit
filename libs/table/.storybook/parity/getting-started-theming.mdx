@@ -1,0 +1,80 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Getting Started/Theming" />
+
+# Theming
+
+The kit is themed through exactly two token surfaces, and components consume
+them **only** via `var()` — no raw hex, no per-brand selectors:
+
+1. **Material 3 system tokens** (`--mat-sys-*`), emitted by Angular
+   Material's `mat.theme` mixin from brand-supplied palettes, typography,
+   and density.
+2. **The `--app-*` contract** — a small, closed set of kit-specific tokens
+   defined in `libs/theme/src/m3kit-theme/_contract.scss`.
+
+A brand is therefore nothing but a token emission: switching brands or modes
+re-emits tokens under a class on the root element and every component
+restyles itself with zero duplicated component CSS.
+
+Full guide: [`docs/THEMING.md`](https://github.com/jpleva91/m3kit/blob/main/docs/THEMING.md)
+in the repository. This page is the condensed version.
+
+## Pick a brand
+
+Twelve brands ship in the repo — Instruments (the default, inside
+`libs/theme`) plus eleven consumer brands in
+`apps/demo-reporting/src/styles/themes/` (Terminal, Ledger, Field Guide,
+Carbon, Brutalist, Meadow, Beacon, Noir, Pop, Gazette, Synth), each
+light + dark. Preview any of them right here with the **Brand** / **Mode**
+toolbar controls. To use one, apply its root class (e.g. `theme-ledger`,
+plus `dark` for dark mode) on `<html>`.
+
+## The token contract, in one table
+
+The `--app-*` contract is **closed** — if a styling decision is not one of
+these tokens or an M3 system token, it does not belong in a theme:
+
+| Tokens | Purpose |
+| --- | --- |
+| `--app-status-{draft,sent,paid,overdue,void}-{bg,fg}` | Status badge container/on-container pairs. All five kinds required — the `status-tokens()` helper errors at compile time on a missing kind. |
+| `--app-radius-{card,control,badge}` | Shape radii (`999px` = pill). Emitted in light only; radius never changes with mode. |
+| `--app-chart-1..6` | The categorical data-series palette. Exactly six slots; consumers cycle them in order and never pick colors themselves. |
+| `--app-font-data` | Optional tabular-figures/mono stack for data cells, KPI values, and chart axis labels. |
+
+## Make a brand — five additive steps
+
+1. **Generate M3 palettes** from your seed colors:
+   `npx nx g @angular/material:theme-color` → writes a
+   `_<brand>-colors.scss` palette module.
+2. **Implement the brand module** — one SCSS file exposing two
+   zero-argument mixins:
+   - `brand-light()` emits the full theme: `mat.theme` (light color +
+     typography + density), `contract.status-tokens(...)`,
+     `contract.radius-tokens(...)`, `contract.chart-tokens(...)`,
+     `color-scheme: light`.
+   - `brand-dark()` re-emits **only what changes in dark**: dark `mat.theme`
+     color, dark status + chart tokens, `color-scheme: dark`. Typography,
+     density, and radius cascade from light.
+3. **Register the root class** in the theme aggregator
+   (`html.theme-<brand>` → `brand-light()`, `html.theme-<brand>.dark` →
+   `brand-dark()`).
+4. **Add the fonts** your typography map references.
+5. **Add the brand to the Storybook toolbar** (`preview.ts` +
+   `storybook-theme.scss`) and to the app's `ThemeBrand` union.
+
+A complete worked example ("Midnight") is in `docs/THEMING.md`, and a worked
+spec-kit exemplar lives in `specs/002-exemplar-add-brand/`.
+
+## Pushing past the stock Material look
+
+When system tokens aren't enough (hard-contrast surfaces, squared
+silhouettes), the sanctioned escape hatch is Material token overrides
+emitted *inside the brand mixins*: `mat.theme-overrides((...))` and
+per-component `mat.<component>-overrides((...))`. Still pure token emission
+— per-brand component CSS stays banned. If the gap is kit-specific (no
+Material token exists for it), extend the `--app-*` contract with a new
+documented token instead.
+
+After any change, re-check all 12 brands × light/dark across the **Atoms**
+gallery — it is the brand-range regression surface.

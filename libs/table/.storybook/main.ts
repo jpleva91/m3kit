@@ -2,7 +2,6 @@ import type { StorybookConfig } from '@storybook/angular';
 
 const config: StorybookConfig = {
   stories: [
-    './Introduction.mdx',
     './parity/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../charts/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
@@ -12,6 +11,12 @@ const config: StorybookConfig = {
     '../../../apps/demo-reporting/src/app/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
   ],
   addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
+  docs: {
+    // Autodocs are opt-in per CSF file via `tags: ['autodocs']` (Storybook 8
+    // default). m3kit component stories carry the tag; the Atoms parity
+    // gallery stays lean without generated docs pages.
+    defaultName: 'Docs',
+  },
   core: {
     disableTelemetry: true,
   },
