@@ -1,0 +1,22 @@
+:host {
+  display: block;
+}
+
+.m3k-bar-chart {
+  display: block;
+  width: 100%;
+
+  // Hairline value-axis grid on the brand's faint outline role.
+  &__grid-line {
+    stroke: var(--mat-sys-outline-variant);
+    stroke-width: 1px;
+    vector-effect: non-scaling-stroke;
+  }
+
+  // Tick numerals render in the brand data (mono) stack, like tables.
+  &__tick {
+    font-family: var(--app-font-data, 'JetBrains Mono'), monospace;
+    font-size: 10px;
+    fill: var(--mat-sys-on-surface-variant);
+  }
+}

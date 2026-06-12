@@ -1,14 +1,14 @@
 import { ChangeDetectionStrategy, Component, signal } from '@angular/core';
 import { MatExpansionModule } from '@angular/material/expansion';
-import { InMemoryReportDataSource, ReportDefinition } from '@m3kit/core';
+import { InMemoryTableDataSource, TableDefinition } from '@m3kit/core';
 import { FilterFormComponent, FilterFormValues, FormFieldOption } from '@m3kit/forms';
 import {
-  ReportFilterBarChange,
-  ReportFilterBarComponent,
-  ReportTableComponent,
-  ReportToolbarComponent,
-} from '@m3kit/material';
-import { INVOICES_REPORT_DEFINITION, Invoice, makeInvoices } from '@m3kit/testing';
+  TableFilterBarChange,
+  TableFilterBarComponent,
+  DataTableComponent,
+  PageToolbarComponent,
+} from '@m3kit/table';
+import { INVOICES_TABLE_DEFINITION, Invoice, makeInvoices } from '@m3kit/testing';
 
 /** Seed for the synthetic invoice fixtures, so the demo is deterministic. */
 const INVOICE_SEED = 1;
@@ -16,9 +16,9 @@ const INVOICE_SEED = 1;
 const INVOICES = makeInvoices(120, INVOICE_SEED);
 
 /**
- * Invoices report demo: composes `rpt-report-toolbar`,
- * `rpt-report-filter-bar`, `rpt-filter-form` (in an expansion panel),
- * and `rpt-report-table` over an in-memory data source of 120 synthetic
+ * Invoices report demo: composes `m3k-page-toolbar`,
+ * `m3k-table-filter-bar`, `m3k-filter-form` (in an expansion panel),
+ * and `m3k-data-table` over an in-memory data source of 120 synthetic
  * invoices.
  */
 @Component({
@@ -26,18 +26,18 @@ const INVOICES = makeInvoices(120, INVOICE_SEED);
   imports: [
     FilterFormComponent,
     MatExpansionModule,
-    ReportFilterBarComponent,
-    ReportTableComponent,
-    ReportToolbarComponent,
+    TableFilterBarComponent,
+    DataTableComponent,
+    PageToolbarComponent,
   ],
   templateUrl: './reports.component.html',
   styleUrl: './reports.component.scss',
   changeDetection: ChangeDetectionStrategy.OnPush,
 })
 export class ReportsComponent {
-  protected readonly definition: ReportDefinition<Invoice> = INVOICES_REPORT_DEFINITION;
+  protected readonly definition: TableDefinition<Invoice> = INVOICES_TABLE_DEFINITION;
 
-  protected readonly dataSource = new InMemoryReportDataSource<Invoice>(INVOICES);
+  protected readonly dataSource = new InMemoryTableDataSource<Invoice>(INVOICES);
 
   /** Distinct badge values per column, as select options for the filter form. */
   protected readonly filterOptions: Readonly<Record<string, readonly FormFieldOption[]>> = {
@@ -55,7 +55,7 @@ export class ReportsComponent {
   /** Last invoice the user clicked, surfaced under the table. */
   protected readonly selectedInvoice = signal<Invoice | null>(null);
 
-  protected onFilterChange(change: ReportFilterBarChange): void {
+  protected onFilterChange(change: TableFilterBarChange): void {
     this.filterText.set(change.text);
   }
 

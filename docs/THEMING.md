@@ -1,6 +1,6 @@
 # Theming Guide — bring your own brand
 
-How to retheme the reporting UI kit: what the token contract is, what components
+How to retheme the m3kit UI library: what the token contract is, what components
 are allowed to consume, and a complete worked example of adding a new brand.
 
 ## Philosophy: components consume the contract, never raw values
@@ -10,21 +10,21 @@ The kit is themed through exactly two token surfaces:
 1. **Material 3 system tokens** (`--mat-sys-*`), emitted by Angular Material's
    `mat.theme` mixin from brand-supplied palettes, typography, and density.
 2. **A small app-token contract** (`--app-*`), defined and documented in
-   `libs/reporting/theme/src/m3kit-theme/_contract.scss`, for the few
-   domain-specific decisions M3 has no token for (status badge colors, shape
-   radii, an optional data-cell font stack).
+   `libs/theme/src/m3kit-theme/_contract.scss`, for the few
+   kit-specific decisions M3 has no token for (status badge colors, shape
+   radii, chart series colors, an optional data-cell font stack).
 
-Component stylesheets in `libs/reporting/*` consume these tokens via `var()`
+Component stylesheets in `libs/*` consume these tokens via `var()`
 and **never hardcode brand values** (no raw hex, no per-brand selectors in
 components). A brand is therefore nothing but a token emission: switching
 brands or modes re-emits tokens under a class scope on the root element, and
 every component restyles itself with **zero duplicated component CSS**.
 
-The theming machinery lives in its own library, `libs/reporting/theme`
+The theming machinery lives in its own library, `libs/theme`
 (`@m3kit/theme`), so it travels with the rest of the copy-in deliverable:
 
 ```
-libs/reporting/theme/
+libs/theme/
 ├── project.json                 # lint-only project (no build/test targets)
 ├── README.md                    # contract + wiring summary
 └── src/m3kit-theme/
@@ -40,12 +40,12 @@ SCSS cannot read TypeScript path aliases, so resolution is wired through the
 builder via `stylePreprocessorOptions`:
 
 ```jsonc
-"stylePreprocessorOptions": { "includePaths": ["libs/reporting/theme/src"] }
+"stylePreprocessorOptions": { "includePaths": ["libs/theme/src"] }
 ```
 
 This block is set on the `build` target of `apps/demo-reporting/project.json`
 (the dev server inherits it via `buildTarget`) and on the `storybook` /
-`build-storybook` targets of `libs/reporting/material/project.json`. With it
+`build-storybook` targets of `libs/table/project.json`. With it
 in place, any stylesheet in the workspace can write:
 
 ```scss
@@ -68,7 +68,7 @@ brand omits any kind, so a partial badge palette cannot ship.
 
 | Token | Consumed by | Light/dark notes |
 |---|---|---|
-| `--app-status-draft-bg` / `--app-status-draft-fg` | `libs/reporting/material/src/lib/report-table.component.scss` (status badge cells) | Brands provide separate light and dark maps; `brand-dark()` re-emits all ten pairs. |
+| `--app-status-draft-bg` / `--app-status-draft-fg` | `libs/table/src/lib/data-table.component.scss` (status badge cells) | Brands provide separate light and dark maps; `brand-dark()` re-emits all ten pairs. |
 | `--app-status-sent-bg` / `--app-status-sent-fg` | same | same |
 | `--app-status-paid-bg` / `--app-status-paid-fg` | same | same |
 | `--app-status-overdue-bg` / `--app-status-overdue-fg` | same | same |
@@ -83,7 +83,7 @@ in any brand module for worked values).
 
 | Token | Consumed by | Light/dark notes |
 |---|---|---|
-| `--app-radius-badge` | `libs/reporting/material/src/lib/report-table.component.scss` and `libs/reporting/material/src/lib/report-toolbar.component.scss` (chip/badge silhouettes; `999px` = pill) | Emitted in `brand-light()` only; dark inherits (radius never changes with mode). |
+| `--app-radius-badge` | `libs/table/src/lib/data-table.component.scss` and `libs/table/src/lib/page-toolbar.component.scss` (chip/badge silhouettes; `999px` = pill) | Emitted in `brand-light()` only; dark inherits (radius never changes with mode). |
 | `--app-radius-card` | Reserved for the component layer (cards and panels); emitted by every brand so components can adopt it without a theme change. | same |
 | `--app-radius-control` | Reserved for the component layer (inputs, buttons, chips). | same |
 
@@ -91,7 +91,7 @@ in any brand module for worked values).
 
 | Token | Consumed by | Light/dark notes |
 |---|---|---|
-| `--app-font-data` | **Optional / consumed by report-table data cells, kpi-card/kpi-strip values, and chart axis labels (with 'JetBrains Mono' fallback).** The data-cell (tabular figures / mono) stack. The component layer currently hardcodes its mono stack in `report-table.component.scss`; brands emit this token only once that hook exists. The `font-data()` helper is ready in the contract. | Light-only emission; dark inherits. |
+| `--app-font-data` | **Optional / consumed by data-table cells, kpi-card/kpi-strip values, and chart axis labels (with 'JetBrains Mono' fallback).** The data-cell (tabular figures / mono) stack. The component layer currently hardcodes its mono stack in `data-table.component.scss`; brands emit this token only once that hook exists. The `font-data()` helper is ready in the contract. | Light-only emission; dark inherits. |
 
 ### Chart series tokens
 
@@ -137,7 +137,7 @@ The contract's emit helpers enforce the token names so brands cannot drift:
 
 Reference implementations:
 
-- `libs/reporting/theme/src/m3kit-theme/themes/instruments/_brand.scss` —
+- `libs/theme/src/m3kit-theme/themes/instruments/_brand.scss` —
   the default brand, shipped inside the lib.
 - `apps/demo-reporting/src/styles/themes/_terminal.scss`, `_ledger.scss`,
   `_field-guide.scss` — example *consumer* brands living app-side, exactly
@@ -256,7 +256,7 @@ documents):
 
 - `apps/demo-reporting/src/index.html` — extend the Google Fonts `<link>`
   with your families (e.g. `&family=Space+Grotesk:wght@400;500;600`).
-- `libs/reporting/material/.storybook/preview-head.html` — same addition.
+- `libs/table/.storybook/preview-head.html` — same addition.
 
 Runtime loading from the Google Fonts CDN is this reference's accepted
 approach (see ADR-012 in [DECISIONS.md](./DECISIONS.md)); all families used
@@ -267,7 +267,7 @@ same families, serve them from your own infrastructure, and replace the
 
 ### 5. Add the brand to the Storybook toolbar
 
-In `libs/reporting/material/.storybook/preview.ts`, extend the `BRANDS` array
+In `libs/table/.storybook/preview.ts`, extend the `BRANDS` array
 and the `brand` toolbar items:
 
 ```ts
@@ -279,7 +279,7 @@ items: [
 ],
 ```
 
-Run `npx nx serve demo-reporting` and `npx nx run reporting-material:storybook`
+Run `npx nx serve demo-reporting` and `npx nx run m3kit-table:storybook`
 — Midnight appears in both pickers, light and dark, with no component changes.
 
 ## Light/dark wiring
@@ -305,12 +305,12 @@ harmless but redundant.
 ## Storybook toolbar pattern
 
 Storybook shares the app's single token source rather than maintaining its
-own: `libs/reporting/material/.storybook/storybook-theme.scss` `@use`s the
+own: `libs/table/.storybook/storybook-theme.scss` `@use`s the
 demo app aggregator and calls `app-theme()`. The includePath on the
 `storybook` / `build-storybook` targets makes `m3kit-theme` resolve there
 too.
 
-`libs/reporting/material/.storybook/preview.ts` defines two `globalTypes`
+`libs/table/.storybook/preview.ts` defines two `globalTypes`
 toolbars — `brand` and `mode` — and a decorator that toggles the same
 `theme-<brand>` / `dark` classes on the preview's root element that
 `ThemeService` toggles in the app. Every story is therefore viewable in every
@@ -335,10 +335,10 @@ This is recorded as a binding decision in `DESIGN.md` (Decisions Log,
 
 ## Bringing this into your own workspace
 
-`libs/reporting/theme` is part of the copy-in deliverable (see
+`libs/theme` is part of the copy-in deliverable (see
 `docs/ADOPTION_GUIDE.md`). After copying, re-create the
 `stylePreprocessorOptions.includePaths` entry on your app's build target (and
 Storybook targets, if you take the Storybook), pointing at wherever you placed
-`libs/reporting/theme/src`. Your own brand modules follow the consumer-brand
+`libs/theme/src`. Your own brand modules follow the consumer-brand
 pattern above: live app-side, `@use 'm3kit-theme' as contract`, implement
 `brand-light()` / `brand-dark()`.

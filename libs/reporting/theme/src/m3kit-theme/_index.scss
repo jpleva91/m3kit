@@ -1,5 +1,0 @@
-/// @m3kit/theme entry point — `@use 'm3kit-theme'` resolves here
-/// via the `libs/reporting/theme/src` includePath. Forwards the theming
-/// contract (custom-prop API + brand mixin signature + emit helpers).
-/// The default brand lives at `m3kit-theme/themes/instruments`.
-@forward 'contract';

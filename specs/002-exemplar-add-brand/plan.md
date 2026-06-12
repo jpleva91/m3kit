@@ -32,7 +32,7 @@ Material 19.2.x (pinned stack — no version changes)
 
 **Primary Dependencies**: `@angular/material` (the `mat.theme` mixin and the
 `@angular/material:theme-color` schematic), the `m3kit-theme` SCSS contract
-(`libs/reporting/theme`, resolved via the `stylePreprocessorOptions`
+(`libs/theme`, resolved via the `stylePreprocessorOptions`
 includePath). **No new packages.**
 
 **Storage**: N/A (brand preference persistence already exists in
@@ -124,7 +124,7 @@ apps/demo-reporting/src/
 ├── app/core/theme.service.ts            # EDIT: ThemeBrand union + THEME_BRANDS
 └── index.html                           # EDIT: Google Fonts link += Space Grotesk
 
-libs/reporting/material/.storybook/
+libs/table/.storybook/
 ├── preview.ts                           # EDIT: BRANDS array + toolbar items
 └── preview-head.html                    # EDIT: fonts link += Space Grotesk
 ```
@@ -132,7 +132,7 @@ libs/reporting/material/.storybook/
 **Structure Decision**: Midnight is a *consumer brand* — it lives app-side
 beside `_terminal.scss` / `_ledger.scss` / `_field-guide.scss`, exactly where
 an adopter's own brands go. Only the default brand (Instruments) ships inside
-`libs/reporting/theme`. Nothing under `libs/reporting/*` changes.
+`libs/theme`. Nothing under `libs/*` changes.
 
 ### Registration points (the complete wiring surface)
 
@@ -143,8 +143,8 @@ an adopter's own brands go. Only the default brand (Instruments) ships inside
 | 3 | `apps/demo-reporting/src/styles/_theme.scss` | `@use './themes/midnight';` + `html.theme-midnight { @include midnight.brand-light(); }` + `html.theme-midnight.dark { @include midnight.brand-dark(); }` |
 | 4 | `apps/demo-reporting/src/app/core/theme.service.ts` | Add `'midnight'` to the `ThemeBrand` union and `THEME_BRANDS`; the service handles class toggling and persistence |
 | 5 | `apps/demo-reporting/src/index.html` | Append `&family=Space+Grotesk:wght@400;500;600` to the Google Fonts `<link>` |
-| 6 | `libs/reporting/material/.storybook/preview-head.html` | Same font addition (Storybook is a separate document) |
-| 7 | `libs/reporting/material/.storybook/preview.ts` | Add `'midnight'` to `BRANDS` and `{ value: 'midnight', title: 'Midnight' }` to the brand toolbar items |
+| 6 | `libs/table/.storybook/preview-head.html` | Same font addition (Storybook is a separate document) |
+| 7 | `libs/table/.storybook/preview.ts` | Add `'midnight'` to `BRANDS` and `{ value: 'midnight', title: 'Midnight' }` to the brand toolbar items |
 
 ### Light/dark layering (why `brand-dark()` is partial)
 

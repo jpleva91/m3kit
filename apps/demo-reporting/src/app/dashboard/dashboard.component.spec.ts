@@ -33,8 +33,8 @@ describe('DashboardComponent', () => {
     fixture.detectChanges();
   }
 
-  it('renders the page title as the rpt-page-header h1', () => {
-    const heading = element.querySelector('rpt-page-header h1');
+  it('renders the page title as the m3k-page-header h1', () => {
+    const heading = element.querySelector('m3k-page-header h1');
     expect(heading?.textContent?.trim()).toBe('Dashboard');
     // The shell page header carries the page's single h1.
     expect(element.querySelectorAll('h1').length).toBe(1);
@@ -42,7 +42,7 @@ describe('DashboardComponent', () => {
 
   it('renders four KPI cards inside the dashboard grid', () => {
     const labels = Array.from(
-      element.querySelectorAll('rpt-dashboard-grid rpt-kpi-card .rpt-kpi-card__label'),
+      element.querySelectorAll('m3k-dashboard-grid m3k-kpi-card .m3k-kpi-card__label'),
     ).map((label) => label.textContent?.trim());
     expect(labels).toEqual(KPI_LABELS);
   });
@@ -52,7 +52,7 @@ describe('DashboardComponent', () => {
       .filter((invoice) => invoice.status === 'paid')
       .reduce((sum, invoice) => sum + invoice.amount, 0);
 
-    const value = element.querySelector('rpt-kpi-card .rpt-kpi-card__value');
+    const value = element.querySelector('m3k-kpi-card .m3k-kpi-card__value');
     const digits = Number(value?.textContent?.replace(/[^0-9.]/g, ''));
     expect(digits).toBe(expectedRevenue);
   });
@@ -62,17 +62,17 @@ describe('DashboardComponent', () => {
       (ticket) => ticket.status === 'open' || ticket.status === 'in-progress',
     ).length;
 
-    const values = element.querySelectorAll('rpt-kpi-card .rpt-kpi-card__value');
+    const values = element.querySelectorAll('m3k-kpi-card .m3k-kpi-card__value');
     expect(Number(values[3].textContent?.replace(/[^0-9]/g, ''))).toBe(expectedOpen);
   });
 
   it('renders a revenue sparkline on the first KPI card', () => {
-    const kpiCards = element.querySelectorAll('rpt-kpi-card');
-    expect(kpiCards[0].querySelector('.rpt-kpi-card__sparkline polyline')).toBeTruthy();
+    const kpiCards = element.querySelectorAll('m3k-kpi-card');
+    expect(kpiCards[0].querySelector('.m3k-kpi-card__sparkline polyline')).toBeTruthy();
   });
 
   it('renders the two-up chart row and the full-width stacked bars', () => {
-    const titles = Array.from(element.querySelectorAll('rpt-chart-card h2')).map((title) =>
+    const titles = Array.from(element.querySelectorAll('m3k-chart-card h2')).map((title) =>
       title.textContent?.trim(),
     );
     expect(titles).toEqual([
@@ -81,13 +81,13 @@ describe('DashboardComponent', () => {
       'Monthly invoices by status',
     ]);
 
-    expect(element.querySelector('.dashboard__chart-row rpt-line-chart svg')).toBeTruthy();
-    expect(element.querySelector('.dashboard__chart-row rpt-donut-chart svg')).toBeTruthy();
-    expect(element.querySelector('.dashboard__chart-wide rpt-bar-chart svg')).toBeTruthy();
+    expect(element.querySelector('.dashboard__chart-row m3k-line-chart svg')).toBeTruthy();
+    expect(element.querySelector('.dashboard__chart-row m3k-donut-chart svg')).toBeTruthy();
+    expect(element.querySelector('.dashboard__chart-wide m3k-bar-chart svg')).toBeTruthy();
   });
 
   it('labels every chart for assistive tech', () => {
-    const labels = Array.from(element.querySelectorAll('rpt-chart-card svg[role="img"]')).map(
+    const labels = Array.from(element.querySelectorAll('m3k-chart-card svg[role="img"]')).map(
       (svg) => svg.getAttribute('aria-label'),
     );
     expect(labels).toEqual([
@@ -98,10 +98,10 @@ describe('DashboardComponent', () => {
   });
 
   it('shares one status legend across the donut and the stacked bars', () => {
-    const legends = element.querySelectorAll('rpt-chart-legend');
+    const legends = element.querySelectorAll('m3k-chart-legend');
     expect(legends.length).toBe(2);
     for (const legend of Array.from(legends)) {
-      const labels = Array.from(legend.querySelectorAll('.rpt-chart-legend__label')).map(
+      const labels = Array.from(legend.querySelectorAll('.m3k-chart-legend__label')).map(
         (label) => label.textContent?.trim(),
       );
       expect(labels).toEqual(['Draft', 'Sent', 'Paid', 'Overdue', 'Void']);
@@ -110,14 +110,14 @@ describe('DashboardComponent', () => {
 
   it('renders the latest-invoice and top-customer detail cards', () => {
     const titles = Array.from(
-      element.querySelectorAll('rpt-detail-card [mat-card-title]'),
+      element.querySelectorAll('m3k-detail-card [mat-card-title]'),
     ).map((title) => title.textContent?.trim());
     expect(titles).toEqual(['Latest invoice', 'Top customer']);
 
     const latestInvoice = makeInvoices(120, 1).reduce((latest, invoice) =>
       invoice.issuedAt > latest.issuedAt ? invoice : latest,
     );
-    const detailCards = element.querySelectorAll('rpt-detail-card');
+    const detailCards = element.querySelectorAll('m3k-detail-card');
     expect(detailCards[0].textContent).toContain(latestInvoice.number);
     expect(detailCards[1].textContent).toContain('Total billed');
   });
@@ -126,21 +126,21 @@ describe('DashboardComponent', () => {
     switchBrand('terminal');
 
     const labels = Array.from(
-      element.querySelectorAll('rpt-kpi-strip .rpt-kpi-strip__label'),
+      element.querySelectorAll('m3k-kpi-strip .m3k-kpi-strip__label'),
     ).map((label) => label.textContent?.trim());
     expect(labels).toEqual(KPI_LABELS);
 
     // Revenue keeps its sparkline; cards and the grid are gone.
-    expect(element.querySelector('rpt-kpi-strip .rpt-kpi-strip__sparkline polyline')).toBeTruthy();
-    expect(element.querySelector('rpt-kpi-card')).toBeNull();
-    expect(element.querySelectorAll('.dashboard__detail-row rpt-detail-card').length).toBe(2);
+    expect(element.querySelector('m3k-kpi-strip .m3k-kpi-strip__sparkline polyline')).toBeTruthy();
+    expect(element.querySelector('m3k-kpi-card')).toBeNull();
+    expect(element.querySelectorAll('.dashboard__detail-row m3k-detail-card').length).toBe(2);
 
     // Charts run as a tight three-up row between the strip and the details.
     const strip = element.querySelector('.dashboard__chart-strip');
-    expect(strip?.querySelectorAll('rpt-chart-card').length).toBe(3);
-    expect(strip?.querySelector('rpt-line-chart svg')).toBeTruthy();
-    expect(strip?.querySelector('rpt-bar-chart svg')).toBeTruthy();
-    expect(strip?.querySelector('rpt-donut-chart svg')).toBeTruthy();
+    expect(strip?.querySelectorAll('m3k-chart-card').length).toBe(3);
+    expect(strip?.querySelector('m3k-line-chart svg')).toBeTruthy();
+    expect(strip?.querySelector('m3k-bar-chart svg')).toBeTruthy();
+    expect(strip?.querySelector('m3k-donut-chart svg')).toBeTruthy();
   });
 
   it('composes the contents-rail preset as a typeset figure stack with details beside', () => {
@@ -152,13 +152,13 @@ describe('DashboardComponent', () => {
     expect(labels).toEqual(KPI_LABELS);
 
     expect(element.querySelectorAll('.dashboard__figure-value').length).toBe(4);
-    expect(element.querySelector('rpt-kpi-card')).toBeNull();
-    expect(element.querySelectorAll('.dashboard__details rpt-detail-card').length).toBe(2);
+    expect(element.querySelector('m3k-kpi-card')).toBeNull();
+    expect(element.querySelectorAll('.dashboard__details m3k-detail-card').length).toBe(2);
 
     // Charts stack single-column in the broadsheet with editorial titles.
     const broadsheet = element.querySelector('.dashboard__broadsheet');
-    expect(broadsheet?.querySelectorAll('rpt-chart-card').length).toBe(3);
-    const titles = Array.from(broadsheet?.querySelectorAll('rpt-chart-card h2') ?? []).map(
+    expect(broadsheet?.querySelectorAll('m3k-chart-card').length).toBe(3);
+    const titles = Array.from(broadsheet?.querySelectorAll('m3k-chart-card h2') ?? []).map(
       (title) => title.textContent?.trim(),
     );
     expect(titles).toEqual([
@@ -171,22 +171,22 @@ describe('DashboardComponent', () => {
   it('keeps the card grid with sentiment corner accents for the pill-tabs preset', () => {
     switchBrand('field-guide');
 
-    const cards = Array.from(element.querySelectorAll('rpt-kpi-card .rpt-kpi-card'));
+    const cards = Array.from(element.querySelectorAll('m3k-kpi-card .m3k-kpi-card'));
     expect(
       cards.map((card) =>
         card.className
           .split(' ')
-          .find((name) => name.startsWith('rpt-kpi-card--accent-')),
+          .find((name) => name.startsWith('m3k-kpi-card--accent-')),
       ),
     ).toEqual([
-      'rpt-kpi-card--accent-positive',
-      'rpt-kpi-card--accent-neutral',
-      'rpt-kpi-card--accent-negative',
-      'rpt-kpi-card--accent-neutral',
+      'm3k-kpi-card--accent-positive',
+      'm3k-kpi-card--accent-neutral',
+      'm3k-kpi-card--accent-negative',
+      'm3k-kpi-card--accent-neutral',
     ]);
 
     // The default chart composition carries over: two-up row + wide bars.
-    expect(element.querySelectorAll('.dashboard__chart-row rpt-chart-card').length).toBe(2);
-    expect(element.querySelector('.dashboard__chart-wide rpt-bar-chart svg')).toBeTruthy();
+    expect(element.querySelectorAll('.dashboard__chart-row m3k-chart-card').length).toBe(2);
+    expect(element.querySelector('.dashboard__chart-wide m3k-bar-chart svg')).toBeTruthy();
   });
 });

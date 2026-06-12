@@ -1,0 +1,117 @@
+@use '@angular/material' as mat;
+
+// DESIGN.md density: data tables are -2 (compact, analytical). Re-emitting
+// the density tokens scoped to the host keeps the override local to this
+// component's table and paginator.
+:host {
+  @include mat.theme(
+    (
+      density: -2,
+    )
+  );
+}
+
+.m3k-data-table {
+  display: block;
+
+  &__progress {
+    height: 4px;
+  }
+
+  table {
+    width: 100%;
+  }
+
+  // Dense tables keep their analytical width; on narrow viewports the
+  // table scrolls within its own container instead of panning the page.
+  &__scroll {
+    overflow-x: auto;
+  }
+
+  &__row {
+    cursor: pointer;
+
+    &:hover {
+      background: var(--mat-sys-surface-container);
+    }
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: -2px;
+    }
+  }
+
+  &__empty-cell {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__error-cell {
+    padding: 2rem 1rem;
+    text-align: center;
+    color: var(--mat-sys-error);
+  }
+}
+
+.m3k-align-start {
+  text-align: left;
+}
+
+.m3k-align-center {
+  text-align: center;
+}
+
+.m3k-align-end {
+  text-align: right;
+}
+
+// DESIGN.md data typography: numeric/data cells use JetBrains Mono with
+// tabular figures so every column aligns on the decimal.
+td.m3k-type-number,
+td.m3k-type-currency,
+td.m3k-type-date {
+  font-family: var(--app-font-data, 'JetBrains Mono'), monospace;
+  font-variant-numeric: tabular-nums;
+}
+
+// Badge colors map onto the DESIGN.md status palettes via the
+// `--app-status-*` tokens defined in the theme (light + dark values);
+// no raw hex here.
+.m3k-badge {
+  display: inline-block;
+  padding: 0.125rem 0.625rem;
+  border-radius: var(--app-radius-badge, 999px);
+  font-size: 0.75rem;
+  font-weight: 500;
+  line-height: 1.25rem;
+  background: var(--app-status-draft-bg);
+  color: var(--app-status-draft-fg);
+
+  &[data-color='primary'],
+  &[data-color='info'] {
+    background: var(--app-status-sent-bg);
+    color: var(--app-status-sent-fg);
+  }
+
+  &[data-color='accent'] {
+    background: var(--app-status-void-bg);
+    color: var(--app-status-void-fg);
+  }
+
+  &[data-color='success'] {
+    background: var(--app-status-paid-bg);
+    color: var(--app-status-paid-fg);
+  }
+
+  &[data-color='warn'] {
+    background: var(--app-status-overdue-bg);
+    color: var(--app-status-overdue-fg);
+  }
+
+  &[data-color='neutral'],
+  &[data-color='default'] {
+    background: var(--app-status-draft-bg);
+    color: var(--app-status-draft-fg);
+  }
+}

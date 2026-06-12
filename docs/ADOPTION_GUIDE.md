@@ -9,14 +9,15 @@ artifact, no semver contract, and no API stability guarantee across versions of 
 repo. The intended adoption path is:
 
 1. **Evaluate** — clone the repo, run it, read the libraries.
-2. **Source import / internal fork** — copy the `libs/reporting/*` source into your
+2. **Source import / internal fork** — copy the `libs/*` source into your
    own workspace (monorepo or otherwise).
 3. **Internal ownership transfer** — from that point on, the code is *yours*. You
    version it, test it, evolve it, and own it. See
    [INTERNALIZATION_GUIDE.md](./INTERNALIZATION_GUIDE.md) for the step-by-step
    ownership-transfer playbook.
 
-Why this model? Reporting plumbing is the kind of code enterprise teams inevitably need
+Why this model? UI plumbing of this kind — tables, dashboards, charts, forms, app
+chrome, theming — is the kind of code enterprise teams inevitably need
 to bend to their own design system, datasource conventions, and review processes. A
 dependency you cannot change is a liability; readable source you fully own is an asset.
 The code here is deliberately plain, conventional, and minimally abstracted to make the
@@ -42,13 +43,14 @@ npx nx serve demo-reporting          # dashboard + reports demo, brand/mode swit
 
 | Path | Action | Why |
 |---|---|---|
-| `libs/reporting/core` | **Copy** | The reporting contracts (report/column definitions, query/filter/sort/pagination models, datasource interfaces). UI-free; the most durable asset. |
-| `libs/reporting/material` | **Copy** (optional) | Material/CDK presentation layer. Skip or replace it if you use a different design system or grid — it depends only on `core`. |
-| `libs/reporting/testing` | **Copy** (recommended) | Synthetic data factories/fixtures and test harnesses. Depends only on `core`. Useful even if you replace the UI layer. |
-| `libs/reporting/dashboard` | **Copy** (optional) | Dashboard primitives (KPI cards, detail cards, grid). Depends only on `core`; consumes the theme token contract. |
-| `libs/reporting/forms` | **Copy** (optional) | Typed form components and definition-driven filter forms. Depends only on `core`; consumes the theme token contract. |
-| `libs/reporting/shell` | **Copy** (optional) | App chrome: the four-preset `rpt-app-shell` plus page header, breadcrumbs, and content layout. Depends only on `core`; consumes the theme token contract. Brand→preset mapping stays app policy — bring your own. |
-| `libs/reporting/theme` | **Copy** (if you take `material`) | The SCSS-only theming SDK: the component-facing token contract (`_contract.scss`), the brand mixin contract, and the default "Instruments" brand. The `material` components consume its `--app-*` tokens; see [THEMING.md](./THEMING.md). |
+| `libs/core` | **Copy** | The UI-free contracts (table/column definitions, query/filter/sort/pagination models, datasource interfaces). The most durable asset. |
+| `libs/table` | **Copy** (optional) | Material/CDK table presentation layer (`m3k-data-table`, filter bar, page toolbar). Skip or replace it if you use a different design system or grid — it depends only on `core`. |
+| `libs/testing` | **Copy** (recommended) | Synthetic data factories/fixtures and test harnesses. Depends only on `core`. Useful even if you replace the UI layer. |
+| `libs/dashboard` | **Copy** (optional) | Dashboard primitives (KPI cards, detail cards, grid). Depends only on `core`; consumes the theme token contract. |
+| `libs/charts` | **Copy** (optional) | Hand-built SVG charts (line, bar, donut, legend, chart card). Depends only on `core`; consumes the theme token contract. |
+| `libs/forms` | **Copy** (optional) | Typed form components and definition-driven filter forms. Depends only on `core`; consumes the theme token contract. |
+| `libs/shell` | **Copy** (optional) | App chrome: the four-preset `m3k-app-shell` plus page header, breadcrumbs, and content layout. Depends only on `core`; consumes the theme token contract. Brand→preset mapping stays app policy — bring your own. |
+| `libs/theme` | **Copy** (if you take any UI lib) | The SCSS-only theming SDK: the component-facing token contract (`_contract.scss`), the brand mixin contract, and the default "Instruments" brand. The component libraries consume its `--app-*` tokens; see [THEMING.md](./THEMING.md). |
 | `apps/demo-reporting` | **Delete / do not copy** | Demo-only. It exists as living documentation of how the libs wire together. Everything reusable lives in the libs; the app is disposable by design. |
 | `docs/` | Do not copy (read it) | Governance/provenance docs for *this* repo. Keep the license attribution (see below), not the docs themselves. |
 | Root config (`nx.json`, `eslint.config.mjs`, `tsconfig.base.json`, …) | Do not copy wholesale | Your workspace already has its own. Merge the two relevant pieces: the tsconfig path aliases and the boundary `depConstraints` (both covered below). |
@@ -66,20 +68,20 @@ This repo's projects are tagged:
 | Project | Tags |
 |---|---|
 | `apps/demo-reporting` | `type:app`, `scope:demo` |
-| `libs/reporting/core` | `type:lib`, `scope:reporting-core` |
-| `libs/reporting/material` | `type:lib`, `scope:reporting-material` |
-| `libs/reporting/testing` | `type:lib`, `scope:reporting-testing` |
-| `libs/reporting/dashboard` | `type:lib`, `scope:reporting-dashboard` |
-| `libs/reporting/forms` | `type:lib`, `scope:reporting-forms` |
-| `libs/reporting/theme` | `type:lib`, `scope:reporting-theme` |
+| `libs/core` | `type:lib`, `scope:m3kit-core` |
+| `libs/table` | `type:lib`, `scope:m3kit-table` |
+| `libs/testing` | `type:lib`, `scope:m3kit-testing` |
+| `libs/dashboard` | `type:lib`, `scope:m3kit-dashboard` |
+| `libs/charts` | `type:lib`, `scope:m3kit-charts` |
+| `libs/forms` | `type:lib`, `scope:m3kit-forms` |
+| `libs/shell` | `type:lib`, `scope:m3kit-shell` |
+| `libs/theme` | `type:lib`, `scope:m3kit-theme` |
 
 and `@nx/enforce-module-boundaries` (in the root `eslint.config.mjs`) enforces:
 
 - `core` → depends on **no** internal project
-- `material` → may depend only on `core`
-- `testing` → may depend only on `core`
-- `dashboard` → may depend on `core` only
-- `forms` → may depend on `core` only
+- `table`, `testing`, `dashboard`, `charts`, `forms`, `shell` → each may depend
+  only on `core` (plus the SCSS-only `theme` contract)
 - the app → may depend on all libs
 
 **The dependency semantics are the contract; the tag names are not.** When you import
@@ -87,16 +89,17 @@ the libs, rename the tags to fit your existing taxonomy and re-express the same
 rules in your scheme. Examples:
 
 - If your workspace uses `scope:<domain>` + `type:<layer>` (e.g. `type:util`,
-  `type:feature`, `type:ui`), tag core as your contracts/util layer type, material as
-  your ui layer type, testing as your test-util type, all under a single
-  `scope:reporting` — then write `depConstraints` that preserve: contracts depend on
+  `type:feature`, `type:ui`), tag core as your contracts/util layer type, the UI libs
+  (table, dashboard, charts, forms, shell) as your ui layer type, testing as your
+  test-util type, all under a single scope of your choosing (e.g. `scope:ui-kit`) —
+  then write `depConstraints` that preserve: contracts depend on
   nothing, ui → contracts, test-utils → contracts.
 - If your workspace has no tags yet, this is a good first boundary scheme: copy the
   `depConstraints` block from this repo's `eslint.config.mjs`, adjust the tag strings,
   and keep it.
 
 Whatever scheme you choose, **re-prove the boundaries after import**: introduce a
-deliberate violation (e.g. import something from your material-equivalent inside your
+deliberate violation (e.g. import something from your table-equivalent inside your
 core-equivalent), confirm lint fails, and revert. This repo ran exactly that proof
 during scaffolding; your workspace should too. The step-by-step is in the
 internalization guide.
@@ -107,11 +110,13 @@ The libs are addressed via tsconfig path aliases in `tsconfig.base.json`:
 
 ```jsonc
 "paths": {
-  "@m3kit/core":     ["libs/reporting/core/src/index.ts"],
-  "@m3kit/material": ["libs/reporting/material/src/index.ts"],
-  "@m3kit/testing":  ["libs/reporting/testing/src/index.ts"],
-  "@m3kit/dashboard": ["libs/reporting/dashboard/src/index.ts"],
-  "@m3kit/forms":     ["libs/reporting/forms/src/index.ts"]
+  "@m3kit/core":      ["libs/core/src/index.ts"],
+  "@m3kit/table":     ["libs/table/src/index.ts"],
+  "@m3kit/testing":   ["libs/testing/src/index.ts"],
+  "@m3kit/dashboard": ["libs/dashboard/src/index.ts"],
+  "@m3kit/charts":    ["libs/charts/src/index.ts"],
+  "@m3kit/forms":     ["libs/forms/src/index.ts"],
+  "@m3kit/shell":     ["libs/shell/src/index.ts"]
 }
 ```
 
@@ -119,17 +124,20 @@ These aliases are **the one rename adopters are expected to perform**. To move t
 own scope (say `@acme`):
 
 1. Copy the lib folders to your preferred location, e.g.
-   `libs/shared/reporting/{core,material,testing,dashboard,forms,theme}`.
+   `libs/shared/ui/{core,table,testing,dashboard,charts,forms,shell,theme}`.
 2. Add the aliases to *your* `tsconfig.base.json`:
-   `"@acme/reporting-core": ["libs/shared/reporting/core/src/index.ts"]`, etc.
+   `"@acme/ui-core": ["libs/shared/ui/core/src/index.ts"]`, etc.
 3. Workspace-wide find-and-replace the import specifiers:
-   `@m3kit/core` → `@acme/reporting-core`,
-   `@m3kit/material` → `@acme/reporting-material`,
-   `@m3kit/testing` → `@acme/reporting-testing`,
-   `@m3kit/dashboard` → `@acme/reporting-dashboard`,
-   `@m3kit/forms` → `@acme/reporting-forms`.
-   The only cross-lib TypeScript imports are `material → core`, `testing → core`,
-   `dashboard → core`, and `forms → core`, so the surface is small and entirely
+   `@m3kit/core` → `@acme/ui-core`,
+   `@m3kit/table` → `@acme/ui-table`,
+   `@m3kit/testing` → `@acme/ui-testing`,
+   `@m3kit/dashboard` → `@acme/ui-dashboard`,
+   `@m3kit/charts` → `@acme/ui-charts`,
+   `@m3kit/forms` → `@acme/ui-forms`,
+   `@m3kit/shell` → `@acme/ui-shell`.
+   The only cross-lib TypeScript imports are `table → core`, `testing → core`,
+   `dashboard → core`, `charts → core`, `forms → core`, and `shell → core`, so
+   the surface is small and entirely
    via the `index.ts` barrels. (`theme` is SCSS-only and has no tsconfig alias;
    see "Bringing the theming layer across" below.)
 4. Update each copied lib's `project.json` (project names, tags) and per-lib
@@ -141,13 +149,13 @@ the standard Nx/tsconfig mechanism.
 
 ## Bringing the theming layer across
 
-`libs/reporting/theme` is SCSS-only, so it sits outside the tsconfig alias mechanism.
+`libs/theme` is SCSS-only, so it sits outside the tsconfig alias mechanism.
 Its resolution goes through the builder instead — after copying the folder, wire an
 includePath on your app's build target (and on Storybook targets, if you take the
 Storybook):
 
 ```jsonc
-"stylePreprocessorOptions": { "includePaths": ["libs/reporting/theme/src"] }
+"stylePreprocessorOptions": { "includePaths": ["libs/theme/src"] }
 ```
 
 That makes `@use 'm3kit-theme'` (the token/brand-mixin contract) and
@@ -160,8 +168,8 @@ design system. Brand modules are small app-side SCSS partials that
 "bring your own brand" walkthrough — token API table, palette generation, root-class
 registration, fonts, Storybook toolbar — is in [THEMING.md](./THEMING.md).
 
-One wiring detail worth keeping: the demo app and the `reporting-material` Storybook
-declare `implicitDependencies: ["reporting-theme"]` in their `project.json` so the Nx
+One wiring detail worth keeping: the demo app and the `m3kit-table` Storybook
+declare `implicitDependencies: ["m3kit-theme"]` in their `project.json` so the Nx
 cache invalidates when theme SCSS changes (the project graph cannot see SCSS imports);
 re-create the equivalent in your workspace if you cache builds.
 
@@ -172,7 +180,7 @@ The libs are built against this pinned stack:
 | Package | This repo (resolved) | Reconciliation rule |
 |---|---|---|
 | Angular (`@angular/*`) | 19.2.25 (`~19.2.0`) | **Match your workspace's Angular major.** The libs use standalone components and signals — Angular 19+ idioms. If your workspace is on a later major, copy the source in and let your normal `ng update` migrations apply to it like any other first-party code. |
-| Angular Material | 19.2.19 | Major must match your `@angular/*` major. Only needed if you take `libs/reporting/material`. |
+| Angular Material | 19.2.19 | Major must match your `@angular/*` major. Only needed if you take the Material-consuming UI libs (`table`, `dashboard`, `forms`, `shell`). |
 | Angular CDK | 19.2.19 (peer-locked to Material) | Must match `@angular/material` exactly (Material peer-locks CDK). |
 | `@ngrx/signals` | 19.2.1 | NgRx majors track Angular majors; match accordingly. |
 | Nx | 20.8.4 | You do **not** need Nx 20 — any Nx that supports your Angular major works, since the libs use stock targets only. Non-Nx workspaces can adopt too; only the boundary-lint setup is Nx-specific. |

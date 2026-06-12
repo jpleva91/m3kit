@@ -1,4 +1,4 @@
-# m3kit (Angular Reporting Reference) Constitution
+# m3kit Constitution
 
 ## Core Principles
 
@@ -19,7 +19,7 @@ may derive from any private or proprietary source.
   industry-common enterprise reporting patterns (tables, filters, sorting, pagination,
   export concepts) are permitted as public knowledge.
 - No real data, ever: no production-like datasets, no scraped data, no PII-shaped real
-  values. All data is fabricated by factories/fixtures in `libs/reporting/testing` or
+  values. All data is fabricated by factories/fixtures in `libs/testing` or
   static JSON authored for this repository.
 - Doubt resolves to exclusion: if there is any uncertainty whether something is generic
   public knowledge versus privately derived, it is excluded until cleared at a review
@@ -79,7 +79,7 @@ Work proceeds in declared phases; gates are not skippable.
   products. No other domain vocabulary may appear in code, docs, tests, or fixtures.
 - No auth, no backends, no network data sources in the reference. Datasource
   *interfaces* may model asynchrony, but shipped implementations are in-memory/static.
-- Fixtures and factories live in `libs/reporting/testing` and use only the approved
+- Fixtures and factories live in `libs/testing` and use only the approved
   synthetic domains.
 
 ### VI. Boundary-Log Duties
@@ -104,7 +104,8 @@ Work proceeds in declared phases; gates are not skippable.
   complexity justifies it; plain Angular signals/inputs otherwise. No additional state
   libraries, ever, without a recorded decision.
 - Boundaries over cleverness: architecture is enforced by Nx module boundary tags —
-  `material → core` allowed, `testing → core` allowed, `core` depends on nothing
+  each UI lib (`table`, `dashboard`, `charts`, `forms`, `shell`) → `core` allowed,
+  `testing → core` allowed, `core` depends on nothing
   internal, the app may depend on all libs. Code that fights the boundaries is wrong
   by definition.
 - Readable over impressive: the reference exists to be read, evaluated, and copied by
@@ -113,8 +114,10 @@ Work proceeds in declared phases; gates are not skippable.
 ## Technology Constraints
 
 The workspace is an Nx 20 Angular monorepo: one demo application
-(`apps/demo-reporting`) and three libraries (`libs/reporting/core`,
-`libs/reporting/material`, `libs/reporting/testing`). Version pinning uses tilde
+(`apps/demo-reporting`) and eight libraries directly under `libs/` —
+`libs/core`, `libs/table`, `libs/dashboard`, `libs/charts`, `libs/forms`,
+`libs/shell`, `libs/theme` (SCSS-only), and `libs/testing` (Nx projects
+`m3kit-*`, TS aliases `@m3kit/*`). Version pinning uses tilde
 ranges for framework packages (`~19.2.0` style, never `^` drifting across minors for
 Angular itself), and the lockfile is committed as part of the reference so that
 consumers who source-internalize can reproduce the build. Libraries are

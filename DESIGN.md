@@ -1,10 +1,10 @@
-# Design System — "Instruments" (demo-reporting / reporting libs)
+# Design System — "Instruments" (m3kit libs / demo-reporting)
 
 ## Product Context
-- **What this is:** Clean-room Angular Material 3 reporting reference — report tables, dashboard cards, typed filter forms — built for source internalization.
+- **What this is:** m3kit, a clean-room rethemable Material 3 UI component library for Angular — data tables, dashboard cards, charts, typed forms, app-shell presets — built for source internalization; demonstrated by a synthetic-data reporting demo app.
 - **Who it's for:** Senior frontend engineers evaluating and adopting the code into enterprise workspaces.
-- **Space/industry:** Enterprise reporting / operational dashboards.
-- **Project type:** Web app (demo) + component library showcase (Storybook).
+- **Demo domain:** Enterprise reporting / operational dashboards (the demo app only; the libraries are domain-neutral).
+- **Project type:** Component library + demo web app + Storybook showcase.
 
 ## Aesthetic Direction
 - **Direction:** Industrial-editorial "instrument panel" — precision-tool energy, paper-grade clarity.
@@ -58,7 +58,7 @@ All fonts are OFL-licensed and served from Google Fonts (license-compatible with
 - **Duration:** micro(50–100ms) short(150–250ms); nothing longer without a reason.
 
 ## Multi-brand themes
-**Instruments** (this document) is the default brand. Three alternate brand themes are selectable at runtime — a brand-switcher in the app toolbar and a Storybook toolbar apply a `theme-<brand>` class (plus `dark`) to the root element, and each brand re-emits the full token set (`--mat-sys-*`, `--app-status-*`, `--app-radius-*`, `--app-chart-*`) from its own module — Instruments ships in `libs/reporting/theme` (the rethemable kit's contract + default brand), the three alternates live in `apps/demo-reporting/src/styles/themes/` as example consumers. Every brand ships light and dark. Layout signatures are NOT token-expressible; they are delivered as shell/page presets in the demo app (see Layout), selected per brand by default while remaining freely recombinable — any brand can wear any preset.
+**Instruments** (this document) is the default brand. Three alternate brand themes are selectable at runtime — a brand-switcher in the app toolbar and a Storybook toolbar apply a `theme-<brand>` class (plus `dark`) to the root element, and each brand re-emits the full token set (`--mat-sys-*`, `--app-status-*`, `--app-radius-*`, `--app-chart-*`) from its own module — Instruments ships in `libs/theme` (the rethemable kit's contract + default brand), the three alternates live in `apps/demo-reporting/src/styles/themes/` as example consumers. Every brand ships light and dark. Layout signatures are NOT token-expressible; they are delivered as shell/page presets in the demo app (see Layout), selected per brand by default while remaining freely recombinable — any brand can wear any preset.
 
 - **Terminal** — operations-console energy: phosphor green on charcoal, dark-first, utilitarian and dense; the dashboard should read like a monitoring console that happens to have a light mode.
 - **Ledger** — bookkeeper's heirloom: oxblood and gold on warm paper, serif-led and unhurried; financial gravitas without nostalgia kitsch.
@@ -71,7 +71,7 @@ All fonts are OFL-licensed and served from Google Fonts (license-compatible with
 | Ledger | `#6B1F2A` oxblood | `#B08D3E` gold | warm paper | Fraunces / Source Sans 3 |
 | Field Guide | `#1E9E5A` kelly | `#E8604C` coral | warm white | Outfit / DM Mono |
 
-Brand modules implement the mixin contract documented in `@m3kit/theme` (`libs/reporting/theme/src/m3kit-theme/_contract.scss`, resolved via the `libs/reporting/theme/src` style includePath as `@use 'm3kit-theme'`): `brand-light()` emits `mat.theme` color+typography+density plus status and radius tokens; `brand-dark()` re-emits color and status tokens only.
+Brand modules implement the mixin contract documented in `@m3kit/theme` (`libs/theme/src/m3kit-theme/_contract.scss`, resolved via the `libs/theme/src` style includePath as `@use 'm3kit-theme'`): `brand-light()` emits `mat.theme` color+typography+density plus status and radius tokens; `brand-dark()` re-emits color and status tokens only.
 
 ## Anti-patterns (binding)
 No gradients as brand. No glassmorphism. No purple bias. No shadow-on-everything. No rainbow status pills. No skeleton-shimmer theater in stories. No oversized icons (Material Symbols, small optical sizes, light weights). No hero/landing composition in the demo app.
@@ -84,4 +84,4 @@ No gradients as brand. No glassmorphism. No purple bias. No shadow-on-everything
 | 2026-06-11 | Brand layout presets | Owner direction after comparing the live app to the approved design-exploration mocks: each brand's mock composition (command bar / editorial rail / pill tabs) is implemented as a reusable layout preset; brands select a default preset at the app layer; tokens and layout remain decoupled. |
 | 2026-06-11 | Multi-brand architecture | Owner decision after design exploration: four runtime-switchable brands (Instruments default + Terminal, Ledger, Field Guide), each light+dark, as token-only re-emissions behind `theme-<brand>`/`dark` classes; layout signatures stay out of token scope. |
 | 2026-06-11 | Chart series token family (`--app-chart-1..6`) | Charts need a categorical series palette that rethemes with the brand; ad-hoc per-chart colors would break the token-only rule. Added `chart-tokens()` to the contract (closed set of six, compile-time count check, light+dark lists per brand); all four brands emit identity-fitting series sets. |
-| 2026-06-11 | Token contract extracted to `libs/reporting/theme` | The `--app-*` custom-prop API, the `brand-light()`/`brand-dark()` mixin contract, and the default Instruments brand now live in the copy-in deliverable (`libs/reporting/theme/src/m3kit-theme/_contract.scss`) rather than app styles, so adopters get the theming machinery with the components. Terminal/Ledger/Field Guide stay app-side as example consumer brands. Adopter walkthrough: `docs/THEMING.md`. |
+| 2026-06-11 | Token contract extracted to `libs/theme` | The `--app-*` custom-prop API, the `brand-light()`/`brand-dark()` mixin contract, and the default Instruments brand now live in the copy-in deliverable (`libs/theme/src/m3kit-theme/_contract.scss`) rather than app styles, so adopters get the theming machinery with the components. Terminal/Ledger/Field Guide stay app-side as example consumer brands. Adopter walkthrough: `docs/THEMING.md`. |

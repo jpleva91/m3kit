@@ -19,14 +19,14 @@ describe('CustomersReportComponent', () => {
   });
 
   it('renders the customers report toolbar with the total row count', () => {
-    const toolbar = element.querySelector('rpt-report-toolbar');
+    const toolbar = element.querySelector('m3k-page-toolbar');
     expect(toolbar?.textContent).toContain('Customers');
     expect(toolbar?.textContent).toContain('120');
   });
 
   it('renders the filter bar and a populated customer table', () => {
-    expect(element.querySelector('rpt-report-filter-bar')).toBeTruthy();
-    const rows = element.querySelectorAll('rpt-report-table tbody tr');
+    expect(element.querySelector('m3k-table-filter-bar')).toBeTruthy();
+    const rows = element.querySelectorAll('m3k-data-table tbody tr');
     // Default page size of the customers definition is 10.
     expect(rows.length).toBe(10);
     expect(element.textContent).toContain('Customer 0');

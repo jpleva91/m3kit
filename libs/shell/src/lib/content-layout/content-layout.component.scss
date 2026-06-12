@@ -1,0 +1,31 @@
+:host {
+  display: block;
+}
+
+.m3k-content-layout--full {
+  width: 100%;
+}
+
+// Readable centered column — docs/preview max width per DESIGN.md (1080px).
+.m3k-content-layout--centered {
+  max-width: 1080px;
+  margin-inline: auto;
+}
+
+.m3k-content-layout--split {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) minmax(240px, 320px);
+  gap: 24px;
+  align-items: start;
+}
+
+.m3k-content-layout__primary {
+  min-width: 0;
+}
+
+// Handset: the split stacks to a single column, primary first.
+@media (max-width: 959px) {
+  .m3k-content-layout--split {
+    grid-template-columns: minmax(0, 1fr);
+  }
+}

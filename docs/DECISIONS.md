@@ -34,27 +34,27 @@ change anything here; version moves require a new ADR.
 
 **Status:** Accepted (amended 2026-06-11)
 
-**Decision:** Three libraries under `libs/reporting/`:
+**Decision:** Three libraries under `libs/`:
 
 - `@m3kit/core` — contracts only; no Material/CDK, no internal dependencies
-- `@m3kit/material` — Material/CDK UI layer; may depend on core only
+- `@m3kit/table` — Material/CDK UI layer; may depend on core only
 - `@m3kit/testing` — harnesses and synthetic fixtures; may depend on core only
 
-Tags are per-lib scopes: `scope:reporting-core`, `scope:reporting-material`,
-`scope:reporting-testing`, plus `type:lib`; the app is `type:app, scope:demo`.
+Tags are per-lib scopes: `scope:m3kit-core`, `scope:m3kit-table`,
+`scope:m3kit-testing`, plus `type:lib`; the app is `type:app, scope:demo`.
 Dependency rules are enforced by `@nx/enforce-module-boundaries` in
 `eslint.config.mjs` (core → nothing internal; material → core; testing → core;
 app → all three). A deliberate violation was introduced once to confirm lint fails,
 then reverted.
 
 > **Amendment note (2026-06-11):** The library set has grown from three to six
-> under `libs/reporting/`. In addition to the original core/material/testing:
+> under `libs/`. In addition to the original core/material/testing:
 >
 > - `@m3kit/dashboard` — dashboard primitives (KPI cards, detail cards, grid);
->   may depend on core only (`scope:reporting-dashboard`)
+>   may depend on core only (`scope:m3kit-dashboard`)
 > - `@m3kit/forms` — typed form components and definition-driven filter forms;
->   may depend on core only (`scope:reporting-forms`)
-> - `reporting-theme` — the SCSS-only theming SDK (`scope:reporting-theme`).
+>   may depend on core only (`scope:m3kit-forms`)
+> - `m3kit-theme` — the SCSS-only theming SDK (`scope:m3kit-theme`).
 >   It has no TypeScript entry point and therefore sits outside the
 >   TS module-boundary graph; its coupling is via SCSS `@use` and a
 >   `stylePreprocessorOptions.includePaths` entry, with cache correctness
@@ -86,7 +86,7 @@ layer adds vocabulary without adding enforcement.
 **Status:** Accepted
 
 **Decision:** This repository is never published as an npm package. The intended
-adoption path is: evaluate the reference → import the `libs/reporting/*` source
+adoption path is: evaluate the reference → import the `libs/*` source
 into your own workspace (or fork internally) → own it outright. Libraries are
 non-publishable; there is no release pipeline, no semver contract, no
 compatibility matrix.
@@ -195,7 +195,7 @@ in a later phase.
 > replaced by the **Instruments design system** (see `DESIGN.md`). Theming is
 > now custom M3 Sass: tonal palettes are generated from seed colors via the
 > `@angular/material:theme-color` schematic, and a multi-brand token
-> architecture lives in `libs/reporting/theme` (component-facing `--app-*`
+> architecture lives in `libs/theme` (component-facing `--app-*`
 > token contract plus a two-mixin brand contract), with the demo app shipping
 > additional example brands. See `docs/THEMING.md` for the full architecture.
 
@@ -211,11 +211,11 @@ the next begins:
 2. **Clean-room review gate** — a compliance audit of the scaffold against
    `CLEAN_ROOM.md` before any feature code lands.
 3. **Core reporting contracts** — report/column/query/filter/sort/pagination
-   models and datasource interfaces in `libs/reporting/core`.
+   models and datasource interfaces in `libs/core`.
 4. **Material reporting shell** — report table, filter bar, and toolbar
-   components in `libs/reporting/material`.
+   components in `libs/table`.
 5. **Synthetic invoice demo route** — wire `/reports` to a working invoices
-   report using `libs/reporting/testing` fixtures.
+   report using `libs/testing` fixtures.
 6. **Final clean-room review** — a full-repository audit before any public
    promotion or internalization handoff.
 
@@ -230,18 +230,18 @@ along "while we're here."
 **Status:** Accepted (amended 2026-06-11)
 
 **Decision:** Storybook 8.6 was added via `@nx/storybook` on the
-`reporting-material` project. The stories glob is widened to include the demo
+`m3kit-table` project. The stories glob is widened to include the demo
 app's components, and the Material `azure-blue` theme plus the app styles are
 loaded in the Storybook target so components render as they do in the app.
 
 > **Amendment note (2026-06-11):** With ADR-009 superseded, Storybook no
 > longer loads the azure-blue prebuilt theme. Instead,
-> `libs/reporting/material/.storybook/storybook-theme.scss` consumes the same
+> `libs/table/.storybook/storybook-theme.scss` consumes the same
 > shared brand aggregator the app uses, registering all four brands
 > (Instruments, Terminal, Ledger, Field Guide); brand and light/dark mode are
 > selected via Storybook toolbar globals. The single-Storybook architecture is
 > reaffirmed: stray per-project Storybook configs that had accumulated were
-> removed, leaving `reporting-material` as the one Storybook host.
+> removed, leaving `m3kit-table` as the one Storybook host.
 
 Storybook is development-only tooling and is **not part of the copy-in
 deliverable**: adopters may delete `.storybook/` and `*.stories.ts` files when
@@ -260,7 +260,7 @@ contract preserves the minimal copy-in surface from ADR-003/ADR-005.
 **Decision:** Brand typefaces and the Material Icons font are loaded at runtime
 from the Google Fonts CDN via `<link>` tags — in
 `apps/demo-reporting/src/index.html` for the app and
-`libs/reporting/material/.storybook/preview-head.html` for Storybook. The
+`libs/table/.storybook/preview-head.html` for Storybook. The
 families loaded (Instrument Sans, DM Serif Display, JetBrains Mono, Archivo,
 IBM Plex Mono, Fraunces, Source Sans 3, Outfit, DM Mono) are all licensed
 under the SIL Open Font License; Material Icons is Apache-2.0. No font binaries
@@ -282,15 +282,15 @@ fonts section.
 **Decision:** The application shell — the four chrome presets (`sidenav`,
 `command-bar`, `contents-rail`, `pill-tabs`), page header, breadcrumbs, and
 content layout — is promoted out of `apps/demo-reporting` into a new library,
-`libs/reporting/shell` (`@m3kit/shell`, tags `type:lib, scope:reporting-shell`).
+`libs/shell` (`@m3kit/shell`, tags `type:lib, scope:m3kit-shell`).
 The preset markup/styles were relocated (not redesigned) from the app's
-`AppComponent` into `rpt-app-shell`, with consumer content injected through
+`AppComponent` into `m3k-app-shell`, with consumer content injected through
 projected `ng-content` plus template-slot directives
 (`ShellToolbarActionsDirective`, `ShellRailFooterDirective`). The
 brand→preset mapping (`BRAND_LAYOUT_PRESETS`) deliberately stays in the demo
 app: the shell exposes the brand-agnostic `ShellPreset` union, and which brand
 gets which chrome remains app policy. The boundary follows the sibling libs —
-`scope:reporting-shell` may depend on `core` (and the SCSS-only theme token
+`scope:m3kit-shell` may depend on `core` (and the SCSS-only theme token
 contract) only, never on `material`/`dashboard`/`charts`/`forms`/`testing`;
 the constraint is enforced in `eslint.config.mjs` and was proven with a
 deliberate violation (logged in `BOUNDARY_LOG.md`).
@@ -306,6 +306,48 @@ Template-slot directives (rather than `@Input` templates or subclassing) keep
 the consumer surface declarative and let each preset stamp the same projected
 controls at its own preset-appropriate position.
 
+## ADR-014 — Generalization: m3kit is a general-purpose UI library; reporting is demo-only
+
+**Status:** Accepted (2026-06-11)
+
+**Decision:** By owner directive, the repository's identity is generalized
+pre-publication: **m3kit is a general-purpose, rethemable Material 3 UI
+component library** for Angular/Nx. "Reporting" is only the *demo domain* —
+the synthetic scenario the demo app uses to exercise the components. The
+rename is a **clean break with no compatibility aliases** (nothing has been
+published, so there is nothing to deprecate). Rename map:
+
+- **Directories:** `libs/reporting/{core,material,dashboard,forms,charts,shell,theme,testing}`
+  → `libs/{core,table,dashboard,forms,charts,shell,theme,testing}` (the
+  `libs/reporting/` grouping folder is removed; `material` becomes `table`).
+- **Nx projects:** `reporting-*` → `m3kit-*` (`reporting-material` →
+  `m3kit-table`).
+- **TS aliases:** `@m3kit/material` → `@m3kit/table`; the other `@m3kit/*`
+  aliases keep their names with targets repointed to `libs/*`. `theme`
+  remains SCSS-only with no alias (includePath `libs/theme/src`).
+- **Tags / boundaries:** `scope:reporting-*` → `scope:m3kit-*` in every
+  `project.json` and in the root `eslint.config.mjs` `depConstraints`;
+  semantics unchanged (core → nothing; each UI lib and testing → core +
+  theme; app → all).
+- **Components/types:** domain-neutral names in lib code — e.g.
+  `report-table` → `data-table`, `report-filter-bar` → `table-filter-bar`,
+  `report-toolbar` → `page-toolbar`; selectors keep the `m3k-` prefix.
+- **Unchanged:** `apps/demo-reporting` (name and reporting scenario — it *is*
+  the demo), the synthetic demo domains (customers, orders, invoices, support
+  tickets, products), and the repository directory name.
+- **Docs:** README/AGENTS/DESIGN/docs reframed UI-library-first;
+  `specs/001-reporting-scaffold` and `specs/003-shell-lib` are preserved as
+  historical records with a frontmatter note (their paths/names predate this
+  rename); `specs/002-exemplar-add-brand` is a forward-facing exemplar and is
+  updated to the new names.
+
+**Rationale:** Nothing in the libraries is reporting-specific — tables,
+dashboards, charts, forms, shells, and theming are general-purpose UI. Naming
+the kit after its demo scenario undersold it and would have hardened a
+misleading identity at publication. Doing the rename pre-publication makes a
+clean break free: no published artifact, no semver contract, no consumers to
+migrate.
+
 ## Verification record — scaffold phase (2026-06-11)
 
 - In-workspace gate: `npx nx run-many -t lint test build` green for all four
@@ -313,6 +355,6 @@ controls at its own preset-appropriate position.
 - Fresh-clone reproducibility (per ADR-006): repository cloned to a clean
   directory, `pnpm install --frozen-lockfile`, then the same gate — green for
   all four projects from the lockfile-driven install alone.
-- Module boundaries: a deliberate `@m3kit/material` import in
-  `libs/reporting/core` failed lint with `@nx/enforce-module-boundaries`,
+- Module boundaries: a deliberate `@m3kit/table` import in
+  `libs/core` failed lint with `@nx/enforce-module-boundaries`,
   was reverted, and lint ran green (logged in `BOUNDARY_LOG.md`).

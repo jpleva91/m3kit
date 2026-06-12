@@ -15,13 +15,13 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@m3kit/charts": ["libs/reporting/charts/src/index.ts"],
-      "@m3kit/core": ["libs/reporting/core/src/index.ts"],
-      "@m3kit/dashboard": ["libs/reporting/dashboard/src/index.ts"],
-      "@m3kit/forms": ["libs/reporting/forms/src/index.ts"],
-      "@m3kit/material": ["libs/reporting/material/src/index.ts"],
-      "@m3kit/shell": ["libs/reporting/shell/src/index.ts"],
-      "@m3kit/testing": ["libs/reporting/testing/src/index.ts"]
+      "@m3kit/charts": ["libs/charts/src/index.ts"],
+      "@m3kit/core": ["libs/core/src/index.ts"],
+      "@m3kit/dashboard": ["libs/dashboard/src/index.ts"],
+      "@m3kit/forms": ["libs/forms/src/index.ts"],
+      "@m3kit/table": ["libs/table/src/index.ts"],
+      "@m3kit/shell": ["libs/shell/src/index.ts"],
+      "@m3kit/testing": ["libs/testing/src/index.ts"]
     }
   },
   "exclude": ["node_modules", "tmp"]

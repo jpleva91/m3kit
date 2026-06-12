@@ -1,0 +1,27 @@
+<mat-form-field
+  class="m3k-table-filter-bar__field"
+  appearance="outline"
+  subscriptSizing="dynamic"
+>
+  <mat-icon matPrefix>search</mat-icon>
+  <mat-label>Search {{ definition().title }}</mat-label>
+  <input
+    #searchInput
+    matInput
+    type="text"
+    [value]="text()"
+    (input)="onInput(searchInput.value)"
+    [attr.aria-label]="'Search ' + definition().title"
+  />
+  @if (text()) {
+    <button
+      mat-icon-button
+      matSuffix
+      type="button"
+      aria-label="Clear search"
+      (click)="clear()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</mat-form-field>

@@ -70,7 +70,7 @@ implementation and testing of each story.
       `contract.chart-tokens($_chart-dark...)` + `color-scheme: dark`.
       **Done when**: the module compiles standalone via
       `@use 'm3kit-theme' as contract` and matches the mixin contract in
-      `libs/reporting/theme/src/m3kit-theme/_contract.scss` (zero-argument
+      `libs/theme/src/m3kit-theme/_contract.scss` (zero-argument
       mixins; dark re-emits color-bearing tokens only).
 
 **Checkpoint**: Brand module exists — registration and verification can begin
@@ -83,7 +83,7 @@ implementation and testing of each story.
 zero component changes
 
 **Independent Test**: Serve app + Storybook, select Midnight, walk every
-page/story in light and dark; diff shows no `libs/reporting/*` changes
+page/story in light and dark; diff shows no `libs/*` changes
 
 ### Implementation for User Story 1
 
@@ -101,10 +101,10 @@ page/story in light and dark; diff shows no `libs/reporting/*` changes
       selecting it toggles `theme-midnight` on `<html>`, and the choice
       persists across a reload.
 - [ ] T006 [US1] Add Midnight to the Storybook toolbar in
-      `libs/reporting/material/.storybook/preview.ts`: extend the `BRANDS`
+      `libs/table/.storybook/preview.ts`: extend the `BRANDS`
       const and add `{ value: 'midnight', title: 'Midnight' }` to the brand
       toolbar items.
-      **Done when**: `npx nx run reporting-material:storybook` shows Midnight
+      **Done when**: `npx nx run m3kit-table:storybook` shows Midnight
       in the Brand toolbar and the decorator applies `theme-midnight` to the
       preview root.
 - [ ] T007 [US1] Matrix walk: in the served app and in Storybook, select
@@ -112,7 +112,7 @@ page/story in light and dark; diff shows no `libs/reporting/*` changes
       **Done when**: every surface restyles (tables, badges, KPI cards,
       charts, forms), no Instruments colors bleed through, the console is
       clean, and `git status` shows zero modified files under
-      `libs/reporting/*/src/lib`.
+      `libs/*/src/lib`.
 
 **Checkpoint**: At this point, User Story 1 should be fully functional and
 testable independently
@@ -168,7 +168,7 @@ independently
       as the rendered font for body and headings (devtools → rendered fonts),
       not a fallback.
 - [ ] T012 [P] [US3] Make the same addition in
-      `libs/reporting/material/.storybook/preview-head.html`.
+      `libs/table/.storybook/preview-head.html`.
       **Done when**: Storybook stories under Midnight render Space Grotesk.
 - [ ] T013 [US3] License check: confirm every added family is OFL (Google
       Fonts license page) per ADR-012, and log the consultation in
@@ -187,7 +187,7 @@ independently
 - [ ] T014 Full gate: `npx nx run-many -t lint test build` green for all
       projects, then
       `ELECTRON_EXTRA_LAUNCH_ARGS=--no-sandbox npx nx run-many -t component-test`
-      green, then `npx nx run reporting-material:build-storybook` compiles
+      green, then `npx nx run m3kit-table:build-storybook` compiles
       clean.
       **Done when**: all three commands exit 0 with no new warnings
       attributable to the brand.
@@ -242,7 +242,7 @@ independently
 2. Complete Phase 2: Foundational (CRITICAL — blocks all stories)
 3. Complete Phase 3: User Story 1 — Midnight selectable and rendering
    everywhere is the MVP
-4. **STOP and VALIDATE**: matrix walk clean; zero `libs/reporting/*` diffs
+4. **STOP and VALIDATE**: matrix walk clean; zero `libs/*` diffs
 
 ### Incremental Delivery
 
@@ -261,7 +261,7 @@ independently
 2. **Contract changes** — no new `--app-*` tokens; a brand that needs one has
    found a contract gap, which is its own specced feature
 3. **Per-brand component CSS** — forbidden everywhere, always
-4. **Changes to existing brands or any `libs/reporting/*` code**
+4. **Changes to existing brands or any `libs/*` code**
 
 ---
 

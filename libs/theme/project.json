@@ -1,0 +1,12 @@
+{
+  "name": "m3kit-theme",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/theme/src",
+  "projectType": "library",
+  "tags": ["type:lib", "scope:m3kit-theme"],
+  "targets": {
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    }
+  }
+}

@@ -1,0 +1,11 @@
+<header class="m3k-page-header">
+  <div class="m3k-page-header__text">
+    <h1 class="m3k-page-header__title">{{ title() }}</h1>
+    @if (subtitle()) {
+      <p class="m3k-page-header__subtitle">{{ subtitle() }}</p>
+    }
+  </div>
+  <div class="m3k-page-header__actions">
+    <ng-content select="[m3kPageHeaderActions]" />
+  </div>
+</header>

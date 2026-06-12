@@ -21,68 +21,68 @@ export default [
           allow: ['^.*/eslint(\\.base)?\\.config\\.[cm]?js$'],
           depConstraints: [
             {
-              sourceTag: 'scope:reporting-core',
+              sourceTag: 'scope:m3kit-core',
               onlyDependOnLibsWithTags: [],
             },
             // SCSS-only theming contract + default brand; depends on
             // nothing, anything may depend on it (styles-level only).
             {
-              sourceTag: 'scope:reporting-theme',
+              sourceTag: 'scope:m3kit-theme',
               onlyDependOnLibsWithTags: [],
             },
             {
-              sourceTag: 'scope:reporting-material',
+              sourceTag: 'scope:m3kit-table',
               onlyDependOnLibsWithTags: [
-                'scope:reporting-core',
-                'scope:reporting-theme',
+                'scope:m3kit-core',
+                'scope:m3kit-theme',
               ],
             },
             {
-              sourceTag: 'scope:reporting-testing',
+              sourceTag: 'scope:m3kit-testing',
               onlyDependOnLibsWithTags: [
-                'scope:reporting-core',
-                'scope:reporting-theme',
+                'scope:m3kit-core',
+                'scope:m3kit-theme',
               ],
             },
             {
-              sourceTag: 'scope:reporting-dashboard',
+              sourceTag: 'scope:m3kit-dashboard',
               onlyDependOnLibsWithTags: [
-                'scope:reporting-core',
-                'scope:reporting-theme',
+                'scope:m3kit-core',
+                'scope:m3kit-theme',
               ],
             },
             {
-              sourceTag: 'scope:reporting-charts',
+              sourceTag: 'scope:m3kit-charts',
               onlyDependOnLibsWithTags: [
-                'scope:reporting-core',
-                'scope:reporting-theme',
+                'scope:m3kit-core',
+                'scope:m3kit-theme',
               ],
             },
             {
-              sourceTag: 'scope:reporting-forms',
+              sourceTag: 'scope:m3kit-forms',
               onlyDependOnLibsWithTags: [
-                'scope:reporting-core',
-                'scope:reporting-theme',
+                'scope:m3kit-core',
+                'scope:m3kit-theme',
               ],
             },
             {
-              sourceTag: 'scope:reporting-shell',
+              sourceTag: 'scope:m3kit-shell',
               onlyDependOnLibsWithTags: [
-                'scope:reporting-core',
-                'scope:reporting-theme',
+                'scope:m3kit-core',
+                'scope:m3kit-theme',
               ],
             },
             {
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
-                'scope:reporting-core',
-                'scope:reporting-material',
-                'scope:reporting-testing',
-                'scope:reporting-charts',
-                'scope:reporting-dashboard',
-                'scope:reporting-forms',
-                'scope:reporting-shell',
-                'scope:reporting-theme',
+                'scope:m3kit-core',
+                'scope:m3kit-table',
+                'scope:m3kit-testing',
+                'scope:m3kit-charts',
+                'scope:m3kit-dashboard',
+                'scope:m3kit-forms',
+                'scope:m3kit-shell',
+                'scope:m3kit-theme',
               ],
             },
           ],

@@ -1,0 +1,13 @@
+<section class="m3k-form-section">
+  <header class="m3k-form-section__header">
+    <div class="m3k-form-section__title" role="heading" [attr.aria-level]="headingLevel()">
+      {{ title() }}
+    </div>
+    @if (description()) {
+      <p class="m3k-form-section__description">{{ description() }}</p>
+    }
+  </header>
+  <div class="m3k-form-section__content">
+    <ng-content />
+  </div>
+</section>

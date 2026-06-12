@@ -1,9 +1,9 @@
 <section class="report-page">
-  <rpt-report-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
+  <m3k-page-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
 
-  <rpt-report-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
+  <m3k-table-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
 
-  <rpt-report-table
+  <m3k-data-table
     #table
     [definition]="definition"
     [dataSource]="dataSource"

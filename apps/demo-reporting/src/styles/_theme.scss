@@ -8,9 +8,9 @@
 /// Each brand module exposes `brand-light()` / `brand-dark()` mixins that
 /// emit the M3 system tokens (`--mat-sys-*`) via `mat.theme` plus the
 /// `--app-status-*` and `--app-radius-*` custom props (contract documented
-/// in `@m3kit/theme` — `libs/reporting/theme/src/m3kit-theme/
+/// in `@m3kit/theme` — `libs/theme/src/m3kit-theme/
 /// _contract.scss`). Instruments, the default brand, ships in that lib and
-/// resolves via the `libs/reporting/theme/src` includePath configured on
+/// resolves via the `libs/theme/src` includePath configured on
 /// the app build and Storybook targets; Terminal / Ledger / Field Guide
 /// live here in `themes/` as example consumer brands. Switching brands or
 /// modes is just re-emitting tokens under a class scope — no duplicate

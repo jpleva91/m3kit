@@ -3,6 +3,8 @@
 description: "Task list for the reporting reference workspace scaffold"
 ---
 
+> **Historical record:** paths/names in this document predate the 2026-06-11 generalization rename (see ADR-014 in `docs/DECISIONS.md`).
+
 # Tasks: Reporting Reference Workspace Scaffold
 
 **Input**: Design documents from `/specs/001-reporting-scaffold/`

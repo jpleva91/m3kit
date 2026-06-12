@@ -9,7 +9,7 @@
     "scope:demo"
   ],
   "implicitDependencies": [
-    "reporting-theme"
+    "m3kit-theme"
   ],
   "targets": {
     "build": {
@@ -37,7 +37,7 @@
         ],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "libs/reporting/theme/src"
+            "libs/theme/src"
           ]
         },
         "scripts": []

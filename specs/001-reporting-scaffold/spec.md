@@ -1,5 +1,7 @@
 # Feature Specification: Reporting Reference Workspace Scaffold
 
+> **Historical record:** paths/names in this document predate the 2026-06-11 generalization rename (see ADR-014 in `docs/DECISIONS.md`).
+
 **Feature Branch**: `001-reporting-scaffold`
 
 **Created**: 2026-06-11

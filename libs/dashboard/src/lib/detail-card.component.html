@@ -1,0 +1,30 @@
+<mat-card appearance="outlined" class="m3k-detail-card">
+  <mat-card-header class="m3k-detail-card__header">
+    <h2 mat-card-title class="m3k-detail-card__title">{{ title() }}</h2>
+    @if (subtitle(); as sub) {
+      <mat-card-subtitle>{{ sub }}</mat-card-subtitle>
+    }
+    <div class="m3k-detail-card__actions">
+      <ng-content select="[m3kDetailCardActions]" />
+    </div>
+  </mat-card-header>
+
+  <mat-card-content>
+    @if (rows().length > 0) {
+      <dl class="m3k-detail-card__rows">
+        @for (row of rows(); track $index) {
+          <div class="m3k-detail-card__row">
+            <dt class="m3k-detail-card__row-label">{{ row.label }}</dt>
+            <dd class="m3k-detail-card__row-value">{{ row.value }}</dd>
+          </div>
+        }
+      </dl>
+    } @else {
+      <p class="m3k-detail-card__empty">No details available.</p>
+    }
+  </mat-card-content>
+
+  <mat-card-footer class="m3k-detail-card__footer">
+    <ng-content select="[m3kDetailCardFooter]" />
+  </mat-card-footer>
+</mat-card>

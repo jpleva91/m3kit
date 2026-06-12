@@ -1,0 +1,38 @@
+@for (readout of readouts(); track $index) {
+  <div class="m3k-kpi-strip__readout">
+    <span class="m3k-kpi-strip__label">{{ readout.label }}</span>
+
+    <div class="m3k-kpi-strip__value-line">
+      <span class="m3k-kpi-strip__value">{{ readout.value }}</span>
+
+      @if (readout.delta !== null) {
+        <span
+          class="m3k-kpi-strip__delta"
+          [class.m3k-kpi-strip__delta--up]="readout.delta > 0"
+          [class.m3k-kpi-strip__delta--down]="readout.delta < 0"
+        >
+          @if (readout.delta > 0) {
+            <mat-icon class="m3k-kpi-strip__delta-icon" aria-hidden="true">arrow_upward</mat-icon>
+          } @else if (readout.delta < 0) {
+            <mat-icon class="m3k-kpi-strip__delta-icon" aria-hidden="true">arrow_downward</mat-icon>
+          }
+          <span>{{ readout.formattedDelta }}</span>
+        </span>
+      }
+
+      @if (readout.sparklinePoints; as points) {
+        <svg
+          class="m3k-kpi-strip__sparkline"
+          [attr.viewBox]="sparklineViewBox"
+          [attr.width]="sparklineWidth"
+          [attr.height]="sparklineHeight"
+          preserveAspectRatio="none"
+          role="img"
+          [attr.aria-label]="readout.label + ' trend'"
+        >
+          <polyline [attr.points]="points" fill="none" stroke-width="1.5" />
+        </svg>
+      }
+    </div>
+  </div>
+}

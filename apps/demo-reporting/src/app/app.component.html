@@ -1,8 +1,8 @@
 <!-- All chrome (presets, nav, handset behavior) lives in @m3kit/shell;
      the app projects its theme controls and its router-outlet. -->
-<rpt-app-shell [preset]="layoutPreset()" [nav]="navLinks" [title]="title">
+<m3k-app-shell [preset]="layoutPreset()" [nav]="navLinks" [title]="title">
   <!-- Brand/dark controls stamped at every preset's controls position. -->
-  <ng-template rptShellToolbarActions>
+  <ng-template m3kShellToolbarActions>
     <button
       mat-icon-button
       type="button"
@@ -47,4 +47,4 @@
 
   <!-- The single routed view, stamped into whichever shell is active. -->
   <router-outlet />
-</rpt-app-shell>
+</m3k-app-shell>

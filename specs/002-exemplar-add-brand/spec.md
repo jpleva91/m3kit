@@ -37,7 +37,7 @@ contract is broken and the brand cannot ship.
 
 **Independent Test**: Serve the app and Storybook, select Midnight, walk
 every page/story in light and in dark, and confirm the brand applies with no
-component diffs in `libs/reporting/*`.
+component diffs in `libs/*`.
 
 **Acceptance Scenarios**:
 
@@ -54,7 +54,7 @@ component diffs in `libs/reporting/*`.
    brand × mode matrix renders clean: no unstyled regions, no Instruments
    colors bleeding through, no console errors).
 4. **Given** the full change set, **When** it is diffed, **Then** no file
-   under `libs/reporting/*` is modified except (if taken as a lib brand)
+   under `libs/*` is modified except (if taken as a lib brand)
    additive theme files — component `.ts`/`.html`/`.scss` are untouched.
 
 ---
@@ -117,7 +117,7 @@ applied.
    typography tokens.
 2. **Given** the running Storybook with Midnight selected, **When** rendered
    fonts are inspected, **Then** the same families load via
-   `libs/reporting/material/.storybook/preview-head.html`.
+   `libs/table/.storybook/preview-head.html`.
 3. **Given** the font additions, **When** licensing is audited, **Then** all
    added families are OFL-licensed (the repo's Apache-2.0-compatible policy,
    ADR-012).
@@ -148,7 +148,7 @@ applied.
 - **FR-001**: The brand MUST be implemented entirely as a token emission: one
   SCSS module exposing zero-argument `brand-light()` and `brand-dark()`
   mixins per the contract in
-  `libs/reporting/theme/src/m3kit-theme/_contract.scss`, plus a generated
+  `libs/theme/src/m3kit-theme/_contract.scss`, plus a generated
   palettes partial. No component file may change.
 - **FR-002**: `brand-light()` MUST emit `mat.theme` (light color, typography,
   density), `status-tokens($light)` covering all five kinds,
@@ -166,10 +166,10 @@ applied.
   `apps/demo-reporting/src/app/core/theme.service.ts`).
 - **FR-006**: The brand MUST appear in the Storybook brand toolbar
   (`BRANDS` array + toolbar items in
-  `libs/reporting/material/.storybook/preview.ts`).
+  `libs/table/.storybook/preview.ts`).
 - **FR-007**: Brand fonts MUST be added to both font-loading documents:
   `apps/demo-reporting/src/index.html` and
-  `libs/reporting/material/.storybook/preview-head.html`; all families MUST
+  `libs/table/.storybook/preview-head.html`; all families MUST
   be OFL-licensed.
 - **FR-008**: Layout MUST NOT change: no new layout preset is required (the
   brand uses an existing preset by default), and no per-brand component CSS
@@ -191,9 +191,9 @@ applied.
   dark), verified by inspection or a token audit.
 - **SC-003**: Deliberately omitting one status kind or one chart color fails
   the build at compile time in 100% of attempts.
-- **SC-004**: The diff touches zero files under `libs/reporting/*/src/lib`;
+- **SC-004**: The diff touches zero files under `libs/*/src/lib`;
   the workspace gate (`npx nx run-many -t lint test build`) and
-  `npx nx run reporting-material:build-storybook` pass unchanged.
+  `npx nx run m3kit-table:build-storybook` pass unchanged.
 - **SC-005**: Rendered-font inspection shows the brand families (not
   fallbacks) in both the app and Storybook on first load.
 
@@ -211,6 +211,6 @@ applied.
   working in this repo's layout; paths are this repo's (rename per your
   workspace).
 - The brand lives app-side as a consumer brand (like Terminal/Ledger/Field
-  Guide), not inside `libs/reporting/theme`.
+  Guide), not inside `libs/theme`.
 - `docs/THEMING.md` is the authoritative narrative walkthrough this spec
   formalizes; on any conflict, THEMING.md and `_contract.scss` win.

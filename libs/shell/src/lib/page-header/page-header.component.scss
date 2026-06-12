@@ -1,0 +1,35 @@
+:host {
+  display: block;
+}
+
+.m3k-page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.m3k-page-header__text {
+  min-width: 0;
+}
+
+// Brand display token: DM Serif Display (Instruments) et al. via the M3
+// display role — the system's signature serif-title move (DESIGN.md).
+.m3k-page-header__title {
+  margin: 0;
+  font: var(--mat-sys-display-small);
+  color: var(--mat-sys-on-surface);
+}
+
+.m3k-page-header__subtitle {
+  margin: 4px 0 0;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+.m3k-page-header__actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  flex: none;
+}

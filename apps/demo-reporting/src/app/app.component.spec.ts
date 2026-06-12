@@ -104,7 +104,7 @@ describe('AppComponent', () => {
     const compiled = fixture.nativeElement as HTMLElement;
 
     // All chrome renders inside the @m3kit/shell app shell.
-    const shell = compiled.querySelector<HTMLElement>('rpt-app-shell');
+    const shell = compiled.querySelector<HTMLElement>('m3k-app-shell');
     expect(shell).toBeTruthy();
 
     // Default brand (instruments) renders the sidenav shell.

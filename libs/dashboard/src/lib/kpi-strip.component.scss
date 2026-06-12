@@ -1,0 +1,86 @@
+// Hairline-divided readout row. The host is the flex container so the
+// strip stretches full width and readouts wrap on narrow viewports.
+:host {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: stretch;
+  width: 100%;
+}
+
+.m3k-kpi-strip {
+  &__readout {
+    flex: 1 1 12rem;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.75rem;
+    border-right: 1px solid var(--mat-sys-outline-variant);
+
+    &:last-child {
+      border-right: none;
+    }
+  }
+
+  &__label {
+    font-size: 0.625rem;
+    font-weight: 600;
+    letter-spacing: 0.18em;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__value-line {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+  }
+
+  &__value {
+    // Readouts use the brand data stack: mono with tabular figures so
+    // adjacent values align like an instrument panel.
+    font-family: var(--app-font-data, 'JetBrains Mono'), monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 1.4375rem;
+    font-weight: 600;
+    letter-spacing: -0.01em;
+    line-height: 1.2;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__delta {
+    display: inline-flex;
+    align-items: center;
+    gap: 0.125rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    letter-spacing: 0.04em;
+    color: var(--mat-sys-on-surface-variant);
+
+    // Sentiment roles per DESIGN.md: positive deltas take the tertiary
+    // (warm accent) role, negative deltas the error role.
+    &--up {
+      color: var(--mat-sys-tertiary);
+    }
+
+    &--down {
+      color: var(--mat-sys-error);
+    }
+  }
+
+  &__delta-icon {
+    font-size: 0.875rem;
+    width: 0.875rem;
+    height: 0.875rem;
+  }
+
+  &__sparkline {
+    align-self: center;
+    margin-left: auto;
+
+    polyline {
+      stroke: var(--mat-sys-primary);
+      vector-effect: non-scaling-stroke;
+    }
+  }
+}

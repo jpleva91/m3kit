@@ -1,7 +1,8 @@
 # Clean-Room Policy
 
 This repository is a public, independently authored, clean-room reference
-implementation of an Angular/Nx reporting architecture. This document is the
+implementation of a rethemable Material 3 UI component library for Angular/Nx
+(m3kit), demonstrated by a synthetic-data reporting demo app. This document is the
 authoritative statement of the clean-room methodology under which every line of
 code, documentation, and fixture data in this repository was produced. It is
 kept current: if the policy changes, this file changes in the same commit.
@@ -18,9 +19,9 @@ author(s) as independent open-source work. Nothing here was copied,
 transcribed, paraphrased, or reconstructed from memory of any private or
 proprietary codebase, document, ticket, design asset, or dataset. The
 architecture and every non-trivial design pattern derive solely from the
-public sources listed in §2 and from generic, industry-common reporting
-concepts (tables, filters, sorting, pagination, export) that are public
-knowledge.
+public sources listed in §2 and from generic, industry-common UI patterns
+(tables, filters, sorting, pagination, dashboards, charts, forms, app chrome,
+export) that are public knowledge.
 
 This repository is independent open-source work authored by Jared Pleva under
 his own personal-venture identity (readybench.io), unaffiliated with and not
@@ -103,7 +104,7 @@ All demo, example, fixture, and documentation data uses exactly these
 synthetic domains: **customers, orders, invoices, support tickets, products**.
 No other domain vocabulary may appear in code, docs, tests, or fixtures. All
 data is fabricated within this repository (factories/fixtures in
-`libs/reporting/testing` or static JSON authored here) and is obviously fake —
+`libs/testing` or static JSON authored here) and is obviously fake —
 no production-like datasets, no scraped data, no PII-shaped real values.
 
 ## 5. Third-party documentation snippets: licensing and attribution
@@ -166,9 +167,9 @@ calls in `docs/BOUNDARY_LOG.md`.
 
 **API shapes & architecture**
 
-- [ ] Interfaces/contracts in `libs/reporting/core` derive from public
+- [ ] Interfaces/contracts in `libs/core` derive from public
       primitives (e.g., CDK `DataSource`, publicly documented REST
-      pagination/sort/filter idioms) and generic reporting needs — not from
+      pagination/sort/filter idioms) and generic data-display needs — not from
       any proprietary API's field names, envelope shape, error model, or
       endpoint structure.
 - [ ] Architecture choices (lib split, tags, phasing) are justified entirely

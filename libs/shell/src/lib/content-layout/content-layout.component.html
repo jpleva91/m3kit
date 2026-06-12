@@ -1,0 +1,27 @@
+<!-- Captured once and stamped per mode: ng-content cannot re-project across
+     @switch branch changes (same pattern as m3k-app-shell's main content). -->
+<ng-template #body><ng-content /></ng-template>
+<ng-template #aside><ng-content select="[m3kContentAside]" /></ng-template>
+
+@switch (mode()) {
+  @case ('split') {
+    <div class="m3k-content-layout m3k-content-layout--split">
+      <div class="m3k-content-layout__primary">
+        <ng-container [ngTemplateOutlet]="body" />
+      </div>
+      <div class="m3k-content-layout__aside">
+        <ng-container [ngTemplateOutlet]="aside" />
+      </div>
+    </div>
+  }
+  @case ('centered') {
+    <div class="m3k-content-layout m3k-content-layout--centered">
+      <ng-container [ngTemplateOutlet]="body" />
+    </div>
+  }
+  @default {
+    <div class="m3k-content-layout m3k-content-layout--full">
+      <ng-container [ngTemplateOutlet]="body" />
+    </div>
+  }
+}

@@ -1,0 +1,8 @@
+<mat-toolbar class="m3k-page-toolbar">
+  <h1 class="m3k-page-toolbar__title">{{ title() }}</h1>
+  @if (rowCount() !== null) {
+    <span class="m3k-page-toolbar__count">{{ rowCount() }} rows</span>
+  }
+  <span class="m3k-page-toolbar__spacer"></span>
+  <ng-content />
+</mat-toolbar>

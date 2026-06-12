@@ -1,5 +1,7 @@
 # Feature Specification: Application Shell Library (`@m3kit/shell`)
 
+> **Historical record:** paths/names in this document predate the 2026-06-11 generalization rename (see ADR-014 in `docs/DECISIONS.md`).
+
 **Feature Branch**: `003-shell-lib`
 
 **Created**: 2026-06-11
@@ -20,7 +22,7 @@ styling, shell depends internally on `@m3kit/core` only, full coverage bar
 ### User Story 1 - Consumer composes a full app from the shell presets (Priority: P1)
 
 As a reference consumer (an enterprise Angular team building an internal app
-from the kit), I can import `rpt-app-shell` from `@m3kit/shell`, hand it a
+from the kit), I can import `m3k-app-shell` from `@m3kit/shell`, hand it a
 navigation model, a title, and one of four layout presets — `sidenav`,
 `command-bar`, `contents-rail`, `pill-tabs` — and project my routed content
 and toolbar controls into it, so I get a complete, branded application chrome
@@ -32,14 +34,14 @@ binds them into an application is trapped in `apps/demo-reporting` — which is
 documented as disposable. Until the presets live in a lib, "consumers compose
 full apps" is not true.
 
-**Independent Test**: Can be fully tested by mounting `rpt-app-shell` in
+**Independent Test**: Can be fully tested by mounting `m3k-app-shell` in
 isolation (Vitest, Storybook, Cypress CT) with each of the four preset values,
 a synthetic nav model, and projected placeholder content — without the demo
 app being migrated at all.
 
 **Acceptance Scenarios**:
 
-1. **Given** `rpt-app-shell` with `preset="sidenav"`, a three-item nav model,
+1. **Given** `m3k-app-shell` with `preset="sidenav"`, a three-item nav model,
    and a title, **When** it renders at desktop width, **Then** a Material
    toolbar and a docked side navigation render, every nav item appears as a
    list row with its icon and label, the active route is marked
@@ -75,7 +77,7 @@ app being migrated at all.
 ### User Story 2 - Demo app shrinks to shell consumption, pixel-equivalent (Priority: P2)
 
 As a maintainer of the reference, I migrate `apps/demo-reporting` to consume
-`rpt-app-shell`, so the demo proves the shell's public API is sufficient for a
+`m3k-app-shell`, so the demo proves the shell's public API is sufficient for a
 real application and the app stops carrying ~530 lines of layout template and
 stylesheet that belong in a lib.
 
@@ -94,7 +96,7 @@ plus the existing app spec/story continuing to pass.
 1. **Given** the migrated app, **When** `app.component.html` and
    `app.component.scss` are inspected, **Then** the four preset `@switch`
    branches and all preset stylesheet sections are gone — the template is a
-   single `rpt-app-shell` element with the nav model, title, preset binding,
+   single `m3k-app-shell` element with the nav model, title, preset binding,
    projected brand/dark-mode controls, and a projected `<router-outlet />`.
 2. **Given** each brand selected in the brand switcher, **When** the shell
    renders, **Then** the brand's preset is visually equivalent to the
@@ -120,9 +122,9 @@ plus the existing app spec/story continuing to pass.
 ### User Story 3 - Page scaffolding helpers complete the composition story (Priority: P3)
 
 As a reference consumer, I can compose the inside of a routed page with the
-same kit quality as the chrome: `rpt-page-header` (display-token title,
-optional subtitle, actions slot), `rpt-breadcrumbs` (accessible trail), and
-`rpt-content-layout` (full / centered / split width modes), so pages I build
+same kit quality as the chrome: `m3k-page-header` (display-token title,
+optional subtitle, actions slot), `m3k-breadcrumbs` (accessible trail), and
+`m3k-content-layout` (full / centered / split width modes), so pages I build
 inside the shell look intentional without bespoke layout CSS.
 
 **Why this priority**: These helpers round out "compose full apps" but are
@@ -134,16 +136,16 @@ required to prove them.
 
 **Acceptance Scenarios**:
 
-1. **Given** `rpt-page-header` with a title, **When** it renders, **Then**
+1. **Given** `m3k-page-header` with a title, **When** it renders, **Then**
    the title is a single `h1` set in the brand display typography token,
    an optional subtitle renders beneath it in a supporting token, and
    projected actions render aligned to the header's end.
-2. **Given** `rpt-breadcrumbs` with an items model, **When** it renders,
+2. **Given** `m3k-breadcrumbs` with an items model, **When** it renders,
    **Then** the trail is a `nav` with an accessible breadcrumb label
    containing an ordered list; intermediate items are router links, the last
    item is plain text marked `aria-current="page"`, and separators are
    presentational (hidden from assistive tech).
-3. **Given** `rpt-content-layout` in each mode, **When** it renders projected
+3. **Given** `m3k-content-layout` in each mode, **When** it renders projected
    content, **Then** `full` spans the available width, `centered` constrains
    content to a readable centered column, and `split` renders a primary
    region and a narrower aside region that stack at handset width.
@@ -188,7 +190,7 @@ required to prove them.
   depend internally on `@m3kit/core` (and the styles-only theme tokens) and
   nothing else; all other internal directions involving the shell MUST be
   lint errors, with no permissive catch-all.
-- **FR-002**: The shell MUST export an `rpt-app-shell` standalone component
+- **FR-002**: The shell MUST export an `m3k-app-shell` standalone component
   with signal inputs: `preset` accepting exactly
   `'sidenav' | 'command-bar' | 'contents-rail' | 'pill-tabs'` (default
   `'sidenav'`), `nav` accepting a readonly array of
@@ -197,7 +199,7 @@ required to prove them.
 - **FR-003**: The exported nav-item type and the exported preset union type
   MUST be part of the shell's public barrel so consumers (including the demo
   app's brand→preset map) type against the library.
-- **FR-004**: `rpt-app-shell` MUST render all navigation and chrome itself —
+- **FR-004**: `m3k-app-shell` MUST render all navigation and chrome itself —
   nav links, active-route marking with `aria-current="page"`, exact-match
   options, titles, footline/folio/pill decorations — from the inputs alone;
   the consumer MUST NOT need to author any per-preset markup.
@@ -217,15 +219,15 @@ required to prove them.
   `sidenav` and `contents-rail` switch to an over-mode overlay, closed by
   default, with a hamburger toggle, and close on nav-link activation;
   `command-bar` and `pill-tabs` wrap their bars and keep controls reachable.
-- **FR-008**: The shell MUST export an `rpt-page-header` component: required
+- **FR-008**: The shell MUST export an `m3k-page-header` component: required
   title rendered as exactly one `h1` in the brand display typography token,
   optional subtitle input, and an actions projection slot.
-- **FR-009**: The shell MUST export an `rpt-breadcrumbs` component taking a
+- **FR-009**: The shell MUST export an `m3k-breadcrumbs` component taking a
   readonly items input (`{ label: string; path?: string }`), rendered as a
   `nav` with an accessible breadcrumb label wrapping an ordered list, router
   links for all but the last item, `aria-current="page"` on the last item,
   and assistive-tech-hidden separators.
-- **FR-010**: The shell MUST export an `rpt-content-layout` component with a
+- **FR-010**: The shell MUST export an `m3k-content-layout` component with a
   mode input accepting exactly `'full' | 'centered' | 'split'`; `split` MUST
   provide primary and aside projection regions that stack at handset width.
 - **FR-011**: All shell stylesheets MUST be token-only per the contract:
@@ -237,7 +239,7 @@ required to prove them.
   collected by the single Storybook host, and a Cypress `*.cy.ts` run by the
   shell's `component-test` target.
 - **FR-013**: `apps/demo-reporting` MUST be migrated to consume
-  `rpt-app-shell`: the four-preset `@switch` template and all preset
+  `m3k-app-shell`: the four-preset `@switch` template and all preset
   stylesheet sections are removed from the app; the app retains only theme
   policy, the brand→preset mapping (now typed against the shell's preset
   union), the nav model, routes, and projected theme controls; existing app
@@ -274,7 +276,7 @@ required to prove them.
 
 - **SC-001**: A consumer can compose a working four-preset application chrome
   using only the shell's documented inputs and slots — demonstrated by
-  Storybook stories and Cypress CT mounting `rpt-app-shell` in all four
+  Storybook stories and Cypress CT mounting `m3k-app-shell` in all four
   presets with zero consumer-authored preset markup.
 - **SC-002**: Side-by-side inspection of all four brand/preset combinations
   (light and dark, desktop and handset) finds the migrated demo visually
@@ -308,7 +310,7 @@ required to prove them.
 - **New presets or preset configuration knobs** (densities, widths,
   collapsible rails) beyond the four shipped arrangements — a future feature
   with its own spec.
-- **Adopting `rpt-page-header`/`rpt-breadcrumbs`/`rpt-content-layout` inside
+- **Adopting `m3k-page-header`/`m3k-breadcrumbs`/`m3k-content-layout` inside
   the demo routes** — the helpers are proven through their coverage
   artifacts; reworking demo pages would break the pixel-equivalence claim
   and is deferred.

@@ -1,0 +1,51 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="Introduction" />
+
+# m3kit
+
+A rethemable Material 3 UI component library — a reference implementation
+built with Angular,
+Angular Material (M3), and NgRx Signals. Everything here is standalone,
+signals-first, `OnPush`, and strictly typed. All demo data is synthetic
+(customers, orders, invoices, products, support tickets).
+
+## Library map
+
+| Library | Import path | Contents |
+| --- | --- | --- |
+| **core** | `@m3kit/core` | Framework-agnostic contracts: `TableDefinition`, `ColumnDef`, `DataQuery`, `DataPage`, `TableDataSource`, `InMemoryTableDataSource`, query/page helpers. No Material dependency. |
+| **table** | `@m3kit/table` | Material-based table UI: `DataTable`, `PageToolbar`, `TableFilterBar`. |
+| **dashboard** | `@m3kit/dashboard` | Dashboard building blocks: `KpiCard`, `KpiStrip`, `DetailCard`, `DashboardGrid`. |
+| **charts** | `@m3kit/charts` | Hand-built SVG charts: `LineChart`, `BarChart`, `DonutChart`, `ChartLegend`, `ChartCard`. |
+| **forms** | `@m3kit/forms` | Typed reactive-form helpers: `FormField`, `FormSection`, `FilterForm`. |
+| **shell** | `@m3kit/shell` | App chrome: `AppShell` (four presets), `PageHeader`, `Breadcrumbs`, `ContentLayout`. |
+| **testing** | `@m3kit/testing` | Synthetic data factories (`makeInvoices`, `makeCustomers`, …) and ready-made table definitions for specs and demos. |
+
+The stories in this Storybook are grouped to match: **Table/**,
+**Dashboard/**, **Charts/**, **Forms/**, **Shell/**, and **App/**
+(components from the demo application that compose the libraries).
+
+## Boundary rules
+
+Dependencies are enforced by lint (`@nx/enforce-module-boundaries`):
+
+- `dashboard`, `forms`, `table`, and `testing` may depend on **core only**.
+- The demo **app** may depend on all libraries.
+- Library stories never import `@m3kit/testing` — they use small local
+  fixtures so each library stays self-contained.
+
+## M3 theming
+
+Components consume Material 3 system tokens (`var(--mat-sys-*)`) — no
+hardcoded colors. The theme is defined once with `mat.theme` and exposes
+light and dark color schemes. Use the **Theme** toolbar control above to
+flip the preview between light and dark; every story should render
+correctly in both without story-level background overrides.
+
+## Adoption
+
+This repository uses a copy-in model: copy the libraries you need into your
+workspace (keeping the `core` → consumer direction), wire up the TypeScript
+path aliases, and adapt the demo app patterns to your own data sources by
+implementing `TableDataSource`.

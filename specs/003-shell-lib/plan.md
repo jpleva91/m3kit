@@ -1,5 +1,7 @@
 # Implementation Plan: Application Shell Library (`@m3kit/shell`)
 
+> **Historical record:** paths/names in this document predate the 2026-06-11 generalization rename (see ADR-014 in `docs/DECISIONS.md`).
+
 **Branch**: `003-shell-lib` | **Date**: 2026-06-11 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/003-shell-lib/spec.md`
@@ -9,9 +11,9 @@
 Promote the four shell layout presets currently hard-coded in
 `apps/demo-reporting/src/app/app.component.*` and
 `apps/demo-reporting/src/app/core/layout-presets.ts` into `libs/reporting/shell`
-(`@m3kit/shell`): an `rpt-app-shell` component driven by `preset`/`nav`/`title`
+(`@m3kit/shell`): an `m3k-app-shell` component driven by `preset`/`nav`/`title`
 inputs with projected content and controls, plus three page scaffolding helpers
-(`rpt-page-header`, `rpt-breadcrumbs`, `rpt-content-layout`). The demo app then
+(`m3k-page-header`, `m3k-breadcrumbs`, `m3k-content-layout`). The demo app then
 shrinks to a consumer of the shell, pixel-equivalent to today across all four
 brands, both modes, desktop and handset. Exit criterion: full gate green
 (lint/test/build + component-test including the shell + Storybook build), with
@@ -88,7 +90,7 @@ libs/reporting/shell/                  # EXISTS as scaffold; this feature popula
 │   ├── index.ts                       # Barrel: components, slot directives, types
 │   └── lib/
 │       ├── app-shell/
-│       │   ├── app-shell.component.ts        # rpt-app-shell (preset/nav/title)
+│       │   ├── app-shell.component.ts        # m3k-app-shell (preset/nav/title)
 │       │   ├── app-shell.component.html      # @switch over the four presets
 │       │   ├── app-shell.component.scss      # token-only, promoted from app.component.scss
 │       │   ├── app-shell.component.spec.ts
@@ -97,20 +99,20 @@ libs/reporting/shell/                  # EXISTS as scaffold; this feature popula
 │       │   ├── shell-slots.ts                # ShellToolbarActionsDirective, ShellRailFooterDirective
 │       │   └── shell-model.ts                # ShellPreset, ShellNavItem
 │       ├── page-header/
-│       │   └── page-header.component.{ts,html,scss,spec.ts,stories.ts,cy.ts}   # rpt-page-header
+│       │   └── page-header.component.{ts,html,scss,spec.ts,stories.ts,cy.ts}   # m3k-page-header
 │       ├── breadcrumbs/
-│       │   ├── breadcrumbs.component.{ts,html,scss,spec.ts,stories.ts,cy.ts}   # rpt-breadcrumbs
+│       │   ├── breadcrumbs.component.{ts,html,scss,spec.ts,stories.ts,cy.ts}   # m3k-breadcrumbs
 │       │   └── breadcrumb-item.ts             # BreadcrumbItem
 │       └── content-layout/
-│           └── content-layout.component.{ts,html,scss,spec.ts,stories.ts,cy.ts} # rpt-content-layout
+│           └── content-layout.component.{ts,html,scss,spec.ts,stories.ts,cy.ts} # m3k-content-layout
 ├── cypress/ …                          # CT support (exists)
 ├── cypress.config.ts                   # exists (skipServe, demo-reporting:build)
-├── project.json                        # exists; prefix corrected to "rpt"
+├── project.json                        # exists; prefix corrected to "m3k"
 └── vite.config.mts                     # exists
 
 apps/demo-reporting/src/app/
 ├── app.component.ts                    # SHRINKS: ThemeService, brands, navLinks, preset computed
-├── app.component.html                  # SHRINKS: <rpt-app-shell> + projected controls + <router-outlet/>
+├── app.component.html                  # SHRINKS: <m3k-app-shell> + projected controls + <router-outlet/>
 ├── app.component.scss                  # SHRINKS: host sizing only (or empty)
 └── core/layout-presets.ts              # KEEPS brand→preset map; LayoutPreset re-typed as ShellPreset
 
@@ -125,7 +127,7 @@ targets already configured) is populated in place; its generated
 `reporting-shell` placeholder component is deleted. One directory per exported
 component, all three coverage artifacts beside each component, following the
 `libs/reporting/dashboard` pattern (standalone, signal `input()`/`computed()`,
-OnPush, `rpt-` selector prefix, token-only `.scss`).
+OnPush, `m3k-` selector prefix, token-only `.scss`).
 
 ### Module Boundaries
 
@@ -155,7 +157,7 @@ imports only `@m3kit/core`".
 
 ### API Design (key decisions)
 
-**`rpt-app-shell`** — the shell owns 100% of the chrome; the consumer owns
+**`m3k-app-shell`** — the shell owns 100% of the chrome; the consumer owns
 routing and policy.
 
 - Inputs (signal-based):
@@ -180,8 +182,8 @@ routing and policy.
   `contentChild()` and stamps them with `NgTemplateOutlet` exactly where each
   preset needs them — the same `ng-template`/`ngTemplateOutlet` mechanism the
   app uses internally today for `toolbarControls`, promoted into the API:
-  - `*rptShellToolbarActions` → `ShellToolbarActionsDirective`
-  - `*rptShellRailFooter` (optional) → `ShellRailFooterDirective`;
+  - `*m3kShellToolbarActions` → `ShellToolbarActionsDirective`
+  - `*m3kShellRailFooter` (optional) → `ShellRailFooterDirective`;
     `contents-rail` stamps it in the rail foot, falling back to the
     toolbar-actions template when absent
 - Responsiveness: `isHandset` from `BreakpointObserver` on
@@ -195,35 +197,35 @@ routing and policy.
   (selector renames only: `app-*` class names stay as-is to minimize diff
   risk to pixel parity). Token-only audit re-run after the move.
 
-**`rpt-page-header`** — `title = input.required<string>()` rendered as the
+**`m3k-page-header`** — `title = input.required<string>()` rendered as the
 component's single `h1` in the brand display token
 (`font: var(--mat-sys-display-small)` family per DESIGN.md);
 `subtitle = input<string>('')` in `--mat-sys-on-surface-variant`; actions via
-`<ng-content select="[rptPageHeaderActions]" />` (attribute-selected
+`<ng-content select="[m3kPageHeaderActions]" />` (attribute-selected
 `ng-content` suffices here — single stamp position).
 
-**`rpt-breadcrumbs`** — `items = input<readonly BreadcrumbItem[]>([])` with
+**`m3k-breadcrumbs`** — `items = input<readonly BreadcrumbItem[]>([])` with
 `interface BreadcrumbItem { label: string; path?: string }`. Renders
 `<nav aria-label="Breadcrumb"><ol>…</ol></nav>`; items with `path` (all but
 last) are `routerLink` anchors, the last renders as text with
 `aria-current="page"`; separators are `aria-hidden="true"` pseudo/spans.
 
-**`rpt-content-layout`** — `mode = input<ContentLayoutMode>('full')` with
+**`m3k-content-layout`** — `mode = input<ContentLayoutMode>('full')` with
 `type ContentLayoutMode = 'full' | 'centered' | 'split'`. `full`: fluid
 width; `centered`: centered column constrained to a readable max width;
 `split`: CSS grid of default `<ng-content />` (primary) +
-`<ng-content select="[rptContentAside]" />` (aside), stacking to one column
+`<ng-content select="[m3kContentAside]" />` (aside), stacking to one column
 at ≤959px.
 
 **Demo app after migration** (the API sufficiency proof):
 
 ```html
-<rpt-app-shell [preset]="layoutPreset()" [nav]="navLinks" [title]="title">
-  <ng-template rptShellToolbarActions>
+<m3k-app-shell [preset]="layoutPreset()" [nav]="navLinks" [title]="title">
+  <ng-template m3kShellToolbarActions>
     <!-- brand menu + dark-mode toggle (app policy, unchanged markup) -->
   </ng-template>
   <router-outlet />
-</rpt-app-shell>
+</m3k-app-shell>
 ```
 
 `core/layout-presets.ts` keeps `BRAND_LAYOUT_PRESETS` but types it
@@ -246,7 +248,7 @@ markup/styles for the menu move nowhere — they were already preset-agnostic.
   switching, nav rendering, `aria-current`, slot fallback, and the
   breakpoint signal (mocked `BreakpointObserver`).
 - **Shell project prefix**: correct `project.json` `"prefix": "lib"` →
-  `"rpt"` so generated/linted selectors match the kit convention.
+  `"m3k"` so generated/linted selectors match the kit convention.
 - **App coverage**: `app.component.spec.ts` and `.stories.ts` are updated to
   the migrated template and must keep passing (the story's
   `withDisabledInitialNavigation` pattern is preserved).

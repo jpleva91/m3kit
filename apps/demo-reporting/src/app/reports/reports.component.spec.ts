@@ -21,14 +21,14 @@ describe('ReportsComponent', () => {
   });
 
   it('renders the invoices report toolbar with the total row count', () => {
-    const toolbar = element.querySelector('rpt-report-toolbar');
+    const toolbar = element.querySelector('m3k-page-toolbar');
     expect(toolbar?.textContent).toContain('Invoices');
     expect(toolbar?.textContent).toContain('120');
   });
 
   it('renders the filter bar and a populated invoice table', () => {
-    expect(element.querySelector('rpt-report-filter-bar')).toBeTruthy();
-    const rows = element.querySelectorAll('rpt-report-table tbody tr');
+    expect(element.querySelector('m3k-table-filter-bar')).toBeTruthy();
+    const rows = element.querySelectorAll('m3k-data-table tbody tr');
     // Default page size of the invoices definition is 10.
     expect(rows.length).toBe(10);
     expect(element.textContent).toContain('INV-2026-');
@@ -37,7 +37,7 @@ describe('ReportsComponent', () => {
   it('renders the field-filter form inside an expansion panel', () => {
     const panel = element.querySelector('mat-expansion-panel');
     expect(panel?.textContent).toContain('Field filters');
-    expect(panel?.querySelector('rpt-filter-form')).toBeTruthy();
+    expect(panel?.querySelector('m3k-filter-form')).toBeTruthy();
   });
 
   it('feeds filter form values into the table as field filters', fakeAsync(() => {
@@ -49,8 +49,8 @@ describe('ReportsComponent', () => {
       10,
     );
 
-    const form = element.querySelector('rpt-filter-form') as HTMLElement;
-    const customerField = Array.from(form.querySelectorAll('rpt-form-field')).find(
+    const form = element.querySelector('m3k-filter-form') as HTMLElement;
+    const customerField = Array.from(form.querySelectorAll('m3k-form-field')).find(
       (field) => field.textContent?.includes('Customer'),
     ) as HTMLElement;
     const input = customerField.querySelector('input') as HTMLInputElement;
@@ -61,7 +61,7 @@ describe('ReportsComponent', () => {
     fixture.detectChanges();
 
     const customerCells = Array.from(
-      element.querySelectorAll('rpt-report-table td.cdk-column-customerName'),
+      element.querySelectorAll('m3k-data-table td.cdk-column-customerName'),
     ).map((cell) => cell.textContent?.trim());
     expect(customerCells.length).toBe(expectedRows);
     expect(customerCells.every((cell) => cell === target)).toBe(true);

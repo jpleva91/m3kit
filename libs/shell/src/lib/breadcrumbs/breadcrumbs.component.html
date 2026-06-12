@@ -1,0 +1,22 @@
+<nav class="m3k-breadcrumbs" aria-label="Breadcrumb">
+  <ol class="m3k-breadcrumbs__list">
+    @for (item of items(); track $index; let last = $last) {
+      <li class="m3k-breadcrumbs__item">
+        @if (!last && item.path) {
+          <a class="m3k-breadcrumbs__link" [routerLink]="item.path">{{
+            item.label
+          }}</a>
+        } @else if (!last) {
+          <span class="m3k-breadcrumbs__text">{{ item.label }}</span>
+        } @else {
+          <span class="m3k-breadcrumbs__current" aria-current="page">{{
+            item.label
+          }}</span>
+        }
+        @if (!last) {
+          <span class="m3k-breadcrumbs__separator" aria-hidden="true">/</span>
+        }
+      </li>
+    }
+  </ol>
+</nav>

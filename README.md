@@ -1,22 +1,23 @@
 # m3kit
 
-A **rethemable Material 3 UI component kit** — a clean-room Angular/Nx
-reference implementation, demonstrated through a generic enterprise reporting
-domain — report definitions, tabular display, filtering, sorting, pagination,
-and dashboard primitives — with synthetic data in a small Angular Material demo
-app. Components consume design tokens only; brands are token re-emissions, so
-the entire kit reskins (four demo brands, each light + dark) without touching
-component code.
+A **rethemable Material 3 UI component library** for Angular/Nx — data
+tables, dashboard primitives, hand-built SVG charts, typed forms, app-shell
+presets, and an SCSS theming SDK, all clean-room authored. Components consume
+design tokens only; brands are token re-emissions, so the entire kit reskins
+(four demo brands, each light + dark) without touching component code. The
+library is demonstrated by a small synthetic-data reporting demo app
+(`apps/demo-reporting`).
 
 This is a **reference to be read and copied, not a dependency to be installed**.
 The intended adoption model is source internalization: evaluate the repository,
-import the `libs/reporting/*` source into your own workspace (or fork it
+import the `libs/*` source into your own workspace (or fork it
 internally), and own it outright. Nothing here is published to npm, and there is
 no semver contract across versions.
 
 ## Why
 
-Enterprise Angular teams repeatedly rebuild the same reporting plumbing. This
+Enterprise Angular teams repeatedly rebuild the same UI plumbing — data
+tables, dashboards, charts, filter forms, app chrome, theming. This
 repository provides an independently authored, conventionally structured starting
 point on a pinned, mutually-compatible stack, with library boundaries enforced by
 tooling rather than convention. All example content uses synthetic domains only
@@ -24,11 +25,11 @@ tooling rather than convention. All example content uses synthetic domains only
 for the provenance policy.
 
 **Status:** feature phase — scaffold verified (see `docs/DECISIONS.md`), then
-the reporting feature set landed behind the clean-room review gate: core
-contracts and query engine, the Material report table/filter/toolbar suite,
-dashboard primitives, definition-driven filter forms, synthetic data factories,
-and a Storybook covering every component. Unit tests run on Vitest; component
-tests on Cypress.
+the component set landed behind the clean-room review gate: core contracts and
+query engine, the Material data-table/filter/toolbar suite, dashboard
+primitives, hand-built SVG charts, definition-driven filter forms, app-shell
+presets, the theming SDK, synthetic data factories, and a Storybook covering
+every component. Unit tests run on Vitest; component tests on Cypress.
 
 ## Pinned stack
 
@@ -64,19 +65,20 @@ For a reproducible install from a fresh clone, use
 | Path | What it is |
 |---|---|
 | `apps/demo-reporting` | Angular 19 standalone demo app: Material shell with dashboard, invoices, and customers pages, plus the brand/mode switcher. Disposable during adoption. |
-| `libs/reporting/core` (`@m3kit/core`) | Reporting contracts. No Material/CDK, no internal dependencies. |
-| `libs/reporting/material` (`@m3kit/material`) | Material/CDK UI layer. May depend on core only. |
-| `libs/reporting/testing` (`@m3kit/testing`) | Test harnesses and synthetic data factories. May depend on core only. |
-| `libs/reporting/dashboard` (`@m3kit/dashboard`) | Dashboard primitives: KPI cards, detail cards, grid. May depend on core only. |
-| `libs/reporting/forms` (`@m3kit/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
-| `libs/reporting/shell` (`@m3kit/shell`) | App shell presets and page chrome: `rpt-app-shell` (four chrome presets), page header, breadcrumbs, content layout. May depend on core only. |
-| `libs/reporting/theme` (`@m3kit/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
+| `libs/core` (`@m3kit/core`) | UI-free contracts: table/column definitions, query/filter/sort/pagination models, datasource interfaces. No Material/CDK, no internal dependencies. |
+| `libs/table` (`@m3kit/table`) | Material/CDK table layer: `m3k-data-table`, `m3k-table-filter-bar`, `m3k-page-toolbar`. May depend on core only. |
+| `libs/testing` (`@m3kit/testing`) | Test harnesses and synthetic data factories. May depend on core only. |
+| `libs/dashboard` (`@m3kit/dashboard`) | Dashboard primitives: KPI cards, detail cards, grid. May depend on core only. |
+| `libs/charts` (`@m3kit/charts`) | Hand-built SVG charts: line, bar, donut, legend, chart card. May depend on core only. |
+| `libs/forms` (`@m3kit/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
+| `libs/shell` (`@m3kit/shell`) | App shell presets and page chrome: `m3k-app-shell` (four chrome presets), page header, breadcrumbs, content layout. May depend on core only. |
+| `libs/theme` (`@m3kit/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
 | `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `THEMING.md`, `DECISIONS.md`. |
 | `LICENSE` | Apache License 2.0 full text. |
 
-Library dependency rules (core depends on nothing internal; material, testing,
-dashboard, forms, and shell each depend on core only; the app may use all of
-them) are
+Library dependency rules (core depends on nothing internal; table, testing,
+dashboard, charts, forms, and shell each depend on core only; the app may use
+all of them) are
 machine-enforced via `@nx/enforce-module-boundaries` in `eslint.config.mjs`.
 The SCSS-only theme lib sits outside the TypeScript import graph; its consumers
 resolve it through a `stylePreprocessorOptions` includePath instead (see
@@ -86,7 +88,7 @@ resolve it through a `stylePreprocessorOptions` includePath instead (see
 
 The component libraries are styled exclusively through tokens: Material 3
 system tokens (`--mat-sys-*`) plus a small `--app-*` contract defined in
-`libs/reporting/theme`. A brand implements two mixins (`brand-light()` /
+`libs/theme`. A brand implements two mixins (`brand-light()` /
 `brand-dark()`) and is registered under a root class; the demo app ships four
 runtime-switchable brands as proof. To bring your own brand — generated M3
 palettes, status badge colors, shape radii, fonts, Storybook toolbar — follow

@@ -1,0 +1,49 @@
+<mat-card
+  appearance="outlined"
+  class="m3k-kpi-card"
+  [class.m3k-kpi-card--with-accent]="cornerAccent() !== null"
+  [class.m3k-kpi-card--accent-positive]="cornerAccent() === 'positive'"
+  [class.m3k-kpi-card--accent-negative]="cornerAccent() === 'negative'"
+  [class.m3k-kpi-card--accent-neutral]="cornerAccent() === 'neutral'"
+>
+  @if (cornerAccent() !== null) {
+    <div class="m3k-kpi-card__corner-accent" aria-hidden="true"></div>
+  }
+  <mat-card-content>
+    <div class="m3k-kpi-card__header">
+      @if (icon(); as iconName) {
+        <mat-icon class="m3k-kpi-card__icon" aria-hidden="true">{{ iconName }}</mat-icon>
+      }
+      <span class="m3k-kpi-card__label">{{ label() }}</span>
+    </div>
+
+    <div class="m3k-kpi-card__value">{{ formattedValue() }}</div>
+
+    @if (delta() !== null) {
+      <div
+        class="m3k-kpi-card__delta"
+        [class.m3k-kpi-card__delta--up]="delta()! > 0"
+        [class.m3k-kpi-card__delta--down]="delta()! < 0"
+      >
+        @if (delta()! > 0) {
+          <mat-icon class="m3k-kpi-card__delta-icon" aria-hidden="true">arrow_upward</mat-icon>
+        } @else if (delta()! < 0) {
+          <mat-icon class="m3k-kpi-card__delta-icon" aria-hidden="true">arrow_downward</mat-icon>
+        }
+        <span>{{ formattedDelta() }}</span>
+      </div>
+    }
+
+    @if (sparklinePoints(); as points) {
+      <svg
+        class="m3k-kpi-card__sparkline"
+        [attr.viewBox]="sparklineViewBox"
+        preserveAspectRatio="none"
+        role="img"
+        [attr.aria-label]="label() + ' trend'"
+      >
+        <polyline [attr.points]="points" fill="none" stroke-width="2" />
+      </svg>
+    }
+  </mat-card-content>
+</mat-card>

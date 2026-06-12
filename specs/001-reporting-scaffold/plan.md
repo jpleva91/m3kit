@@ -1,5 +1,7 @@
 # Implementation Plan: Reporting Reference Workspace Scaffold
 
+> **Historical record:** paths/names in this document predate the 2026-06-11 generalization rename (see ADR-014 in `docs/DECISIONS.md`).
+
 **Branch**: `001-reporting-scaffold` | **Date**: 2026-06-11 | **Spec**: [spec.md](./spec.md)
 
 **Input**: Feature specification from `/specs/001-reporting-scaffold/spec.md`

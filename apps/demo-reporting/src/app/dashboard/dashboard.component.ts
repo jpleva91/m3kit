@@ -117,7 +117,7 @@ export class DashboardComponent {
     this.openTickets.map((ticket) => ticket.openedAt),
   );
 
-  /** The four metrics as `rpt-kpi-strip` readouts (command-bar preset). */
+  /** The four metrics as `m3k-kpi-strip` readouts (command-bar preset). */
   protected readonly kpiStripItems: readonly KpiStripItem[] = [
     {
       label: 'Total revenue',

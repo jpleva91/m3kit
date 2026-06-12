@@ -1,7 +1,7 @@
 <section class="report-page">
-  <rpt-report-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
+  <m3k-page-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
 
-  <rpt-report-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
+  <m3k-table-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
 
   <mat-accordion class="report-page__filters">
     <mat-expansion-panel>
@@ -9,7 +9,7 @@
         <mat-panel-title>Field filters</mat-panel-title>
         <mat-panel-description>Filter by individual columns</mat-panel-description>
       </mat-expansion-panel-header>
-      <rpt-filter-form
+      <m3k-filter-form
         [definition]="definition"
         [options]="filterOptions"
         (filtersChange)="onFiltersChange($event)"
@@ -17,7 +17,7 @@
     </mat-expansion-panel>
   </mat-accordion>
 
-  <rpt-report-table
+  <m3k-data-table
     #table
     [definition]="definition"
     [dataSource]="dataSource"

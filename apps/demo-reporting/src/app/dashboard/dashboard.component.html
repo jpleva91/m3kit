@@ -7,46 +7,46 @@
   <!-- Terminal: hairline KPI strip, tight three-up chart row, compact details. -->
   @case ('command-bar') {
     <section class="dashboard dashboard--command-bar">
-      <rpt-page-header class="dashboard__header" title="Dashboard" />
+      <m3k-page-header class="dashboard__header" title="Dashboard" />
 
-      <rpt-kpi-strip class="dashboard__strip" [items]="kpiStripItems" />
+      <m3k-kpi-strip class="dashboard__strip" [items]="kpiStripItems" />
 
       <div class="dashboard__chart-strip">
-        <rpt-chart-card title="Revenue" subtitle="Paid, trailing 12 months">
-          <rpt-line-chart
+        <m3k-chart-card title="Revenue" subtitle="Paid, trailing 12 months">
+          <m3k-line-chart
             [series]="revenueSeries"
             [height]="180"
             ariaLabel="Paid revenue by month, trailing twelve months"
           />
-        </rpt-chart-card>
-        <rpt-chart-card title="Monthly volume" subtitle="Invoices by status">
-          <rpt-bar-chart
+        </m3k-chart-card>
+        <m3k-chart-card title="Monthly volume" subtitle="Invoices by status">
+          <m3k-bar-chart
             [categories]="monthlyStatus.categories"
             [series]="monthlyStatus.series"
             mode="stacked"
             [height]="180"
             ariaLabel="Monthly invoice counts stacked by status"
           />
-        </rpt-chart-card>
-        <rpt-chart-card title="Status mix" subtitle="All invoices">
-          <rpt-donut-chart
+        </m3k-chart-card>
+        <m3k-chart-card title="Status mix" subtitle="All invoices">
+          <m3k-donut-chart
             [slices]="statusSlices"
             centerLabel="Invoices"
             [centerValue]="invoiceCount"
             [height]="180"
             ariaLabel="Invoice count by status"
           />
-          <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
-        </rpt-chart-card>
+          <m3k-chart-legend m3kChartCardLegend [items]="statusLegend" />
+        </m3k-chart-card>
       </div>
 
       <div class="dashboard__detail-row">
-        <rpt-detail-card
+        <m3k-detail-card
           title="Latest invoice"
           [subtitle]="latestInvoice.number"
           [rows]="latestInvoiceRows"
         />
-        <rpt-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
+        <m3k-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
       </div>
     </section>
   }
@@ -54,7 +54,7 @@
   <!-- Ledger: typeset figure rail; charts stack single-column in the broadsheet. -->
   @case ('contents-rail') {
     <section class="dashboard dashboard--contents-rail">
-      <rpt-page-header class="dashboard__header" title="Dashboard" />
+      <m3k-page-header class="dashboard__header" title="Dashboard" />
 
       <div class="dashboard__columns">
         <section class="dashboard__figures" aria-label="Principal figures">
@@ -83,39 +83,39 @@
         </section>
 
         <div class="dashboard__broadsheet">
-          <rpt-chart-card title="Receipts across the year" subtitle="Paid invoices, by month">
-            <rpt-line-chart
+          <m3k-chart-card title="Receipts across the year" subtitle="Paid invoices, by month">
+            <m3k-line-chart
               [series]="revenueSeries"
               [area]="true"
               ariaLabel="Paid revenue by month, trailing twelve months"
             />
-          </rpt-chart-card>
-          <rpt-chart-card title="Composition of the book" subtitle="Invoices by status">
-            <rpt-donut-chart
+          </m3k-chart-card>
+          <m3k-chart-card title="Composition of the book" subtitle="Invoices by status">
+            <m3k-donut-chart
               [slices]="statusSlices"
               centerLabel="Invoices"
               [centerValue]="invoiceCount"
               ariaLabel="Invoice count by status"
             />
-            <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
-          </rpt-chart-card>
-          <rpt-chart-card title="The monthly account" subtitle="Invoice counts by status">
-            <rpt-bar-chart
+            <m3k-chart-legend m3kChartCardLegend [items]="statusLegend" />
+          </m3k-chart-card>
+          <m3k-chart-card title="The monthly account" subtitle="Invoice counts by status">
+            <m3k-bar-chart
               [categories]="monthlyStatus.categories"
               [series]="monthlyStatus.series"
               mode="stacked"
               ariaLabel="Monthly invoice counts stacked by status"
             />
-            <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
-          </rpt-chart-card>
+            <m3k-chart-legend m3kChartCardLegend [items]="statusLegend" />
+          </m3k-chart-card>
 
           <div class="dashboard__details">
-            <rpt-detail-card
+            <m3k-detail-card
               title="Latest invoice"
               [subtitle]="latestInvoice.number"
               [rows]="latestInvoiceRows"
             />
-            <rpt-detail-card
+            <m3k-detail-card
               title="Top customer"
               subtitle="By total billed"
               [rows]="topCustomerRows"
@@ -129,10 +129,10 @@
   <!-- Field Guide: the default composition with sentiment corner accents. -->
   @case ('pill-tabs') {
     <section class="dashboard">
-      <rpt-page-header class="dashboard__header" title="Dashboard" />
+      <m3k-page-header class="dashboard__header" title="Dashboard" />
 
-      <rpt-dashboard-grid minColumnWidth="14rem" gap="1rem">
-        <rpt-kpi-card
+      <m3k-dashboard-grid minColumnWidth="14rem" gap="1rem">
+        <m3k-kpi-card
           label="Total revenue"
           [value]="totalRevenue"
           format="currency"
@@ -141,7 +141,7 @@
           icon="payments"
           cornerAccent="positive"
         />
-        <rpt-kpi-card
+        <m3k-kpi-card
           label="Open invoices"
           [value]="openInvoiceCount"
           format="number"
@@ -149,7 +149,7 @@
           icon="receipt_long"
           cornerAccent="neutral"
         />
-        <rpt-kpi-card
+        <m3k-kpi-card
           label="Overdue"
           [value]="overdueCount"
           format="number"
@@ -157,7 +157,7 @@
           icon="event_busy"
           cornerAccent="negative"
         />
-        <rpt-kpi-card
+        <m3k-kpi-card
           label="Open tickets"
           [value]="openTicketCount"
           format="number"
@@ -165,48 +165,48 @@
           icon="support_agent"
           cornerAccent="neutral"
         />
-      </rpt-dashboard-grid>
+      </m3k-dashboard-grid>
 
       <div class="dashboard__chart-row">
-        <rpt-chart-card title="Revenue by month" subtitle="Paid, trailing 12 months">
-          <rpt-line-chart
+        <m3k-chart-card title="Revenue by month" subtitle="Paid, trailing 12 months">
+          <m3k-line-chart
             [series]="revenueSeries"
             [area]="true"
             ariaLabel="Paid revenue by month, trailing twelve months"
           />
-        </rpt-chart-card>
-        <rpt-chart-card title="Invoices by status" subtitle="All invoices">
-          <rpt-donut-chart
+        </m3k-chart-card>
+        <m3k-chart-card title="Invoices by status" subtitle="All invoices">
+          <m3k-donut-chart
             [slices]="statusSlices"
             centerLabel="Invoices"
             [centerValue]="invoiceCount"
             ariaLabel="Invoice count by status"
           />
-          <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
-        </rpt-chart-card>
+          <m3k-chart-legend m3kChartCardLegend [items]="statusLegend" />
+        </m3k-chart-card>
       </div>
 
-      <rpt-chart-card
+      <m3k-chart-card
         class="dashboard__chart-wide"
         title="Monthly invoices by status"
         subtitle="Counts per issue month"
       >
-        <rpt-bar-chart
+        <m3k-bar-chart
           [categories]="monthlyStatus.categories"
           [series]="monthlyStatus.series"
           mode="stacked"
           ariaLabel="Monthly invoice counts stacked by status"
         />
-        <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
-      </rpt-chart-card>
+        <m3k-chart-legend m3kChartCardLegend [items]="statusLegend" />
+      </m3k-chart-card>
 
       <div class="dashboard__detail-grid">
-        <rpt-detail-card
+        <m3k-detail-card
           title="Latest invoice"
           [subtitle]="latestInvoice.number"
           [rows]="latestInvoiceRows"
         />
-        <rpt-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
+        <m3k-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
       </div>
     </section>
   }
@@ -214,10 +214,10 @@
   <!-- Instruments (sidenav): KPI grid, two-up charts, full-width bars, details. -->
   @default {
     <section class="dashboard">
-      <rpt-page-header class="dashboard__header" title="Dashboard" />
+      <m3k-page-header class="dashboard__header" title="Dashboard" />
 
-      <rpt-dashboard-grid minColumnWidth="14rem" gap="1rem">
-        <rpt-kpi-card
+      <m3k-dashboard-grid minColumnWidth="14rem" gap="1rem">
+        <m3k-kpi-card
           label="Total revenue"
           [value]="totalRevenue"
           format="currency"
@@ -225,69 +225,69 @@
           [sparkline]="revenueByMonth"
           icon="payments"
         />
-        <rpt-kpi-card
+        <m3k-kpi-card
           label="Open invoices"
           [value]="openInvoiceCount"
           format="number"
           [delta]="openInvoicesDelta"
           icon="receipt_long"
         />
-        <rpt-kpi-card
+        <m3k-kpi-card
           label="Overdue"
           [value]="overdueCount"
           format="number"
           [delta]="overdueDelta"
           icon="event_busy"
         />
-        <rpt-kpi-card
+        <m3k-kpi-card
           label="Open tickets"
           [value]="openTicketCount"
           format="number"
           [delta]="openTicketsDelta"
           icon="support_agent"
         />
-      </rpt-dashboard-grid>
+      </m3k-dashboard-grid>
 
       <div class="dashboard__chart-row">
-        <rpt-chart-card title="Revenue by month" subtitle="Paid, trailing 12 months">
-          <rpt-line-chart
+        <m3k-chart-card title="Revenue by month" subtitle="Paid, trailing 12 months">
+          <m3k-line-chart
             [series]="revenueSeries"
             [area]="true"
             ariaLabel="Paid revenue by month, trailing twelve months"
           />
-        </rpt-chart-card>
-        <rpt-chart-card title="Invoices by status" subtitle="All invoices">
-          <rpt-donut-chart
+        </m3k-chart-card>
+        <m3k-chart-card title="Invoices by status" subtitle="All invoices">
+          <m3k-donut-chart
             [slices]="statusSlices"
             centerLabel="Invoices"
             [centerValue]="invoiceCount"
             ariaLabel="Invoice count by status"
           />
-          <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
-        </rpt-chart-card>
+          <m3k-chart-legend m3kChartCardLegend [items]="statusLegend" />
+        </m3k-chart-card>
       </div>
 
-      <rpt-chart-card
+      <m3k-chart-card
         class="dashboard__chart-wide"
         title="Monthly invoices by status"
         subtitle="Counts per issue month"
       >
-        <rpt-bar-chart
+        <m3k-bar-chart
           [categories]="monthlyStatus.categories"
           [series]="monthlyStatus.series"
           mode="stacked"
           ariaLabel="Monthly invoice counts stacked by status"
         />
-        <rpt-chart-legend rptChartCardLegend [items]="statusLegend" />
-      </rpt-chart-card>
+        <m3k-chart-legend m3kChartCardLegend [items]="statusLegend" />
+      </m3k-chart-card>
 
       <div class="dashboard__detail-grid">
-        <rpt-detail-card
+        <m3k-detail-card
           title="Latest invoice"
           [subtitle]="latestInvoice.number"
           [rows]="latestInvoiceRows"
         />
-        <rpt-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
+        <m3k-detail-card title="Top customer" subtitle="By total billed" [rows]="topCustomerRows" />
       </div>
     </section>
   }

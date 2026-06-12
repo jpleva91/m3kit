@@ -3,6 +3,8 @@
 description: "Task list for the application shell library (@m3kit/shell)"
 ---
 
+> **Historical record:** paths/names in this document predate the 2026-06-11 generalization rename (see ADR-014 in `docs/DECISIONS.md`).
+
 # Tasks: Application Shell Library (`@m3kit/shell`)
 
 **Input**: Design documents from `/specs/003-shell-lib/`
@@ -32,7 +34,7 @@ description: "Task list for the application shell library (@m3kit/shell)"
 - [x] T001 Add the `scope:reporting-shell` depConstraint to the root `eslint.config.mjs` (`onlyDependOnLibsWithTags: ['scope:reporting-core', 'scope:reporting-theme']`, mirroring sibling libs) and add `'scope:reporting-shell'` to the `type:app` allow-list; no permissive catch-all
 - [x] T002 Prove enforcement with a deliberate violation: temporarily import `@m3kit/material` from inside `libs/reporting/shell/src/index.ts`, confirm `npx nx lint reporting-shell` fails with a module-boundary error, revert, and record the check in `docs/BOUNDARY_LOG.md`
 - [x] T003 [P] Add the shell stories glob `'../../shell/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))'` to `libs/reporting/material/.storybook/main.ts`
-- [x] T004 [P] Shell lib hygiene in `libs/reporting/shell`: set `"prefix": "rpt"` in `project.json`; delete the generated placeholder `src/lib/reporting-shell/` component; leave `src/index.ts` exporting nothing yet (restored in Phase 2); confirm `npx nx test reporting-shell` and `npx nx lint reporting-shell` still run
+- [x] T004 [P] Shell lib hygiene in `libs/reporting/shell`: set `"prefix": "m3k"` in `project.json`; delete the generated placeholder `src/lib/reporting-shell/` component; leave `src/index.ts` exporting nothing yet (restored in Phase 2); confirm `npx nx test reporting-shell` and `npx nx lint reporting-shell` still run
 
 ---
 
@@ -43,7 +45,7 @@ description: "Task list for the application shell library (@m3kit/shell)"
 **⚠️ CRITICAL**: No user story work can begin until this phase is complete
 
 - [x] T005 Create `libs/reporting/shell/src/lib/app-shell/shell-model.ts`: `export type ShellPreset = 'sidenav' | 'command-bar' | 'contents-rail' | 'pill-tabs'` and `export interface ShellNavItem { path: string; label: string; icon?: string; exact?: boolean }` (promoted from the app's `LayoutPreset` and `NavLink`), with doc comments describing each preset
-- [x] T006 Create `libs/reporting/shell/src/lib/app-shell/shell-slots.ts`: `ShellToolbarActionsDirective` (selector `[rptShellToolbarActions]`) and `ShellRailFooterDirective` (selector `[rptShellRailFooter]`), each a standalone structural-slot directive exposing its `TemplateRef`
+- [x] T006 Create `libs/reporting/shell/src/lib/app-shell/shell-slots.ts`: `ShellToolbarActionsDirective` (selector `[m3kShellToolbarActions]`) and `ShellRailFooterDirective` (selector `[m3kShellRailFooter]`), each a standalone structural-slot directive exposing its `TemplateRef`
 - [x] T007 Create `libs/reporting/shell/src/lib/breadcrumbs/breadcrumb-item.ts`: `export interface BreadcrumbItem { label: string; path?: string }`; export ShellPreset, ShellNavItem, BreadcrumbItem, ContentLayoutMode (placeholder until T019), and both slot directives from `libs/reporting/shell/src/index.ts`
 
 **Checkpoint**: Foundation ready - user story implementation can now begin
@@ -52,13 +54,13 @@ description: "Task list for the application shell library (@m3kit/shell)"
 
 ## Phase 3: User Story 1 - Consumer composes a full app from the shell presets (Priority: P1) 🎯 MVP
 
-**Goal**: `rpt-app-shell` renders all four preset chromes from `preset`/`nav`/`title` inputs with projected main content and template slots, handset behavior intact, token-only styling
+**Goal**: `m3k-app-shell` renders all four preset chromes from `preset`/`nav`/`title` inputs with projected main content and template slots, handset behavior intact, token-only styling
 
-**Independent Test**: Mount `rpt-app-shell` in isolation (spec/story/CT) per preset with a synthetic nav model and placeholder projected content — no demo-app changes required
+**Independent Test**: Mount `m3k-app-shell` in isolation (spec/story/CT) per preset with a synthetic nav model and placeholder projected content — no demo-app changes required
 
 ### Implementation for User Story 1
 
-- [x] T008 [US1] Create `rpt-app-shell` in `libs/reporting/shell/src/lib/app-shell/app-shell.component.ts`: standalone, OnPush, signal inputs `preset` (default `'sidenav'`), `nav` (default `[]`), `title` (default `''`); `contentChild()` for the two slot directives; `isHandset` via `BreakpointObserver` on `'(max-width: 959px)'` through `toSignal` (promoted verbatim from `apps/demo-reporting/src/app/app.component.ts`); imports limited to NgTemplateOutlet, RouterLink/RouterLinkActive (NOT RouterOutlet), and Material toolbar/sidenav/list/icon/button
+- [x] T008 [US1] Create `m3k-app-shell` in `libs/reporting/shell/src/lib/app-shell/app-shell.component.ts`: standalone, OnPush, signal inputs `preset` (default `'sidenav'`), `nav` (default `[]`), `title` (default `''`); `contentChild()` for the two slot directives; `isHandset` via `BreakpointObserver` on `'(max-width: 959px)'` through `toSignal` (promoted verbatim from `apps/demo-reporting/src/app/app.component.ts`); imports limited to NgTemplateOutlet, RouterLink/RouterLinkActive (NOT RouterOutlet), and Material toolbar/sidenav/list/icon/button
 - [x] T009 [US1] Promote the four-preset template into `libs/reporting/shell/src/lib/app-shell/app-shell.component.html`: move the `@switch` branches from `apps/demo-reporting/src/app/app.component.html` verbatim, replacing the in-app `toolbarControls`/`content` ng-templates with the slot mechanism — default `<ng-content />` once per branch for main content; toolbar-actions template stamped via `NgTemplateOutlet` at each preset's controls position (toolbar end for sidenav/pill-tabs, controls cell for command-bar, rail foot for contents-rail); rail-footer template used by contents-rail when present, falling back to toolbar-actions; `link.exact ?? false` in `routerLinkActiveOptions`; preserve `aria-current`, hamburger toggles, close-on-navigate, footline and folio details exactly
 - [x] T010 [US1] Promote the styles into `libs/reporting/shell/src/lib/app-shell/app-shell.component.scss`: move `:host` sizing, all four preset sections, and the ≤959px media query from `apps/demo-reporting/src/app/app.component.scss` verbatim (class names unchanged); audit token-only compliance (`var(--mat-sys-*)` + `--app-*` only, no hex, no per-brand selectors)
 - [x] T011 [US1] Export `AppShellComponent` from `libs/reporting/shell/src/index.ts`; `npx nx lint reporting-shell` green
@@ -72,7 +74,7 @@ description: "Task list for the application shell library (@m3kit/shell)"
 
 ## Phase 4: User Story 2 - Demo app shrinks to shell consumption, pixel-equivalent (Priority: P2)
 
-**Goal**: `apps/demo-reporting` consumes `rpt-app-shell`; all preset markup/styles deleted from the app; four brands visually equivalent to pre-migration in both modes at desktop and handset
+**Goal**: `apps/demo-reporting` consumes `m3k-app-shell`; all preset markup/styles deleted from the app; four brands visually equivalent to pre-migration in both modes at desktop and handset
 
 **Independent Test**: Serve the app, switch through all four brands (each maps to a different preset) in light/dark at desktop/handset and compare against pre-migration behavior; app spec/story pass
 
@@ -80,7 +82,7 @@ description: "Task list for the application shell library (@m3kit/shell)"
 
 - [x] T015 [US2] Re-type the brand map in `apps/demo-reporting/src/app/core/layout-presets.ts`: import `ShellPreset` from `@m3kit/shell`, keep `BRAND_LAYOUT_PRESETS: Record<ThemeBrand, ShellPreset>`, delete the local `LayoutPreset` union (or alias it to `ShellPreset` for continuity)
 - [x] T016 [US2] Migrate `apps/demo-reporting/src/app/app.component.ts`: import `AppShellComponent`, `ShellToolbarActionsDirective`, `ShellNavItem` from `@m3kit/shell`; replace the local `NavLink` with `ShellNavItem`; keep ThemeService, brands, `layoutPreset` computed, navLinks, title; drop NgTemplateOutlet/BreakpointObserver/toolbar/sidenav/list imports now owned by the shell (keep icon/button/menu for the projected controls)
-- [x] T017 [US2] Shrink `apps/demo-reporting/src/app/app.component.html` to shell consumption: `<rpt-app-shell [preset]="layoutPreset()" [nav]="navLinks" [title]="title">` + `<ng-template rptShellToolbarActions>` wrapping the unchanged brand-menu/dark-toggle markup + projected `<router-outlet />`; delete all four `@switch` preset branches; shrink `app.component.scss` to at most `:host` sizing — zero preset styling remains (verify by grep for `command-`, `rail-`, `pill-` classes in the app)
+- [x] T017 [US2] Shrink `apps/demo-reporting/src/app/app.component.html` to shell consumption: `<m3k-app-shell [preset]="layoutPreset()" [nav]="navLinks" [title]="title">` + `<ng-template m3kShellToolbarActions>` wrapping the unchanged brand-menu/dark-toggle markup + projected `<router-outlet />`; delete all four `@switch` preset branches; shrink `app.component.scss` to at most `:host` sizing — zero preset styling remains (verify by grep for `command-`, `rail-`, `pill-` classes in the app)
 - [x] T018 [US2] Keep app coverage green and verify parity: update `apps/demo-reporting/src/app/app.component.spec.ts` and `app.component.stories.ts` for the migrated template (same behavioral assertions re-pointed at shell output, `withDisabledInitialNavigation` story pattern preserved); `npx nx serve demo-reporting` and walk the parity checklist — 4 brands × {light, dark} × {desktop, handset}: structure, tokens, active states, footline/folio/pill details, overlay/hamburger and wrapping behavior all match pre-migration; fix any drift in the shell, not the app
 
 **Checkpoint**: At this point, User Stories 1 AND 2 should both work independently
@@ -89,15 +91,15 @@ description: "Task list for the application shell library (@m3kit/shell)"
 
 ## Phase 5: User Story 3 - Page scaffolding helpers (Priority: P3)
 
-**Goal**: `rpt-page-header`, `rpt-breadcrumbs`, and `rpt-content-layout` exported with full coverage; token-only; synthetic copy
+**Goal**: `m3k-page-header`, `m3k-breadcrumbs`, and `m3k-content-layout` exported with full coverage; token-only; synthetic copy
 
 **Independent Test**: Mount each helper in isolation (spec/story/CT); no demo-app changes
 
 ### Implementation for User Story 3
 
-- [x] T019 [P] [US3] Create `rpt-page-header` in `libs/reporting/shell/src/lib/page-header/`: `title = input.required<string>()` rendered as the single `h1` in the brand display token per DESIGN.md, optional `subtitle` input in `--mat-sys-on-surface-variant`, `<ng-content select="[rptPageHeaderActions]" />` aligned to the end; export from the barrel; ship `page-header.component.spec.ts` (h1 count/typography hook, subtitle optionality, actions projection), `.stories.ts` (with/without subtitle/actions, synthetic copy e.g. "Invoices"), `.cy.ts`
-- [x] T020 [P] [US3] Create `rpt-breadcrumbs` in `libs/reporting/shell/src/lib/breadcrumbs/`: `items = input<readonly BreadcrumbItem[]>([])` rendered as `<nav aria-label="Breadcrumb"><ol>`; routerLink anchors for items with `path`, last item plain text with `aria-current="page"`, separators `aria-hidden="true"`; export from the barrel; ship `breadcrumbs.component.spec.ts` (link vs. current-item rendering, single-item and empty edge cases, aria attributes), `.stories.ts` (router provided; e.g. Reports → Customers → Acme Manufacturing), `.cy.ts`
-- [x] T021 [P] [US3] Create `rpt-content-layout` in `libs/reporting/shell/src/lib/content-layout/`: `mode = input<ContentLayoutMode>('full')` with `export type ContentLayoutMode = 'full' | 'centered' | 'split'`; `full` fluid, `centered` readable centered column, `split` grid of default `<ng-content />` + `<ng-content select="[rptContentAside]" />` stacking at ≤959px; export component and type from the barrel; ship `content-layout.component.spec.ts` (mode classes, slot projection), `.stories.ts` (all three modes with synthetic content), `.cy.ts` (incl. split stacking at handset viewport)
+- [x] T019 [P] [US3] Create `m3k-page-header` in `libs/reporting/shell/src/lib/page-header/`: `title = input.required<string>()` rendered as the single `h1` in the brand display token per DESIGN.md, optional `subtitle` input in `--mat-sys-on-surface-variant`, `<ng-content select="[m3kPageHeaderActions]" />` aligned to the end; export from the barrel; ship `page-header.component.spec.ts` (h1 count/typography hook, subtitle optionality, actions projection), `.stories.ts` (with/without subtitle/actions, synthetic copy e.g. "Invoices"), `.cy.ts`
+- [x] T020 [P] [US3] Create `m3k-breadcrumbs` in `libs/reporting/shell/src/lib/breadcrumbs/`: `items = input<readonly BreadcrumbItem[]>([])` rendered as `<nav aria-label="Breadcrumb"><ol>`; routerLink anchors for items with `path`, last item plain text with `aria-current="page"`, separators `aria-hidden="true"`; export from the barrel; ship `breadcrumbs.component.spec.ts` (link vs. current-item rendering, single-item and empty edge cases, aria attributes), `.stories.ts` (router provided; e.g. Reports → Customers → Acme Manufacturing), `.cy.ts`
+- [x] T021 [P] [US3] Create `m3k-content-layout` in `libs/reporting/shell/src/lib/content-layout/`: `mode = input<ContentLayoutMode>('full')` with `export type ContentLayoutMode = 'full' | 'centered' | 'split'`; `full` fluid, `centered` readable centered column, `split` grid of default `<ng-content />` + `<ng-content select="[m3kContentAside]" />` stacking at ≤959px; export component and type from the barrel; ship `content-layout.component.spec.ts` (mode classes, slot projection), `.stories.ts` (all three modes with synthetic content), `.cy.ts` (incl. split stacking at handset viewport)
 - [x] T022 [US3] Token + copy audit of the whole shell lib: zero raw hex, zero per-brand selectors, only `var(--mat-sys-*)`/`--app-*` in every `*.scss`; all story/spec/CT copy from approved synthetic domains or neutral text; `npx nx test reporting-shell` and `ELECTRON_EXTRA_LAUNCH_ARGS=--no-sandbox npx nx run reporting-shell:component-test` green
 
 **Checkpoint**: All user stories should now be independently functional
@@ -126,7 +128,7 @@ description: "Task list for the application shell library (@m3kit/shell)"
 ### User Story Dependencies
 
 - **User Story 1 (P1)**: Can start after Foundational — no dependencies on other stories
-- **User Story 2 (P2)**: Depends on US1 (`rpt-app-shell` must exist and be exported) — the migration is the API-sufficiency proof
+- **User Story 2 (P2)**: Depends on US1 (`m3k-app-shell` must exist and be exported) — the migration is the API-sufficiency proof
 - **User Story 3 (P3)**: Can start after Foundational; independent of US1/US2 component code (shares only the barrel file — coordinate `index.ts` edits)
 
 ### Within Each User Story
@@ -150,7 +152,7 @@ description: "Task list for the application shell library (@m3kit/shell)"
 
 1. Complete Phase 1: Setup (boundaries proven before code)
 2. Complete Phase 2: Foundational (types + slot directives)
-3. Complete Phase 3: User Story 1 — `rpt-app-shell` with all four presets and full coverage is the MVP
+3. Complete Phase 3: User Story 1 — `m3k-app-shell` with all four presets and full coverage is the MVP
 4. **STOP and VALIDATE**: `npx nx test reporting-shell`, shell CT run, shell stories render per preset; demo app untouched and still green
 
 ### Incremental Delivery

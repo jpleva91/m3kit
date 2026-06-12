@@ -1,0 +1,104 @@
+/// @m3kit/theme — the component-facing theming contract.
+///
+/// This library is SCSS-only. Consumers resolve it Nx-style through
+/// `stylePreprocessorOptions.includePaths: ["libs/theme/src"]`
+/// (wired in the demo app `build` target and in the Storybook
+/// `storybook` / `build-storybook` targets), which makes
+/// `@use 'm3kit-theme'` (this contract) and
+/// `@use 'm3kit-theme/themes/instruments'` (the default brand)
+/// resolve from any stylesheet in the workspace.
+///
+/// ── Custom-property API (what components may consume) ─────────────────
+///
+/// Status badge tokens — container / on-container pairs, one per kind:
+///   --app-status-{paid,sent,overdue,draft,void}-bg
+///   --app-status-{paid,sent,overdue,draft,void}-fg
+///
+/// Shape tokens:
+///   --app-radius-card      cards and panels
+///   --app-radius-control   inputs, buttons, chips
+///   --app-radius-badge     status badges (999px = pill)
+///
+/// Typography:
+///   --app-font-data        data-cell (tabular/mono) font stack. Optional:
+///                          brands emit it only once the component layer
+///                          exposes a hook for it.
+///
+/// Chart series tokens — categorical data-series palette:
+///   --app-chart-{1..6}     six distinct series colors per brand; consumers
+///                          cycle through them in order (series 7 wraps to
+///                          --app-chart-1). Brands provide separate light and
+///                          dark lists; `brand-dark()` re-emits all six.
+///
+/// The theme is the token source: components must consume these via
+/// `var()`, never raw hex.
+///
+/// ── Brand mixin contract ───────────────────────────────────────────────
+///
+/// Every brand module (the lib's `themes/instruments` plus any consumer
+/// brand, e.g. the demo app's Terminal / Ledger / Field Guide) exposes two
+/// zero-argument mixins:
+///
+/// - `brand-light()` emits the full light theme: `mat.theme` color +
+///   typography + density tokens, `status-tokens()`, `radius-tokens()`,
+///   `chart-tokens()`, and `color-scheme: light`.
+/// - `brand-dark()` re-emits only what changes in dark mode: `mat.theme`
+///   color tokens, `status-tokens()`, `chart-tokens()` (tones adjusted for
+///   dark surfaces), and `color-scheme: dark`.
+///   Typography, density, and radius are inherited from the light emission
+///   (the brand's light selector always also matches in dark mode).
+@use 'sass:list';
+@use 'sass:map';
+
+/// Status kinds, in emission order. `status-tokens()` requires an entry
+/// for every kind so a brand can never ship a partial badge palette.
+$status-kinds: draft, sent, paid, overdue, void;
+
+/// Emits the `--app-status-*` pairs from a map of
+/// `(kind: (bg: <color>, fg: <color>))` covering every `$status-kinds`
+/// entry.
+@mixin status-tokens($statuses) {
+  @each $kind in $status-kinds {
+    $pair: map.get($statuses, $kind);
+    @if $pair == null {
+      @error 'status-tokens(): missing status kind `#{$kind}`.';
+    }
+    --app-status-#{$kind}-bg: #{map.get($pair, bg)};
+    --app-status-#{$kind}-fg: #{map.get($pair, fg)};
+  }
+}
+
+/// Emits the `--app-radius-*` shape tokens. Defaults are the Instruments
+/// values (cards md 10px, controls sm 6px, badges full pill).
+@mixin radius-tokens($card: 10px, $control: 6px, $badge: 999px) {
+  --app-radius-card: #{$card};
+  --app-radius-control: #{$control};
+  --app-radius-badge: #{$badge};
+}
+
+/// Emits `--app-font-data`, the data-cell (tabular figures / mono) stack.
+@mixin font-data($family) {
+  --app-font-data: #{$family};
+}
+
+/// Number of categorical chart-series slots every brand must fill.
+$chart-series-count: 6;
+
+/// Emits the `--app-chart-1`..`--app-chart-6` categorical series palette
+/// from exactly `$chart-series-count` colors, in series order.
+///
+/// This is the data-visualization counterpart to the status pairs: a
+/// closed set of six distinct, accessible hues per brand. Consumers
+/// (chart components) cycle through the tokens in order — series 1 takes
+/// `--app-chart-1`, series 7 wraps back to `--app-chart-1` — and never
+/// pick colors themselves. Brands provide separate light and dark lists
+/// (dark tones are lightened/desaturated for dark surfaces) and re-emit
+/// all six from `brand-dark()`.
+@mixin chart-tokens($colors...) {
+  @if list.length($colors) != $chart-series-count {
+    @error 'chart-tokens(): expected #{$chart-series-count} series colors, got #{list.length($colors)}.';
+  }
+  @for $i from 1 through $chart-series-count {
+    --app-chart-#{$i}: #{list.nth($colors, $i)};
+  }
+}

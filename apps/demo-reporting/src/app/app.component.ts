@@ -18,7 +18,7 @@ import { BRAND_LAYOUT_PRESETS } from './core/layout-presets';
 import { ThemeBrand, ThemeService } from './core/theme.service';
 
 /**
- * App root: the chrome is delegated to `rpt-app-shell` (`@m3kit/shell`).
+ * App root: the chrome is delegated to `m3k-app-shell` (`@m3kit/shell`).
  * The app keeps only its policy — which shell preset each brand gets
  * (BRAND_LAYOUT_PRESETS), the navigation model, and the theme controls
  * projected into the shell's toolbar-actions slot.

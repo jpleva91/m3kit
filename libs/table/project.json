@@ -1,0 +1,106 @@
+{
+  "name": "m3kit-table",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "libs/table/src",
+  "prefix": "lib",
+  "projectType": "library",
+  "tags": [
+    "type:lib",
+    "scope:m3kit-table"
+  ],
+  "implicitDependencies": [
+    "m3kit-theme"
+  ],
+  "targets": {
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "reportsDirectory": "../../coverage/libs/table"
+      }
+    },
+    "lint": {
+      "executor": "@nx/eslint:lint"
+    },
+    "storybook": {
+      "executor": "@storybook/angular:start-storybook",
+      "options": {
+        "port": 4400,
+        "configDir": "libs/table/.storybook",
+        "browserTarget": "m3kit-table:build-storybook",
+        "compodoc": false,
+        "styles": [
+          "libs/table/.storybook/storybook-theme.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/theme/src"
+          ]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "build-storybook": {
+      "executor": "@storybook/angular:build-storybook",
+      "outputs": [
+        "{options.outputDir}"
+      ],
+      "options": {
+        "outputDir": "dist/storybook/m3kit-table",
+        "configDir": "libs/table/.storybook",
+        "browserTarget": "m3kit-table:build-storybook",
+        "compodoc": false,
+        "styles": [
+          "libs/table/.storybook/storybook-theme.scss"
+        ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "libs/theme/src"
+          ]
+        }
+      },
+      "configurations": {
+        "ci": {
+          "quiet": true
+        }
+      }
+    },
+    "test-storybook": {
+      "executor": "nx:run-commands",
+      "options": {
+        "command": "test-storybook -c libs/table/.storybook --url=http://localhost:4400"
+      }
+    },
+    "static-storybook": {
+      "executor": "@nx/web:file-server",
+      "dependsOn": [
+        "build-storybook"
+      ],
+      "options": {
+        "buildTarget": "m3kit-table:build-storybook",
+        "staticFilePath": "dist/storybook/m3kit-table",
+        "spa": true
+      },
+      "configurations": {
+        "ci": {
+          "buildTarget": "m3kit-table:build-storybook:ci"
+        }
+      }
+    },
+    "component-test": {
+      "executor": "@nx/cypress:cypress",
+      "options": {
+        "cypressConfig": "libs/table/cypress.config.ts",
+        "testingType": "component",
+        "skipServe": true,
+        "devServerTarget": "demo-reporting:build"
+      }
+    }
+  }
+}

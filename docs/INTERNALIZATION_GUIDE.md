@@ -23,9 +23,9 @@ to a read-only reference. There is no shared-fork relationship and no sync-back.
    ```
 3. Copy the library sources — **source files only, not git history**:
    ```bash
-   cp -r /tmp/m3kit/libs/reporting <your-workspace>/libs/
+   cp -r /tmp/m3kit/libs/* <your-workspace>/libs/
    ```
-   Adjust the destination to your layout (e.g. `libs/shared/reporting`). Do **not**
+   Adjust the destination to your layout (e.g. `libs/shared/`). Do **not**
    copy `apps/demo-reporting` (demo-only), `node_modules`, `dist`, the lockfile, or
    the root workspace config files — your workspace already has its own.
 4. Copy in via a plain file copy, not `git subtree`/`git submodule`/fork-clone. The
@@ -37,7 +37,7 @@ to a read-only reference. There is no shared-fork relationship and no sync-back.
    workspace-wide import-specifier replace.
 7. Commit the import as a single, clearly labeled commit, e.g.:
    ```
-   feat(reporting): internalize m3kit libs (Apache-2.0, source import)
+   feat(ui): internalize m3kit libs (Apache-2.0, source import)
    ```
    Note the upstream repo URL and the commit/tag you copied from in the commit body.
    That one line is your entire provenance record — keep it accurate.
@@ -66,10 +66,10 @@ find libs -name ".git" -maxdepth 4
 - The imported code now versions with **your** workspace. There is no upstream version
   to track; this reference does not publish releases or maintain a compatibility
   matrix.
-- If your monorepo versions per-lib, give the reporting libs your standard initial
+- If your monorepo versions per-lib, give the imported libs your standard initial
   version. If it versions the repo as a whole, the libs simply ride along.
 - Delete any mental model of "we're on reference version X." After import there is
-  only "our reporting code." Record the import-source commit in the import commit
+  only "our UI code." Record the import-source commit in the import commit
   message (Step 1) and move on.
 - Future Angular/Material/CDK/NgRx upgrades happen through your normal upgrade
   process (`ng update`/`nx migrate`), applied to this code like any other first-party
@@ -81,7 +81,7 @@ This reference deliberately ships no CI provider config; the verification contra
 single command. Wire it into your existing CI:
 
 ```bash
-npx nx run-many -t lint test build   # or scope it: nx run-many -t lint test build -p <your-reporting-projects>
+npx nx run-many -t lint test build   # or scope it: nx run-many -t lint test build -p <your-imported-projects>
 ```
 
 Minimum bar to call the internalization CI-complete:
@@ -102,20 +102,19 @@ proof does not transfer — only the method does.
 1. Confirm your `@nx/enforce-module-boundaries` `depConstraints` express the
    rules (in your tag vocabulary):
    - core/contracts lib → depends on no internal project
-   - material/ui lib → may depend only on core
+   - the UI libs (table, dashboard, charts, forms, shell) → each may depend
+     only on core
    - testing lib → may depend only on core
-   - dashboard lib → may depend only on core
-   - forms lib → may depend only on core
    - consuming apps → may depend on all of the libs
 
    (The theme lib is SCSS-only and has no TypeScript entry point, so it sits
    outside the TS module-boundary graph — its coupling is via SCSS `@use` and
    the builder's `stylePreprocessorOptions.includePaths`.)
 2. Introduce a deliberate violation: in the core lib, add a temporary import from the
-   material lib, e.g.
+   table lib, e.g.
    ```ts
    // TEMPORARY — boundary proof, do not commit
-   import { /* anything exported */ } from '<your-scope>/reporting-material';
+   import { /* anything exported */ } from '<your-scope>/m3kit-table';
    ```
 3. Run lint on the core lib and **confirm it fails** with an
    `@nx/enforce-module-boundaries` error. If lint passes, your constraints are not
@@ -133,7 +132,7 @@ and never publishing your changes. Your obligations when copying it in:
 - **Retain the license text.** Keep a copy of the Apache-2.0 `LICENSE` available for
   the imported code. If your repo is already Apache-2.0, the root LICENSE covers it.
   If your repo uses a different (or proprietary) license, keep the Apache-2.0 text
-  with the imported code (e.g. `libs/reporting/LICENSE` or a third-party-licenses
+  with the imported code (e.g. `libs/LICENSE` or a third-party-licenses
   manifest entry).
 - **Retain attribution.** This repo's policy is **no per-file license headers**;
   attribution lives in the root `LICENSE` plus a NOTICE-style statement in the
@@ -159,10 +158,10 @@ Work through this once. When every box is checked, the internalization is comple
 sync-back, no upstream issue support, no expectation that upstream changes will be
 merged into your copy, and no expectation that your improvements flow back.
 
-- [ ] `libs/reporting/*` source copied into the consumer workspace; `apps/demo-reporting`
+- [ ] `libs/*` source copied into the consumer workspace; `apps/demo-reporting`
       and the reference's root config/docs **not** copied.
 - [ ] Import paths renamed (`@m3kit/*` → your scope); zero remaining references to
-      `@m3kit/core|material|testing|dashboard|forms` in the workspace, and no
+      `@m3kit/core|table|testing|dashboard|charts|forms|shell` in the workspace, and no
       remaining SCSS `@use 'm3kit-theme'` references under the old name if you
       renamed the theme entry point.
 - [ ] Project names and tags renamed into your workspace's taxonomy.
