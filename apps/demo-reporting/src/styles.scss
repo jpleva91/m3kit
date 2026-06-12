@@ -1,5 +1,8 @@
 /* Global styles: Material 3 system tokens + base layout. */
 @use './styles/theme';
+/* Severity panel styles for @m3kit/feedback SnackbarService (snackbars
+ * render in the CDK overlay container, outside component encapsulation). */
+@use '../../../libs/feedback/src/lib/snackbar.styles';
 
 @include theme.app-theme();
 

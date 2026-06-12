@@ -100,14 +100,15 @@ Companion scaffolds — `component`, `brand`, `report-page`,
 | `libs/charts` (`@m3kit/charts`) | Hand-built SVG charts: line, bar, donut, legend, chart card. May depend on core only. |
 | `libs/forms` (`@m3kit/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
 | `libs/shell` (`@m3kit/shell`) | App shell presets and page chrome: `m3k-app-shell` (four chrome presets), page header, breadcrumbs, content layout. May depend on core only. |
+| `libs/feedback` (`@m3kit/feedback`) | Feedback and status surfaces: empty state, error state, banner, skeleton, plus confirm-dialog and snackbar services. May depend on core only. |
 | `libs/state` (`@m3kit/state`) | NgRx SignalStore features (withDataQuery, withSelection, theme store). Depends on core only. |
 | `libs/theme` (`@m3kit/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
 | `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `THEMING.md`, `DECISIONS.md`. |
 | `LICENSE` | Apache License 2.0 full text. |
 
 Library dependency rules (core depends on nothing internal; table, testing,
-dashboard, charts, forms, and shell each depend on core only; the app may use
-all of them) are
+dashboard, charts, forms, shell, and feedback each depend on core only; the
+app may use all of them) are
 machine-enforced via `@nx/enforce-module-boundaries` in `eslint.config.mjs`.
 The SCSS-only theme lib sits outside the TypeScript import graph; its consumers
 resolve it through a `stylePreprocessorOptions` includePath instead (see

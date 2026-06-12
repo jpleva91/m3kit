@@ -6,6 +6,7 @@ const config: StorybookConfig = {
     '../**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../charts/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../dashboard/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
+    '../../feedback/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../forms/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../shell/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../state/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',

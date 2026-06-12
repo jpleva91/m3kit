@@ -67,6 +67,13 @@ export default [
               ],
             },
             {
+              sourceTag: 'scope:m3kit-feedback',
+              onlyDependOnLibsWithTags: [
+                'scope:m3kit-core',
+                'scope:m3kit-theme',
+              ],
+            },
+            {
               sourceTag: 'scope:m3kit-forms',
               onlyDependOnLibsWithTags: [
                 'scope:m3kit-core',
@@ -90,6 +97,7 @@ export default [
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
                 'scope:m3kit-core',
+                'scope:m3kit-feedback',
                 'scope:m3kit-state',
                 'scope:m3kit-table',
                 'scope:m3kit-testing',

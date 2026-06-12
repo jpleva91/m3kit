@@ -1,0 +1,13 @@
+<div class="m3k-empty-state">
+  <div class="m3k-empty-state__icon" aria-hidden="true">
+    <mat-icon>{{ icon() }}</mat-icon>
+  </div>
+
+  <h3 class="m3k-empty-state__title">{{ title() }}</h3>
+
+  @if (description(); as desc) {
+    <p class="m3k-empty-state__description">{{ desc }}</p>
+  }
+
+  <div class="m3k-empty-state__actions"><ng-content select="[m3kEmptyStateActions]" /></div>
+</div>

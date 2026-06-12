@@ -1,0 +1,78 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as SkeletonStories from './skeleton.component.stories';
+
+{/* Attached docs page: renders as Molecules/Skeleton/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={SkeletonStories} />
+
+# Skeleton
+
+`m3k-skeleton` is a loading placeholder: a surface-toned block in one of
+three shapes (text line, rectangle, circle). Compose several to sketch the
+layout of the content being loaded — an avatar, a title, a chart area — so
+the page keeps its structure while data arrives.
+
+The only motion is a calm 1.6s opacity pulse; there is no shimmer sweep
+(DESIGN.md bans skeleton-shimmer theater), and the animation is disabled
+entirely under `prefers-reduced-motion: reduce`.
+
+**Atomic level:** Molecule — a single placeholder block, intended to be
+composed into loading sketches.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { SkeletonComponent } from '@m3kit/feedback';
+
+@Component({
+  selector: 'app-invoice-card-loading',
+  imports: [SkeletonComponent],
+  template: `
+    <m3k-skeleton variant="circle" />
+    <m3k-skeleton variant="text" width="55%" />
+    <m3k-skeleton variant="rect" height="8rem" />
+  `,
+})
+export class InvoiceCardLoadingComponent {}
+```
+
+<Canvas of={SkeletonStories.ComposedCard} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `variant` | `'text' \| 'rect' \| 'circle'` | `'text'` | Placeholder shape. Defaults per variant: text `100% × 1em`, rect `100% × 6rem`, circle `2.5rem`. |
+| `width` | `string \| null` | `null` | Optional CSS width override (e.g. `'60%'`, `'12rem'`). |
+| `height` | `string \| null` | `null` | Optional CSS height override (e.g. `'8rem'`). |
+
+Outputs: none. The block is `aria-hidden` — announce loading state on the
+surrounding region (e.g. `aria-busy`), not on the placeholder.
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--mat-sys-surface-container-high` | Placeholder fill (visible on surface in both modes). |
+| `--app-radius-control` | Text-line border radius. |
+| `--app-radius-card` | Rect border radius. |
+
+## Do / Don't
+
+- **Do** mirror the real content's layout — same widths, same rhythm — so
+  the swap from skeleton to data does not shift the page.
+- **Don't** add shimmer sweeps, gradients, or staggered entrance animations
+  around skeletons in stories or apps — the calm pulse is the entire motion
+  budget.
+- **Don't** skeleton tiny inline elements (a single chip); reserve it for
+  card- and section-level loading.
+
+## Related
+
+- [EmptyState](?path=/docs/molecules-emptystate--docs) — when loading
+  finished and there is nothing to show.
+- [Banner](?path=/docs/molecules-banner--docs) — for feedback about events,
+  not loading.

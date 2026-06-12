@@ -79,6 +79,33 @@ container background with a high-contrast foreground from the same hue family,
 flipped in tone for dark mode (see the `$_status-light` / `$_status-dark` maps
 in any brand module for worked values).
 
+### Severity feedback tokens
+
+Container / on-container color pairs for feedback surfaces (banners, inline
+alerts), one per severity. The kind list is closed: `info`, `success`,
+`warning`, `error` (the `$severity-kinds` list in `_contract.scss`). The
+`severity-tokens()` helper errors at compile time if a brand omits any kind,
+so a partial feedback palette cannot ship.
+
+**Per-brand adoption is optional polish.** Feedback components consume these
+tokens through chained `var()` fallbacks onto M3 system container pairs, so a
+brand that never calls `severity-tokens()` still renders correct feedback
+surfaces from its `mat.theme` emission. The fallback mapping is fixed:
+
+| Token | Consumed by | Light/dark notes |
+|---|---|---|
+| `--app-severity-info-bg` / `--app-severity-info-fg` | `libs/feedback/src/lib/banner.component.scss` and `libs/feedback/src/lib/snackbar.styles.scss` (severity surfaces), falling back to `--mat-sys-primary-container` / `--mat-sys-on-primary-container` | Brands that adopt the mixin provide separate light and dark maps; `brand-dark()` re-emits all four pairs. |
+| `--app-severity-success-bg` / `--app-severity-success-fg` | same, falling back to `--app-status-paid-bg` / `--app-status-paid-fg`, then `--mat-sys-primary-container` / `--mat-sys-on-primary-container` | same |
+| `--app-severity-warning-bg` / `--app-severity-warning-fg` | same, falling back to `--mat-sys-tertiary-container` / `--mat-sys-on-tertiary-container` | same |
+| `--app-severity-error-bg` / `--app-severity-error-fg` | same, falling back to `--mat-sys-error-container` / `--mat-sys-on-error-container` | same |
+
+Pick severity pairs the way you pick status pairs — muted container,
+high-contrast foreground from the same hue family, flipped in tone for dark
+mode. The Instruments worked values (`$_severity-light` / `$_severity-dark`
+in the default brand module) derive from its status palette discipline: info
+shares the primary family, success the paid family, error the overdue family,
+and warning the tertiary family (DESIGN.md: "warning = tertiary family").
+
 ### Shape tokens
 
 | Token | Consumed by | Light/dark notes |
@@ -128,6 +155,10 @@ The contract's emit helpers enforce the token names so brands cannot drift:
 
 - `status-tokens($map)` — `$map` is `(kind: (bg: <color>, fg: <color>))`
   covering every `$status-kinds` entry; missing kinds are a compile error.
+- `severity-tokens($map)` — `$map` is `(kind: (bg: <color>, fg: <color>))`
+  covering every `$severity-kinds` entry; missing kinds are a compile error.
+  Optional polish (see "Severity feedback tokens" above): components fall
+  back to M3 system pairs when a brand does not emit these.
 - `radius-tokens($card: 10px, $control: 6px, $badge: 999px)` — defaults are
   the Instruments values; override per brand.
 - `font-data($family)` — emits `--app-font-data` (hold off until the

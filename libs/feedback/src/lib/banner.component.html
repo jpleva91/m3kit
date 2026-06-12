@@ -1,0 +1,23 @@
+<div class="m3k-banner" [class]="'m3k-banner--' + severity()" [attr.role]="role()">
+  <mat-icon class="m3k-banner__icon" aria-hidden="true">{{ icon() }}</mat-icon>
+
+  <div class="m3k-banner__message">
+    <ng-content />
+  </div>
+
+  <div class="m3k-banner__action">
+    <ng-content select="[m3kBannerAction]" />
+  </div>
+
+  @if (dismissible()) {
+    <button
+      mat-icon-button
+      type="button"
+      class="m3k-banner__dismiss"
+      aria-label="Dismiss"
+      (click)="dismissed.emit()"
+    >
+      <mat-icon>close</mat-icon>
+    </button>
+  }
+</div>

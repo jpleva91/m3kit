@@ -1,0 +1,47 @@
+:host {
+  display: block;
+}
+
+.m3k-skeleton {
+  // Surface-container tone: visible against surface in both modes
+  // without inventing a color.
+  background: var(--mat-sys-surface-container-high);
+  // Calm 1.6s opacity pulse only — no shimmer sweep (DESIGN.md bans
+  // skeleton-shimmer theater).
+  animation: m3k-skeleton-pulse 1.6s ease-in-out infinite;
+
+  &--text {
+    width: 100%;
+    height: 1em;
+    border-radius: var(--app-radius-control, 6px);
+  }
+
+  &--rect {
+    width: 100%;
+    height: 6rem;
+    border-radius: var(--app-radius-card, 12px);
+  }
+
+  &--circle {
+    width: 2.5rem;
+    height: 2.5rem;
+    border-radius: 50%;
+  }
+}
+
+@keyframes m3k-skeleton-pulse {
+  0%,
+  100% {
+    opacity: 1;
+  }
+
+  50% {
+    opacity: 0.55;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .m3k-skeleton {
+    animation: none;
+  }
+}

@@ -8,6 +8,9 @@
  * stylePreprocessorOptions includePath `libs/theme/src` set on
  * the storybook/build-storybook targets. */
 @use '../../../apps/demo-reporting/src/styles/theme';
+// Severity panel styles for @m3kit/feedback SnackbarService (snackbars
+// render in the CDK overlay container, outside component encapsulation).
+@use '../../feedback/src/lib/snackbar.styles';
 
 @include theme.app-theme();
 

@@ -1,0 +1,19 @@
+// Dialog surface, radius, title typography, and padding all come from
+// Material's own dialog tokens (brands restyle them via `mat.theme` /
+// `mat.dialog-overrides` emissions) — only the message tone and the
+// destructive confirm posture are styled here.
+
+.m3k-confirm-dialog__message {
+  margin: 0;
+  font: var(--mat-sys-body-medium);
+  color: var(--mat-sys-on-surface-variant);
+}
+
+// Destructive posture: re-point the filled button's Material tokens at the
+// M3 error role. Pure token re-emission — no raw color, no Material
+// internals targeted.
+.m3k-confirm-dialog__confirm--destructive {
+  --mdc-filled-button-container-color: var(--mat-sys-error);
+  --mdc-filled-button-label-text-color: var(--mat-sys-on-error);
+  --mat-filled-button-state-layer-color: var(--mat-sys-on-error);
+}

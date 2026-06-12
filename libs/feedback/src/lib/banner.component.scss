@@ -1,0 +1,74 @@
+:host {
+  display: block;
+}
+
+.m3k-banner {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.5rem 0.75rem;
+  // Strip silhouette: control radius (instrument-panel precision), flat —
+  // no shadow per DESIGN.md elevation discipline; 1px tonal border.
+  border: 1px solid var(--mat-sys-outline-variant);
+  border-radius: var(--app-radius-control, 8px);
+  font-size: 0.875rem;
+  line-height: 1.4;
+
+  // Severity pairs come from the optional `--app-severity-*` contract
+  // tokens with chained fallbacks following the DESIGN.md semantic mapping
+  // (info = primary family, success = paid/status family, warning =
+  // tertiary family, error = error family) — the same chains as
+  // snackbar.styles.scss — so brands that haven't adopted
+  // `severity-tokens()` still render correctly (docs/THEMING.md).
+  &--info {
+    background: var(--app-severity-info-bg, var(--mat-sys-primary-container));
+    color: var(--app-severity-info-fg, var(--mat-sys-on-primary-container));
+  }
+
+  &--success {
+    background: var(
+      --app-severity-success-bg,
+      var(--app-status-paid-bg, var(--mat-sys-primary-container))
+    );
+    color: var(
+      --app-severity-success-fg,
+      var(--app-status-paid-fg, var(--mat-sys-on-primary-container))
+    );
+  }
+
+  &--warning {
+    background: var(--app-severity-warning-bg, var(--mat-sys-tertiary-container));
+    color: var(--app-severity-warning-fg, var(--mat-sys-on-tertiary-container));
+  }
+
+  &--error {
+    background: var(--app-severity-error-bg, var(--mat-sys-error-container));
+    color: var(--app-severity-error-fg, var(--mat-sys-on-error-container));
+  }
+
+  // Small optical size per DESIGN.md (no oversized icons).
+  &__icon {
+    flex: none;
+    font-size: 1.25rem;
+    width: 1.25rem;
+    height: 1.25rem;
+  }
+
+  &__message {
+    flex: 1 1 auto;
+    min-width: 0;
+  }
+
+  &__action {
+    flex: none;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+  }
+
+  &__dismiss {
+    flex: none;
+    // Inherit the severity foreground so the close glyph stays on-pair.
+    color: inherit;
+  }
+}

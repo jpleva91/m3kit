@@ -1,0 +1,31 @@
+<div class="m3k-error-state">
+  <div class="m3k-error-state__icon" aria-hidden="true">
+    <mat-icon>{{ icon() }}</mat-icon>
+  </div>
+
+  <h3 class="m3k-error-state__title">{{ title() }}</h3>
+
+  @if (description(); as desc) {
+    <p class="m3k-error-state__description">{{ desc }}</p>
+  }
+
+  @if (details(); as text) {
+    <details class="m3k-error-state__details">
+      <summary class="m3k-error-state__details-summary">Technical details</summary>
+      <pre class="m3k-error-state__details-text">{{ text }}</pre>
+    </details>
+  }
+
+  <div class="m3k-error-state__actions">
+    <ng-content select="[m3kErrorStateActions]">
+      <button
+        mat-stroked-button
+        type="button"
+        class="m3k-error-state__retry"
+        (click)="retry.emit()"
+      >
+        Try again
+      </button>
+    </ng-content>
+  </div>
+</div>

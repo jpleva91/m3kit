@@ -1,0 +1,80 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as EmptyStateStories from './empty-state.component.stories';
+
+{/* Attached docs page: renders as Molecules/EmptyState/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={EmptyStateStories} />
+
+# EmptyState
+
+`m3k-empty-state` is a centered presentational block for no-data surfaces — an
+empty invoice list, a filter combination with no matches, a dashboard panel
+before its first record. It renders a Material Symbols icon in a tonal circle,
+a title, an optional description, and a content-projection slot for actions
+("New invoice", "Clear filters"). It carries no data logic: the consumer
+decides when the surface is empty and what the next step is.
+
+**Atomic level:** Molecule — composed from Material `mat-icon` inside a
+token-styled centered column.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { EmptyStateComponent } from '@m3kit/feedback';
+
+@Component({
+  selector: 'app-invoice-list-empty',
+  imports: [EmptyStateComponent],
+  template: `
+    <m3k-empty-state
+      icon="receipt_long"
+      title="No invoices yet"
+      description="Invoices you issue will appear here."
+    >
+      <button m3kEmptyStateActions mat-stroked-button>New invoice</button>
+    </m3k-empty-state>
+  `,
+})
+export class InvoiceListEmptyComponent {}
+```
+
+<Canvas of={EmptyStateStories.Default} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `icon` | `string` | `'inbox'` | Material Symbols icon name shown in the tonal circle. |
+| `title` | `string` | required | Short headline stating what is empty. |
+| `description` | `string \| null` | `null` | Optional secondary line explaining why, or what to do next. |
+
+Outputs: none.
+
+**Projection slots:** `[m3kEmptyStateActions]` (action buttons below the
+text; the slot collapses when nothing is projected).
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--mat-sys-surface-container-high` | Tonal icon circle background. |
+| `--mat-sys-on-surface-variant` | Icon and description text. |
+| `--mat-sys-on-surface` | Title text. |
+
+## Do / Don't
+
+- **Do** name the next step in the actions slot — an empty state that only
+  says "nothing here" wastes the surface.
+- **Don't** use it for failures — a request that errored belongs in
+  [ErrorState](?path=/docs/molecules-errorstate--docs), which carries the
+  error register and a retry affordance.
+
+## Related
+
+- [ErrorState](?path=/docs/molecules-errorstate--docs) — same composition in
+  the error register.
+- [DetailCard](?path=/docs/molecules-detailcard--docs) — renders its own
+  inline placeholder for an empty `rows` list.

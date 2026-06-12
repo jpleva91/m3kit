@@ -1,0 +1,23 @@
+<h2 mat-dialog-title class="m3k-confirm-dialog__title">{{ config.title }}</h2>
+<mat-dialog-content>
+  <p class="m3k-confirm-dialog__message">{{ config.message }}</p>
+</mat-dialog-content>
+<mat-dialog-actions align="end">
+  <button
+    mat-button
+    type="button"
+    class="m3k-confirm-dialog__cancel"
+    (click)="close(false)"
+  >
+    {{ cancelLabel }}
+  </button>
+  <button
+    mat-flat-button
+    type="button"
+    class="m3k-confirm-dialog__confirm"
+    [class.m3k-confirm-dialog__confirm--destructive]="config.destructive"
+    (click)="close(true)"
+  >
+    {{ confirmLabel }}
+  </button>
+</mat-dialog-actions>

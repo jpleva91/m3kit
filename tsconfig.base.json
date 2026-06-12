@@ -18,6 +18,7 @@
       "@m3kit/charts": ["libs/charts/src/index.ts"],
       "@m3kit/core": ["libs/core/src/index.ts"],
       "@m3kit/dashboard": ["libs/dashboard/src/index.ts"],
+      "@m3kit/feedback": ["libs/feedback/src/index.ts"],
       "@m3kit/forms": ["libs/forms/src/index.ts"],
       "@m3kit/plugin": ["tools/plugin/src/index.ts"],
       "@m3kit/shell": ["libs/shell/src/index.ts"],

@@ -29,6 +29,7 @@ component code.
 | `libs/charts` | `@m3kit/charts` | core, theme |
 | `libs/forms` | `@m3kit/forms` | core, theme |
 | `libs/shell` | `@m3kit/shell` | core, theme |
+| `libs/feedback` | `@m3kit/feedback` | core, theme |
 | `libs/state` | `@m3kit/state` | core | NgRx SignalStore features: withDataQuery, withSelection, theme store |
 | `apps/demo-reporting` | — | all of the above |
 
@@ -49,6 +50,8 @@ charts — `line-chart`, `bar-chart`, `donut-chart`, `chart-legend`,
 shell — `app-shell` (four chrome presets), `page-header`, `breadcrumbs`,
 `content-layout`, plus the `ShellToolbarActionsDirective` /
 `ShellRailFooterDirective` template slots;
+feedback — `empty-state`, `error-state`, `banner`, `skeleton`,
+`confirm-dialog` (component + service), `snackbar` (service);
 testing — `seeded-random`, factories, sample table definitions.
 
 ## THE CONTRACT (binding)
@@ -92,9 +95,9 @@ Every exported component ships three artifacts beside it in `src/lib/`:
 - `*.spec.ts` — Vitest unit spec (`@nx/vite:test`)
 - `*.stories.ts` — Storybook story (collected by the single Storybook host,
   `libs/table/.storybook/main.ts`, which globs table, charts,
-  dashboard, forms, shell, and the demo app)
+  dashboard, feedback, forms, shell, state, and the demo app)
 - `*.cy.ts` — Cypress component test (`component-test` target on table,
-  charts, dashboard, forms, shell)
+  charts, dashboard, feedback, forms, shell)
 
 Commands (verified against `project.json` targets):
 

@@ -1,0 +1,77 @@
+// Global severity panel styles for SnackbarService (@m3kit/feedback).
+//
+// Snackbars render in the CDK overlay container, outside any component's
+// encapsulation scope, so the `m3k-snack-<severity>` panel styles ship as
+// a standalone global stylesheet rather than component SCSS. Import it
+// once from the global theme aggregator — in this workspace:
+//   - apps/demo-reporting/src/styles.scss
+//   - libs/table/.storybook/storybook-theme.scss
+// Adopters do the same from their own global stylesheet (see the
+// Molecules/Overlays docs page).
+//
+// Colors are pure token re-emission: each severity chains an optional
+// --app-severity-* contract token to an M3 fallback following the
+// DESIGN.md semantic mapping (info = primary family, success = paid/
+// status family, warning = tertiary family, error = error family). Brands
+// that emit severity tokens win; every other brand still resolves to an
+// on-palette container/on-container pair. No raw hex.
+
+.mat-mdc-snack-bar-container.m3k-snack-info {
+  --mdc-snackbar-container-color: var(
+    --app-severity-info-bg,
+    var(--mat-sys-primary-container)
+  );
+  --mdc-snackbar-supporting-text-color: var(
+    --app-severity-info-fg,
+    var(--mat-sys-on-primary-container)
+  );
+  --mat-snack-bar-button-color: var(
+    --app-severity-info-fg,
+    var(--mat-sys-on-primary-container)
+  );
+}
+
+.mat-mdc-snack-bar-container.m3k-snack-success {
+  --mdc-snackbar-container-color: var(
+    --app-severity-success-bg,
+    var(--app-status-paid-bg, var(--mat-sys-primary-container))
+  );
+  --mdc-snackbar-supporting-text-color: var(
+    --app-severity-success-fg,
+    var(--app-status-paid-fg, var(--mat-sys-on-primary-container))
+  );
+  --mat-snack-bar-button-color: var(
+    --app-severity-success-fg,
+    var(--app-status-paid-fg, var(--mat-sys-on-primary-container))
+  );
+}
+
+.mat-mdc-snack-bar-container.m3k-snack-warning {
+  --mdc-snackbar-container-color: var(
+    --app-severity-warning-bg,
+    var(--mat-sys-tertiary-container)
+  );
+  --mdc-snackbar-supporting-text-color: var(
+    --app-severity-warning-fg,
+    var(--mat-sys-on-tertiary-container)
+  );
+  --mat-snack-bar-button-color: var(
+    --app-severity-warning-fg,
+    var(--mat-sys-on-tertiary-container)
+  );
+}
+
+.mat-mdc-snack-bar-container.m3k-snack-error {
+  --mdc-snackbar-container-color: var(
+    --app-severity-error-bg,
+    var(--mat-sys-error-container)
+  );
+  --mdc-snackbar-supporting-text-color: var(
+    --app-severity-error-fg,
+    var(--mat-sys-on-error-container)
+  );
+  --mat-snack-bar-button-color: var(
+    --app-severity-error-fg,
+    var(--mat-sys-on-error-container)
+  );
+}

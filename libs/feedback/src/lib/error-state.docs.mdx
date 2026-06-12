@@ -1,0 +1,96 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as ErrorStateStories from './error-state.component.stories';
+
+{/* Attached docs page: renders as Molecules/ErrorState/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={ErrorStateStories} />
+
+# ErrorState
+
+`m3k-error-state` is the error-register sibling of
+[EmptyState](?path=/docs/molecules-emptystate--docs): a centered block for
+surfaces whose data failed to load or save. It renders an icon in an
+error-tonal circle, a title, an optional plain-language description, an
+optional collapsed "Technical details" disclosure (mono, for request lines
+and error codes), and a default stroked **Try again** button that emits
+`retry`. Projecting content into the actions slot replaces the default
+button.
+
+**Atomic level:** Molecule — composed from Material `mat-icon` and a
+`mat-stroked-button` around a native `<details>` disclosure.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { ErrorStateComponent } from '@m3kit/feedback';
+
+@Component({
+  selector: 'app-invoice-list-error',
+  imports: [ErrorStateComponent],
+  template: `
+    <m3k-error-state
+      title="Could not load invoices"
+      description="The invoice list did not respond. Your data is unchanged."
+      [details]="details"
+      (retry)="reload()"
+    />
+  `,
+})
+export class InvoiceListErrorComponent {
+  readonly details = 'GET /api/invoices -> 503 Service Unavailable';
+  reload(): void {
+    // re-run the failed query
+  }
+}
+```
+
+<Canvas of={ErrorStateStories.WithDetails} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `icon` | `string` | `'error'` | Material Symbols icon name shown in the error-tonal circle. |
+| `title` | `string` | required | Short headline stating what failed. |
+| `description` | `string \| null` | `null` | Optional plain-language explanation of the failure. |
+| `details` | `string \| null` | `null` | Optional technical message, rendered collapsed behind a "Technical details" disclosure in the data/mono face. |
+
+## Outputs
+
+| Output | Payload | Description |
+| --- | --- | --- |
+| `retry` | `void` | Emits when the default "Try again" button is pressed. |
+
+**Projection slots:** `[m3kErrorStateActions]` — replaces the default
+"Try again" button entirely; project your own buttons when retrying is not
+the right recovery (or wire one of them to your own handler).
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--mat-sys-error-container` | Error-tonal icon circle background. |
+| `--mat-sys-on-error-container` | Icon color. |
+| `--mat-sys-on-surface` | Title text. |
+| `--mat-sys-on-surface-variant` | Description, disclosure summary, details text. |
+| `--mat-sys-surface-container` | Details block background. |
+| `--app-radius-control` | Details block radius. |
+| `--app-font-data` | Details mono face (tabular technical text). |
+
+The "Try again" button takes the Material stroked-button theme.
+
+## Do / Don't
+
+- **Do** keep `description` in plain language and push request lines, codes,
+  and stack excerpts into `details` — collapsed by default, there when
+  someone files a ticket.
+- **Don't** use it for absent-but-fine data — an empty list that loaded
+  correctly belongs in [EmptyState](?path=/docs/molecules-emptystate--docs).
+
+## Related
+
+- [EmptyState](?path=/docs/molecules-emptystate--docs) — same composition
+  for no-data (non-failure) surfaces.

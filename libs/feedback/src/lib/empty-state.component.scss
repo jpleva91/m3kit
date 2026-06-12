@@ -1,0 +1,51 @@
+:host {
+  display: block;
+}
+
+.m3k-empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  text-align: center;
+  // lg(24) vertical / md(16) horizontal — a quiet landmark, not a hero.
+  padding: 1.5rem 1rem;
+
+  &__icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 3rem;
+    height: 3rem;
+    border-radius: 50%;
+    background: var(--mat-sys-surface-container-high);
+    color: var(--mat-sys-on-surface-variant);
+    margin-bottom: 0.75rem; // ms(12)
+  }
+
+  &__title {
+    margin: 0;
+    font-size: 1rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__description {
+    margin: 0.25rem 0 0; // xs(4)
+    max-width: 32rem;
+    font-size: 0.8125rem;
+    line-height: 1.5;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__actions {
+    &:not(:empty) {
+      display: flex;
+      flex-wrap: wrap;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem; // sm(8)
+      margin-top: 1rem; // md(16)
+    }
+  }
+}

@@ -69,6 +69,49 @@ $_status-dark: (
   ),
 );
 
+/// Severity feedback tokens (container / on-container pairs) for banners
+/// and inline alerts, derived from the status palette discipline: info
+/// shares the primary (sent) cobalt family, success the paid forest
+/// family, error the overdue crimson family; warning takes the tertiary
+/// burnt sienna family per DESIGN.md ("warning = tertiary family").
+$_severity-light: (
+  info: (
+    bg: #dce1ff,
+    fg: #001550,
+  ),
+  success: (
+    bg: #a5f2bb,
+    fg: #00210d,
+  ),
+  warning: (
+    bg: #ffdbc8,
+    fg: #331200,
+  ),
+  error: (
+    bg: #ffdad6,
+    fg: #410002,
+  ),
+);
+
+$_severity-dark: (
+  info: (
+    bg: #003ab3,
+    fg: #dce1ff,
+  ),
+  success: (
+    bg: #00522a,
+    fg: #a5f2bb,
+  ),
+  warning: (
+    bg: #6f3811,
+    fg: #ffdbc8,
+  ),
+  error: (
+    bg: #93000a,
+    fg: #ffdad6,
+  ),
+);
+
 /// Chart series palette (`--app-chart-1..6`): cobalt-led cool analytical
 /// set — cobalt, burnt sienna (the single warm voice), deep teal, violet,
 /// forest, raspberry. Dark variants lift tone toward the electric-periwinkle
@@ -95,6 +138,7 @@ $_chart-dark: #8fa9ff, #f0a36b, #5ec8e0, #b79cff, #6fcf8f, #f286b2;
   // mixed-decls hoisting (declarations after nested rules).
   & {
     @include contract.status-tokens($_status-light);
+    @include contract.severity-tokens($_severity-light);
     @include contract.radius-tokens();
     @include contract.font-data("'JetBrains Mono'");
     @include contract.chart-tokens($_chart-light...);
@@ -116,6 +160,7 @@ $_chart-dark: #8fa9ff, #f0a36b, #5ec8e0, #b79cff, #6fcf8f, #f286b2;
   );
   & {
     @include contract.status-tokens($_status-dark);
+    @include contract.severity-tokens($_severity-dark);
     @include contract.chart-tokens($_chart-dark...);
     color-scheme: dark;
   }

@@ -1,0 +1,158 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as ConfirmDialogStories from './confirm-dialog.stories';
+import * as SnackbarStories from './snackbar.stories';
+
+{/* Unattached docs page: one shared page for the two imperative overlay
+    services in @m3kit/feedback. The launcher CSF files carry their own
+    autodocs pages; this page is the service-level reference. */}
+
+<Meta title="Molecules/Overlays" />
+
+# Overlays — ConfirmDialogService & SnackbarService
+
+`@m3kit/feedback` ships two imperative overlay services: a typed
+confirmation prompt over `MatDialog` and a severity-aware snackbar over
+`MatSnackBar`. Both are `providedIn: 'root'` — inject and call, no module
+setup. Overlay surfaces stay Material's own (dialog and snackbar tokens,
+restylable per brand); the kit adds only the typed API, the destructive
+confirm posture, and the severity panel colors.
+
+**Atomic level:** Molecule — service-launched compositions of Material
+dialog and snackbar surfaces.
+
+## ConfirmDialogService
+
+`open(config)` opens an `m3k-confirm-dialog` (title, message, cancel/confirm
+button row, dialog `role="alertdialog"`) and returns an
+`Observable<boolean>` that emits exactly once when the dialog closes:
+`true` only when the confirm button was pressed — cancel, Escape, and
+backdrop dismissal all map to `false`, so subscribers never branch on
+`undefined`.
+
+```ts
+import { Component, inject } from '@angular/core';
+import { ConfirmDialogService } from '@m3kit/feedback';
+
+@Component({ /* ... */ })
+export class InvoiceActionsComponent {
+  private readonly confirmDialog = inject(ConfirmDialogService);
+
+  voidInvoice(): void {
+    this.confirmDialog
+      .open({
+        title: 'Void invoice INV-2026-0017?',
+        message: 'Voiding removes the invoice from receivables and cannot be undone.',
+        confirmLabel: 'Void invoice',
+        cancelLabel: 'Keep invoice',
+        destructive: true,
+      })
+      .subscribe((confirmed) => {
+        if (confirmed) {
+          // perform the void
+        }
+      });
+  }
+}
+```
+
+<Canvas of={ConfirmDialogStories.Launchers} />
+
+### ConfirmDialogConfig
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `title` | `string` | required | Dialog heading. |
+| `message` | `string` | required | Body message under the title. |
+| `confirmLabel` | `string` | `'Confirm'` | Confirm button label. |
+| `cancelLabel` | `string` | `'Cancel'` | Cancel button label. |
+| `destructive` | `boolean` | `false` | Renders the confirm button filled with the M3 error role for irreversible actions. |
+
+## SnackbarService
+
+`show(message, options?)` opens a Material snackbar and returns the
+`MatSnackBarRef` (subscribe to `onAction()` for the action button). The
+severity maps to an `m3k-snack-<severity>` panel class.
+
+```ts
+import { Component, inject } from '@angular/core';
+import { SnackbarService } from '@m3kit/feedback';
+
+@Component({ /* ... */ })
+export class OrdersPageComponent {
+  private readonly snackbar = inject(SnackbarService);
+
+  deleteOrder(): void {
+    this.snackbar
+      .show('Order ORD-1017 deleted', { severity: 'success', action: 'Undo' })
+      .onAction()
+      .subscribe(() => {
+        // restore the order
+      });
+  }
+}
+```
+
+<Canvas of={SnackbarStories.Severities} />
+
+### SnackbarOptions
+
+| Field | Type | Default | Description |
+| --- | --- | --- | --- |
+| `severity` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Semantic register; maps to the `m3k-snack-<severity>` panel class. |
+| `action` | `string` | none | Action button label (e.g. `'Undo'`, `'Retry'`). |
+| `durationMs` | `number` | `4000` | Auto-dismiss delay in milliseconds. |
+
+### Wiring the severity panel styles (required once per app)
+
+Snackbars render in the CDK overlay container, outside any component's
+encapsulation scope, so the severity colors cannot ship as component SCSS.
+The lib provides them as a standalone global stylesheet,
+`libs/feedback/src/lib/snackbar.styles.scss`, imported once by each global
+theme aggregator — in this workspace `apps/demo-reporting/src/styles.scss`
+and the Storybook `storybook-theme.scss` already do this. Adopters add the
+same line to their global stylesheet:
+
+```scss
+@use 'path/to/feedback/src/lib/snackbar.styles';
+```
+
+Without the import, severity snackbars fall back to Material's default
+(inverse-surface) snackbar colors — functional, just not severity-coded.
+
+## Theming
+
+Token-only styling throughout; overlay surfaces stay on Material's own
+dialog/snackbar tokens so brand `mat.theme` emissions restyle them for free.
+
+| Token | Used for |
+| --- | --- |
+| `--app-severity-{info,success,warning,error}-{bg,fg}` | Optional severity contract: when a brand emits these, snackbar panels use them directly. |
+| `--app-status-paid-{bg,fg}` | Success fallback (DESIGN.md: success = paid family). |
+| `--mat-sys-primary-container` / `--mat-sys-on-primary-container` | Info fallback (info = primary family) and final success fallback. |
+| `--mat-sys-tertiary-container` / `--mat-sys-on-tertiary-container` | Warning fallback (warning = tertiary family). |
+| `--mat-sys-error-container` / `--mat-sys-on-error-container` | Error fallback. |
+| `--mat-sys-error` / `--mat-sys-on-error` | Destructive confirm button (re-emitted onto the filled-button Material tokens). |
+| `--mat-sys-body-medium` / `--mat-sys-on-surface-variant` | Confirm dialog message text. |
+
+Each severity color resolves through a chained fallback — for example
+`var(--app-severity-info-bg, var(--mat-sys-primary-container))` — so brands
+that emit the optional `--app-severity-*` tokens win, and every other brand
+still resolves to an on-palette container/on-container pair.
+
+## Do / Don't
+
+- **Do** reserve `destructive: true` for genuinely irreversible actions
+  (void, delete) — and pair it with an explicit verb label ("Void invoice"),
+  never a bare "OK".
+- **Do** route all transient feedback through `SnackbarService` so severity
+  styling stays consistent; pick the severity by outcome, not by mood.
+- **Don't** use a confirm dialog for routine saves — confirmation friction
+  belongs on destructive or costly actions only.
+- **Don't** stack long-running workflows into snackbars; for persistent
+  page-level notices use [Banner](?path=/docs/molecules-banner--docs).
+
+## Related
+
+- [Banner](?path=/docs/molecules-banner--docs) — persistent inline severity messaging.
+- [ErrorState](?path=/docs/molecules-errorstate--docs) — full-surface failure state.
+- [EmptyState](?path=/docs/molecules-emptystate--docs) — full-surface empty state.

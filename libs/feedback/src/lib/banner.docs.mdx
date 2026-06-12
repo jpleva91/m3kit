@@ -1,0 +1,98 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as BannerStories from './banner.component.stories';
+
+{/* Attached docs page: renders as Molecules/Banner/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={BannerStories} />
+
+# Banner
+
+`m3k-banner` is an inline alert strip: a leading severity icon, projected
+message content, an optional projected action slot, and an optional trailing
+dismiss icon-button. Use it for page- or section-level feedback that should
+sit in the layout flow — overdue-invoice warnings, export confirmations —
+rather than interrupt it. It is flat (no shadow) with a 1px tonal border,
+per the kit's elevation discipline.
+
+**Atomic level:** Molecule — a severity-tinted strip composing Material
+icon and icon-button atoms around projected content.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { BannerComponent } from '@m3kit/feedback';
+
+@Component({
+  selector: 'app-overdue-notice',
+  imports: [BannerComponent],
+  template: `
+    <m3k-banner severity="error" [dismissible]="true" (dismissed)="hide()">
+      7 invoices are overdue — totaling $12,840.00.
+      <button m3kBannerAction mat-button>Review invoices</button>
+    </m3k-banner>
+  `,
+})
+export class OverdueNoticeComponent {
+  hide(): void {
+    // Remove the banner from the view; dismissal state is the host's job.
+  }
+}
+```
+
+<Canvas of={BannerStories.WithAction} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `severity` | `'info' \| 'success' \| 'warning' \| 'error'` | `'info'` | Drives the color pair, the leading icon (`info` / `check_circle` / `warning` / `error`), and the ARIA role. |
+| `dismissible` | `boolean` | `false` | When true, renders a trailing dismiss icon-button. |
+
+## Outputs
+
+| Output | Payload | Description |
+| --- | --- | --- |
+| `dismissed` | `void` | Emitted when the dismiss button is clicked. The banner does not remove itself — the host owns dismissal state. |
+
+**Projection slots:** default slot (message content) and `[m3kBannerAction]`
+(optional trailing action button).
+
+## Accessibility
+
+Info and success banners render `role="status"` (polite live region);
+warning and error banners render `role="alert"` (assertive). The dismiss
+button carries `aria-label="Dismiss"`; the severity icon is decorative
+(`aria-hidden`).
+
+## Theming
+
+Token-only styling. Severity pairs come from the optional
+`--app-severity-*` contract tokens with chained fallbacks onto M3 system
+container pairs, so brands that have not adopted the `severity-tokens()`
+mixin still render correctly (see `docs/THEMING.md`):
+
+| Token | Used for | Fallback |
+| --- | --- | --- |
+| `--app-severity-info-bg` / `--app-severity-info-fg` | Info surface pair. | `--mat-sys-primary-container` / `--mat-sys-on-primary-container` |
+| `--app-severity-success-bg` / `--app-severity-success-fg` | Success surface pair. | `--app-status-paid-bg` / `--app-status-paid-fg`, then `--mat-sys-primary-container` / `--mat-sys-on-primary-container` |
+| `--app-severity-warning-bg` / `--app-severity-warning-fg` | Warning surface pair. | `--mat-sys-tertiary-container` / `--mat-sys-on-tertiary-container` |
+| `--app-severity-error-bg` / `--app-severity-error-fg` | Error surface pair. | `--mat-sys-error-container` / `--mat-sys-on-error-container` |
+| `--app-radius-control` | Strip border radius. | `8px` |
+| `--mat-sys-outline-variant` | 1px tonal border. | — |
+
+## Do / Don't
+
+- **Do** keep the message to one sentence and put the verb in the
+  `[m3kBannerAction]` slot ("Review invoices").
+- **Don't** stack multiple banners of the same severity — aggregate into one
+  ("7 invoices are overdue"), or use a table for itemized detail.
+- **Don't** use a banner for transient confirmations — that is snackbar
+  territory.
+
+## Related
+
+- [EmptyState](?path=/docs/molecules-emptystate--docs) — for absent data
+  rather than events.
+- [Skeleton](?path=/docs/molecules-skeleton--docs) — for loading, not
+  feedback.
