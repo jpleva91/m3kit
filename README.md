@@ -122,7 +122,5 @@ This repository intentionally carries no per-file license headers; the root
 `LICENSE` file and this notice cover the entire tree (see `docs/DECISIONS.md`,
 ADR-008).
 
-The canonical repository URL will be added here when the public remote is
-created (the `repository` field in `package.json` will be set in the same
-commit). Adopters following the attribution instructions in
-`docs/INTERNALIZATION_GUIDE.md` should use that URL once it exists.
+Canonical repository: https://github.com/jpleva91/m3kit — use this URL for
+the attribution instructions in `docs/INTERNALIZATION_GUIDE.md`.
