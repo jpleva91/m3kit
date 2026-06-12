@@ -1,0 +1,30 @@
+{
+  "$schema": "../../node_modules/@nx/devkit/schemas/nx-plugin.schema.json",
+  "generators": {
+    "lift": {
+      "implementation": "./src/generators/lift/generator",
+      "schema": "./src/generators/lift/schema.json",
+      "description": "Source-internalize m3kit libs (plus their dependency closure) into the current workspace and rewire aliases, tags, and theme includePaths."
+    },
+    "component": {
+      "implementation": "./src/generators/component/generator",
+      "schema": "./src/generators/component/schema.json",
+      "description": "Scaffold an on-contract m3kit component (standalone, signals, OnPush, m3k- selector, token-only SCSS) with spec, stories, and cy coverage."
+    },
+    "brand": {
+      "implementation": "./src/generators/brand/generator",
+      "schema": "./src/generators/brand/schema.json",
+      "description": "Scaffold a brand SCSS module pair implementing the m3kit-theme contract, and print (or apply, inside m3kit) the registration steps."
+    },
+    "report-page": {
+      "implementation": "./src/generators/report-page/generator",
+      "schema": "./src/generators/report-page/schema.json",
+      "description": "Scaffold an app-side report page (page-header + filter-form + data-table) wired to a TableDefinition and datasource stub."
+    },
+    "dashboard-page": {
+      "implementation": "./src/generators/dashboard-page/generator",
+      "schema": "./src/generators/dashboard-page/schema.json",
+      "description": "Scaffold an app-side dashboard page (page-header + KPI cards + chart cards) wired to KPI and chart series stubs."
+    }
+  }
+}

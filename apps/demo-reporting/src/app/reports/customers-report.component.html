@@ -1,13 +1,12 @@
 <section class="report-page">
-  <m3k-page-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
+  <m3k-page-toolbar [title]="definition.title" [rowCount]="store.totalCount()" />
 
   <m3k-table-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
 
   <m3k-data-table
-    #table
     [definition]="definition"
     [dataSource]="dataSource"
-    [textFilter]="filterText()"
+    [textFilter]="store.textFilter()"
     (rowClicked)="onRowClicked($event)"
   />
 

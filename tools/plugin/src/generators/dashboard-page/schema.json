@@ -1,0 +1,28 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "M3kitDashboardPage",
+  "title": "Scaffold an app-side dashboard page",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Page name (dasherized), e.g. revenue-overview.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the dashboard page name?"
+    },
+    "project": {
+      "type": "string",
+      "description": "Target application project, e.g. demo-reporting.",
+      "x-prompt": "Which application should host the page?"
+    },
+    "title": {
+      "type": "string",
+      "description": "Human-readable page title. Defaults to the title-cased name."
+    },
+    "scope": {
+      "type": "string",
+      "description": "Alias prefix of the lifted m3kit libs (auto-detected from tsconfig.base.json when omitted)."
+    }
+  },
+  "required": ["name", "project"]
+}

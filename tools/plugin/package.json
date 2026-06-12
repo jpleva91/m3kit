@@ -5,7 +5,12 @@
   "type": "commonjs",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
+  "generators": "./generators.json",
+  "bin": {
+    "m3kit": "./bin/m3kit.js"
+  },
   "dependencies": {
+    "@nx/devkit": "20.8.4",
     "tslib": "^2.3.0"
   }
 }

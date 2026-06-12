@@ -29,6 +29,7 @@ component code.
 | `libs/charts` | `@m3kit/charts` | core, theme |
 | `libs/forms` | `@m3kit/forms` | core, theme |
 | `libs/shell` | `@m3kit/shell` | core, theme |
+| `libs/state` | `@m3kit/state` | core | NgRx SignalStore features: withDataQuery, withSelection, theme store |
 | `apps/demo-reporting` | — | all of the above |
 
 Rules are machine-enforced by `@nx/enforce-module-boundaries` in the root
@@ -151,7 +152,27 @@ Series colors come only from `chartSeriesColor(i)` (cycles
 Lift the `libs/*` source into your workspace and own it — see
 `docs/ADOPTION_GUIDE.md` (what to copy, tag remapping, alias renaming,
 dependency reconciliation) and `docs/INTERNALIZATION_GUIDE.md` (ownership
-transfer, license obligations). Demo-only and disposable: `apps/demo-reporting`
+transfer, license obligations).
+
+**Automated path: `@m3kit/plugin` (`tools/plugin`).** The `lift` generator
+downloads the repo tarball (degit-style, no git), copies the requested libs
+plus their dependency closure, rewrites `@m3kit/*` to your `@<scope>/*`,
+remaps project names/tags, strips demo-only targets, patches theme
+`includePaths` where detectable, and prints the eslint `depConstraints` to
+add (it never rewrites your eslint config). Idempotent: lifted libs are
+owned and never overwritten on re-run.
+
+```sh
+npx nx g @m3kit/plugin:lift --libs=table,dashboard --scope=acme   # or: m3kit add table dashboard --scope=acme
+```
+
+Companion scaffolds (all on-contract, all covered by devkit unit tests —
+`npx nx test m3kit-plugin`): `component` (standalone/signals/OnPush, `m3k-`
+selector, token-only SCSS, spec/stories/cy), `brand` (the two-mixin SCSS
+pair + registration steps, applied automatically inside m3kit),
+`report-page` and `dashboard-page` (app-side pages composing the kit over
+TableDefinition/datasource and KPI/chart stubs). Details: `tools/plugin/
+README.md`; lift exemplar spec: `specs/004-exemplar-lift/`. Demo-only and disposable: `apps/demo-reporting`
 and the Storybook config under `libs/table/.storybook` — the
 reusable assets are the libs themselves. After copying, re-create the theme
 includePath and the boundary `depConstraints` in your own scheme, then
@@ -170,6 +191,8 @@ in `specs/`:
   see ADR-014 in `docs/DECISIONS.md`).
 - `specs/002-exemplar-add-brand/` — a worked template for the most common
   consumer task, adding a brand (status: exemplar, not pending work).
+- `specs/004-exemplar-lift/` — a worked template for adopting the kit via
+  the `@m3kit/plugin:lift` generator (status: exemplar, not pending work).
 
 Mirror their structure (prioritized user stories with independent tests,
 FR/SC numbering, phased tasks with done-criteria) for any new feature.

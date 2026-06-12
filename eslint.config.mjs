@@ -80,10 +80,17 @@ export default [
                 'scope:m3kit-theme',
               ],
             },
+            // Headless SignalStore features; depends on the core
+            // query/datasource contracts only.
+            {
+              sourceTag: 'scope:m3kit-state',
+              onlyDependOnLibsWithTags: ['scope:m3kit-core'],
+            },
             {
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
                 'scope:m3kit-core',
+                'scope:m3kit-state',
                 'scope:m3kit-table',
                 'scope:m3kit-testing',
                 'scope:m3kit-charts',

@@ -1,5 +1,5 @@
 <section class="report-page">
-  <m3k-page-toolbar [title]="definition.title" [rowCount]="table.totalCount()" />
+  <m3k-page-toolbar [title]="definition.title" [rowCount]="store.totalCount()" />
 
   <m3k-table-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
 
@@ -18,11 +18,10 @@
   </mat-accordion>
 
   <m3k-data-table
-    #table
     [definition]="definition"
     [dataSource]="dataSource"
-    [textFilter]="filterText()"
-    [fieldFilters]="fieldFilters()"
+    [textFilter]="store.textFilter()"
+    [fieldFilters]="store.fieldFilters()"
     (rowClicked)="onRowClicked($event)"
   />
 

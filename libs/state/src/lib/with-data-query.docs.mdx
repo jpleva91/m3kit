@@ -1,0 +1,115 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="State/WithDataQuery" />
+
+# withDataQuery
+
+`withDataQuery<T>()` is a headless NgRx SignalStore feature
+(`@m3kit/state`) that owns the full report-query lifecycle for any
+`TableDataSource<T>` from `@m3kit/core`: free-text filter (debounced),
+per-field exact-match filters, sort, pagination, and the fetched page
+(`rows`, `totalCount`, `loading`, `error`).
+
+It follows the connect-free datasource contract: every query mutation
+re-invokes `fetch` through a single `switchMap`ped `rxMethod`, so stale
+in-flight responses are cancelled and the newest query always wins.
+
+**Layer:** state feature — no template, no styles; pairs naturally with
+[DataTable](?path=/docs/organisms-datatable--docs) and
+[TableFilterBar](?path=/docs/molecules-tablefilterbar--docs).
+
+## Usage
+
+```ts
+import { Component, OnInit, inject } from '@angular/core';
+import { signalStore } from '@ngrx/signals';
+import { InMemoryTableDataSource } from '@m3kit/core';
+import { withDataQuery } from '@m3kit/state';
+
+interface Invoice {
+  id: number;
+  customer: string;
+  status: string;
+  amount: number;
+}
+
+const InvoiceStore = signalStore(withDataQuery<Invoice>());
+
+@Component({
+  selector: 'app-invoices',
+  providers: [InvoiceStore],
+  template: `
+    <input (input)="store.setTextFilter($any($event.target).value)" />
+    @if (store.loading()) { <p>Loading…</p> }
+    @for (row of store.rows(); track row.id) { <p>{{ row.customer }}</p> }
+  `,
+})
+export class InvoicesComponent implements OnInit {
+  readonly store = inject(InvoiceStore);
+
+  ngOnInit(): void {
+    this.store.connect(
+      new InMemoryTableDataSource<Invoice>(rows, {
+        textSearchKeys: ['customer'],
+      })
+    );
+  }
+}
+```
+
+## API
+
+### Options — `withDataQuery<T>(options?)`
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `debounceMs` | `number` | `300` | Debounce window for `setTextFilter`. |
+| `initialPageSize` | `number` | `25` | Page size of the initial query. |
+
+### State signals
+
+| Signal | Type | Description |
+| --- | --- | --- |
+| `query` | `Signal<DataQuery>` | The complete query (filter + sort + page). |
+| `rows` | `Signal<readonly T[]>` | Rows of the most recently fetched page. |
+| `totalCount` | `Signal<number>` | Filtered (pre-pagination) row count. |
+| `loading` | `Signal<boolean>` | A fetch is in flight. |
+| `error` | `Signal<string \| null>` | Last fetch error message, or `null`. |
+
+### Computed signals
+
+| Signal | Type | Description |
+| --- | --- | --- |
+| `textFilter` | `Signal<string>` | Current free-text filter (`''` when unset). |
+| `fieldFilters` | `Signal<Record<string, unknown>>` | Current exact-match field filters. |
+| `sort` | `Signal<SortState \| null>` | Current sort. |
+| `page` | `Signal<PageState>` | Current pagination. |
+| `pageCount` | `Signal<number>` | Pages implied by `totalCount` / page size. |
+| `isEmpty` | `Signal<boolean>` | Completed fetch matched no rows. |
+
+### Methods
+
+| Method | Description |
+| --- | --- |
+| `connect(dataSource)` | Connects a `TableDataSource<T>` and runs the current query. Reconnecting replaces the source and refetches. |
+| `refresh()` | Re-runs the current query. |
+| `setTextFilter(text)` | Debounced + deduplicated free-text filter; whitespace clears it. Resets to page 0. Also accepts a `Signal<string>` or `Observable<string>` (it is an `rxMethod`). |
+| `setFieldFilters(fields)` | Replaces the exact-match field filters. Resets to page 0. |
+| `setSort(sort)` | Sets or clears (`null`) the sort. Resets to page 0. |
+| `setPage(page)` | Sets `{ index, size }` (zero-based index). |
+
+## Do / Don't
+
+- **Do** bind a search input straight to `setTextFilter` — debouncing and
+  dedup live in the store, not the template.
+- **Do** rely on the `switchMap` semantics: rapid query changes never
+  produce out-of-order results.
+- **Don't** import `@ngrx/operators` for `tapResponse` — the kit's
+  dependency surface is `@ngrx/signals` only (THE CONTRACT, rule 4); the
+  feature ships a local clean-room equivalent.
+
+## Related
+
+- [WithSelection](?path=/docs/state-withselection--docs) — identity-keyed row selection feature.
+- [ThemeStore](?path=/docs/state-themestore--docs) — brand/mode store factory.
+- `TableDataSource` / `InMemoryTableDataSource` — `@m3kit/core` contracts this feature drives.

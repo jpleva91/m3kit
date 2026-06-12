@@ -1,0 +1,20 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "M3kitComponent",
+  "title": "Scaffold an on-contract m3kit component",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Component name (dasherized or not), e.g. status-pill.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the component name?"
+    },
+    "project": {
+      "type": "string",
+      "description": "Target lib project (e.g. m3kit-dashboard) whose boundary the component fits.",
+      "x-prompt": "Which lib project should host the component?"
+    }
+  },
+  "required": ["name", "project"]
+}

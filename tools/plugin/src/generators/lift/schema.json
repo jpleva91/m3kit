@@ -1,0 +1,48 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "M3kitLift",
+  "title": "Lift m3kit libs into this workspace",
+  "type": "object",
+  "properties": {
+    "libs": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "enum": [
+          "core",
+          "theme",
+          "state",
+          "table",
+          "testing",
+          "dashboard",
+          "charts",
+          "forms",
+          "shell"
+        ]
+      },
+      "description": "m3kit libs to lift. The dependency closure (core/theme/...) is included automatically.",
+      "$default": { "$source": "argv" },
+      "x-prompt": "Which m3kit libs should be lifted (e.g. table dashboard)?"
+    },
+    "scope": {
+      "type": "string",
+      "default": "ui",
+      "description": "Your TypeScript alias prefix: libs are wired as @<scope>/<lib> and tagged scope:<scope>-<lib>."
+    },
+    "ref": {
+      "type": "string",
+      "description": "Git ref (branch, tag, or SHA) of the m3kit repo to lift from. Defaults to main."
+    },
+    "repo": {
+      "type": "string",
+      "default": "jpleva91/m3kit",
+      "description": "GitHub <owner>/<repo> to download the source tarball from."
+    },
+    "sourceDir": {
+      "type": "string",
+      "description": "Internal/testing: directory containing an already-extracted m3kit workspace (skips the tarball download).",
+      "x-priority": "internal"
+    }
+  },
+  "required": ["libs"]
+}

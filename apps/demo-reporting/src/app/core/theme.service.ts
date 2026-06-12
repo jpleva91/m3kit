@@ -1,5 +1,5 @@
-import { DOCUMENT } from '@angular/common';
-import { Injectable, inject, signal } from '@angular/core';
+import { Injectable, inject } from '@angular/core';
+import { createThemeStore, type ThemeMode } from '@m3kit/state';
 
 export type ThemeBrand =
   | 'instruments'
@@ -14,7 +14,8 @@ export type ThemeBrand =
   | 'pop'
   | 'gazette'
   | 'synth';
-export type ThemeMode = 'light' | 'dark';
+
+export type { ThemeMode } from '@m3kit/state';
 
 export const THEME_BRANDS: readonly ThemeBrand[] = [
   'instruments',
@@ -33,106 +34,51 @@ export const THEME_BRANDS: readonly ThemeBrand[] = [
 
 const THEME_STORAGE_KEY = 'demo-reporting.theme';
 
-interface ThemeState {
-  brand: ThemeBrand;
-  mode: ThemeMode;
-}
+/**
+ * Root-provided `@m3kit/state` theme store configured with the demo's
+ * twelve brands. Restores the persisted preference (validating brands,
+ * migrating legacy bare-mode values, falling back to
+ * `prefers-color-scheme`) and keeps `localStorage` plus the `<html>`
+ * class list in sync reactively.
+ */
+const ThemeStore = createThemeStore<ThemeBrand>({
+  brands: THEME_BRANDS,
+  defaultBrand: 'instruments',
+  storageKey: THEME_STORAGE_KEY,
+});
 
 /**
  * Manages the active brand theme and color mode. Instruments is the default
  * brand and is applied to `html` with no brand class; alternate brands add a
  * `theme-<brand>` class, and dark mode adds the `dark` class. Each class
  * scope re-emits the M3 system tokens (see styles/_theme.scss).
+ *
+ * Thin facade over `createThemeStore` from `@m3kit/state`; the public
+ * surface (`brand()`, `mode()`, `setBrand`, `setMode`, `toggleMode`) is
+ * unchanged from the pre-store implementation.
  */
 @Injectable({ providedIn: 'root' })
 export class ThemeService {
-  private readonly document = inject(DOCUMENT);
-
-  private readonly _brand = signal<ThemeBrand>('instruments');
-  private readonly _mode = signal<ThemeMode>('light');
+  private readonly store = inject(ThemeStore);
 
   /** Currently active brand. */
-  readonly brand = this._brand.asReadonly();
+  readonly brand = this.store.brand;
 
   /** Currently active color mode. */
-  readonly mode = this._mode.asReadonly();
-
-  constructor() {
-    const initial = this.resolveInitialState();
-    this._brand.set(initial.brand);
-    this._mode.set(initial.mode);
-    this.applyState(initial);
-  }
+  readonly mode = this.store.mode;
 
   /** Switches between light and dark mode for the active brand. */
   toggleMode(): void {
-    this.setMode(this._mode() === 'dark' ? 'light' : 'dark');
+    this.store.toggleMode();
   }
 
-  /** Sets the color mode, persists it, and updates the root element. */
+  /** Sets the color mode; persistence and the root classes follow reactively. */
   setMode(mode: ThemeMode): void {
-    this._mode.set(mode);
-    this.persistAndApply();
+    this.store.setMode(mode);
   }
 
-  /** Sets the brand, persists it, and updates the root element. */
+  /** Sets the brand; persistence and the root classes follow reactively. */
   setBrand(brand: ThemeBrand): void {
-    this._brand.set(brand);
-    this.persistAndApply();
-  }
-
-  private persistAndApply(): void {
-    const state: ThemeState = { brand: this._brand(), mode: this._mode() };
-    localStorage.setItem(THEME_STORAGE_KEY, JSON.stringify(state));
-    this.applyState(state);
-  }
-
-  /**
-   * Applies the class scheme: `theme-<brand>` for alternate brands
-   * (Instruments, the default, carries no brand class) plus `dark`.
-   */
-  private applyState(state: ThemeState): void {
-    const root = this.document.documentElement;
-    for (const brand of THEME_BRANDS) {
-      root.classList.toggle(
-        `theme-${brand}`,
-        brand !== 'instruments' && brand === state.brand
-      );
-    }
-    root.classList.toggle('dark', state.mode === 'dark');
-  }
-
-  private resolveInitialState(): ThemeState {
-    const stored = this.readStoredState();
-    if (stored) {
-      return stored;
-    }
-    const prefersDark = window.matchMedia?.(
-      '(prefers-color-scheme: dark)'
-    ).matches;
-    return { brand: 'instruments', mode: prefersDark ? 'dark' : 'light' };
-  }
-
-  private readStoredState(): ThemeState | null {
-    const raw = localStorage.getItem(THEME_STORAGE_KEY);
-    if (!raw) {
-      return null;
-    }
-    try {
-      const parsed = JSON.parse(raw) as Partial<ThemeState>;
-      if (
-        THEME_BRANDS.includes(parsed.brand as ThemeBrand) &&
-        (parsed.mode === 'light' || parsed.mode === 'dark')
-      ) {
-        return { brand: parsed.brand as ThemeBrand, mode: parsed.mode };
-      }
-    } catch {
-      // Fall through to legacy handling below.
-    }
-    // Legacy value: a bare 'light' | 'dark' string from the single-brand era.
-    if (raw === 'light' || raw === 'dark') {
-      return { brand: 'instruments', mode: raw };
-    }
-    return null;
+    this.store.setBrand(brand);
   }
 }

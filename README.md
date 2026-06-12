@@ -60,6 +60,20 @@ npx nx run-many -t lint test build # verify every project
 For a reproducible install from a fresh clone, use
 `pnpm install --frozen-lockfile`.
 
+To adopt the kit in your own Nx workspace, the `@m3kit/plugin:lift`
+generator automates the source-internalization (libs + dependency closure,
+alias/tag rewiring, theme includePath, boundary guidance):
+
+```sh
+npx nx g @m3kit/plugin:lift --libs=table,dashboard --scope=acme
+# or, via the CLI shim: m3kit add table dashboard --scope=acme
+```
+
+Companion scaffolds — `component`, `brand`, `report-page`,
+`dashboard-page` — generate on-contract starting points; see
+`tools/plugin/README.md` and the worked exemplar in
+`specs/004-exemplar-lift/`.
+
 ## Repository map
 
 | Path | What it is |
@@ -72,6 +86,7 @@ For a reproducible install from a fresh clone, use
 | `libs/charts` (`@m3kit/charts`) | Hand-built SVG charts: line, bar, donut, legend, chart card. May depend on core only. |
 | `libs/forms` (`@m3kit/forms`) | Typed form components and definition-driven filter forms. May depend on core only. |
 | `libs/shell` (`@m3kit/shell`) | App shell presets and page chrome: `m3k-app-shell` (four chrome presets), page header, breadcrumbs, content layout. May depend on core only. |
+| `libs/state` (`@m3kit/state`) | NgRx SignalStore features (withDataQuery, withSelection, theme store). Depends on core only. |
 | `libs/theme` (`@m3kit/theme`) | SCSS-only theming SDK: the `--app-*` token contract, the `brand-light()`/`brand-dark()` brand mixin contract, and the default "Instruments" brand. Resolved via a `stylePreprocessorOptions` includePath; no build/test targets. |
 | `docs/` | Governance and adoption docs: `CLEAN_ROOM.md`, `BOUNDARY_LOG.md`, `ADOPTION_GUIDE.md`, `INTERNALIZATION_GUIDE.md`, `THEMING.md`, `DECISIONS.md`. |
 | `LICENSE` | Apache License 2.0 full text. |

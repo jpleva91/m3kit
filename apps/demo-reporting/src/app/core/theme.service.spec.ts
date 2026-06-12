@@ -25,7 +25,16 @@ describe('ThemeService', () => {
 
   function create(): ThemeService {
     TestBed.configureTestingModule({});
-    return TestBed.inject(ThemeService);
+    const service = TestBed.inject(ThemeService);
+    // Persistence and DOM classes now flow through a store effect.
+    TestBed.flushEffects();
+    return service;
+  }
+
+  /** Runs a mutation and flushes the store's persist/apply effect. */
+  function apply(mutate: () => void): void {
+    mutate();
+    TestBed.flushEffects();
   }
 
   it('initializes from a stored preference', () => {
@@ -57,14 +66,14 @@ describe('ThemeService', () => {
     );
     const service = create();
 
-    service.toggleMode();
+    apply(() => service.toggleMode());
     expect(service.mode()).toBe('dark');
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe(
       JSON.stringify({ brand: 'instruments', mode: 'dark' })
     );
     expect(document.documentElement.classList.contains('dark')).toBe(true);
 
-    service.toggleMode();
+    apply(() => service.toggleMode());
     expect(service.mode()).toBe('light');
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe(
       JSON.stringify({ brand: 'instruments', mode: 'light' })
@@ -79,7 +88,7 @@ describe('ThemeService', () => {
     );
     const service = create();
 
-    service.setBrand('ledger');
+    apply(() => service.setBrand('ledger'));
     expect(service.brand()).toBe('ledger');
     expect(service.mode()).toBe('dark');
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe(
@@ -90,7 +99,7 @@ describe('ThemeService', () => {
     );
     expect(document.documentElement.classList.contains('dark')).toBe(true);
 
-    service.setBrand('field-guide');
+    apply(() => service.setBrand('field-guide'));
     expect(
       document.documentElement.classList.contains('theme-field-guide')
     ).toBe(true);
@@ -106,7 +115,7 @@ describe('ThemeService', () => {
     );
     const service = create();
 
-    service.setBrand('carbon');
+    apply(() => service.setBrand('carbon'));
     expect(service.brand()).toBe('carbon');
     expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe(
       JSON.stringify({ brand: 'carbon', mode: 'light' })
@@ -123,7 +132,7 @@ describe('ThemeService', () => {
     );
     const service = create();
 
-    service.setBrand('instruments');
+    apply(() => service.setBrand('instruments'));
     for (const brandClass of BRAND_CLASSES) {
       expect(document.documentElement.classList.contains(brandClass)).toBe(
         false

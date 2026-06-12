@@ -1,0 +1,73 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="State/WithSelection" />
+
+# withSelection
+
+`withSelection<T>(idOf)` is a headless NgRx SignalStore feature
+(`@m3kit/state`) for row selection keyed by **identity** rather than by
+object reference — selection survives refetches that produce new row
+instances, which is exactly what happens when it is composed with
+[WithDataQuery](?path=/docs/state-withdataquery--docs).
+
+## Usage
+
+```ts
+import { signalStore } from '@ngrx/signals';
+import { withDataQuery, withSelection } from '@m3kit/state';
+
+const InvoiceStore = signalStore(
+  withDataQuery<Invoice>(),
+  withSelection<Invoice>((invoice) => invoice.id),
+);
+```
+
+```html
+@for (row of store.rows(); track row.id) {
+  <mat-checkbox
+    [checked]="store.isSelected()(row)"
+    (change)="store.toggle(row)"
+  />
+}
+<button [disabled]="!store.hasSelection()" (click)="exportSelected()">
+  Export {{ store.selectedCount() }} selected
+</button>
+```
+
+## API
+
+### Parameter
+
+| Parameter | Type | Description |
+| --- | --- | --- |
+| `idOf` | `(row: T) => unknown` | Extracts the stable identity of a row (e.g. `(r) => r.id`). |
+
+### State + computed signals
+
+| Signal | Type | Description |
+| --- | --- | --- |
+| `selectedIds` | `Signal<ReadonlySet<unknown>>` | Identities of the selected rows (replaced immutably on every change). |
+| `isSelected` | `Signal<(row: T) => boolean>` | Predicate over rows: `store.isSelected()(row)`. |
+| `selectedCount` | `Signal<number>` | Number of selected rows. |
+| `hasSelection` | `Signal<boolean>` | At least one row is selected. |
+
+### Methods
+
+| Method | Description |
+| --- | --- |
+| `toggle(row)` | Flips the selection state of a single row. |
+| `select(rows)` | Adds one row or an array of rows (idempotent). |
+| `deselect(rows)` | Removes one row or an array of rows. |
+| `clear()` | Empties the selection. |
+
+## Do / Don't
+
+- **Do** key by a stable domain id (`invoice.id`), never by array index —
+  indexes shift under filtering and sorting.
+- **Don't** mutate `selectedIds()` directly; every method replaces the set
+  immutably so computed signals and `OnPush` views update correctly.
+
+## Related
+
+- [WithDataQuery](?path=/docs/state-withdataquery--docs) — query/fetch feature this composes with.
+- [DataTable](?path=/docs/organisms-datatable--docs) — the table these selections typically drive.

@@ -1,0 +1,34 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "M3kitBrand",
+  "title": "Scaffold an m3kit brand module pair",
+  "type": "object",
+  "properties": {
+    "name": {
+      "type": "string",
+      "description": "Brand name (dasherized), e.g. midnight.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "What is the brand name?"
+    },
+    "primary": {
+      "type": "string",
+      "description": "Primary seed color (hex), e.g. #1B4FD8.",
+      "x-prompt": "Primary seed color (hex)?"
+    },
+    "tertiary": {
+      "type": "string",
+      "description": "Tertiary seed color (hex), e.g. #C45F1A.",
+      "x-prompt": "Tertiary seed color (hex)?"
+    },
+    "neutral": {
+      "type": "string",
+      "description": "Neutral seed color (hex), e.g. #79808F.",
+      "x-prompt": "Neutral seed color (hex)?"
+    },
+    "directory": {
+      "type": "string",
+      "description": "Directory for the SCSS pair. Defaults to apps/demo-reporting/src/styles/themes inside m3kit, else styles/themes."
+    }
+  },
+  "required": ["name", "primary", "tertiary", "neutral"]
+}

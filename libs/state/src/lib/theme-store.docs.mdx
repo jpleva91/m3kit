@@ -1,0 +1,90 @@
+import { Meta } from '@storybook/blocks';
+
+<Meta title="State/ThemeStore" />
+
+# createThemeStore
+
+`createThemeStore(config)` (`@m3kit/state`) builds a root-provided NgRx
+SignalStore that owns the active **brand** and **color mode**. Its surface
+is API-compatible with the demo app's `ThemeService` — `brand()`, `mode()`,
+`setBrand`, `setMode`, `toggleMode` — so it can replace the service without
+touching call sites.
+
+Persistence and DOM application are reactive: a `withHooks`/`effect`
+pipeline keeps `localStorage` and the `<html>` class list in sync with
+every state change. The class scheme matches the kit's theming SDK: the
+default brand carries no class, alternate brands add `theme-<brand>`, and
+dark mode adds `dark` (see the Theming guide).
+
+## Usage
+
+```ts
+import { createThemeStore } from '@m3kit/state';
+
+export const THEME_BRANDS = [
+  'instruments', 'terminal', 'ledger', 'field-guide', 'carbon',
+  'brutalist', 'meadow', 'beacon', 'noir', 'pop', 'gazette', 'synth',
+] as const;
+
+export const ThemeStore = createThemeStore({
+  brands: THEME_BRANDS,
+  defaultBrand: 'instruments',
+  storageKey: 'demo-reporting.theme',
+});
+```
+
+```ts
+@Component({ /* … */ })
+export class ToolbarComponent {
+  readonly theme = inject(ThemeStore); // providedIn: 'root'
+}
+```
+
+```html
+<button (click)="theme.toggleMode()">
+  {{ theme.mode() === 'dark' ? 'light_mode' : 'dark_mode' }}
+</button>
+<mat-select [value]="theme.brand()" (valueChange)="theme.setBrand($event)" />
+```
+
+## API
+
+### Config — `createThemeStore<TBrand extends string>(config)`
+
+| Option | Type | Default | Description |
+| --- | --- | --- | --- |
+| `brands` | `readonly TBrand[]` | required | All known brands; stored values outside the list are rejected. |
+| `defaultBrand` | `TBrand` | required | Brand applied when nothing valid is stored. |
+| `storageKey` | `string` | required | `localStorage` key for the persisted preference. |
+| `classlessDefault` | `boolean` | `true` | Default brand carries no `theme-<brand>` class. |
+
+### Store surface
+
+| Member | Type | Description |
+| --- | --- | --- |
+| `brand()` | `Signal<TBrand>` | Currently active brand. |
+| `mode()` | `Signal<'light' \| 'dark'>` | Currently active color mode. |
+| `setBrand(brand)` | method | Sets the brand; persistence + classes follow. |
+| `setMode(mode)` | method | Sets the mode explicitly. |
+| `toggleMode()` | method | Switches between light and dark. |
+
+### Initialization order
+
+1. Restore the persisted `{ brand, mode }` (validated against `brands`).
+2. Migrate legacy bare `'light' | 'dark'` strings to the default brand.
+3. Otherwise fall back to `prefers-color-scheme` for the mode.
+
+`localStorage` and `matchMedia` access is guarded, so the store is safe in
+SSR and Storybook environments.
+
+## Do / Don't
+
+- **Do** declare brands `as const` so `TBrand` narrows to the union and
+  `setBrand('typo')` fails to compile.
+- **Don't** write `theme-*` classes from components — the store owns the
+  `<html>` class list; components stay token-only (THE CONTRACT, rule 1).
+
+## Related
+
+- [WithDataQuery](?path=/docs/state-withdataquery--docs) / [WithSelection](?path=/docs/state-withselection--docs) — sibling state features.
+- [Theming guide](?path=/docs/getting-started-theming--docs) — the brand/mode class scheme this store drives.
