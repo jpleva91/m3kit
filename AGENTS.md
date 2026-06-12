@@ -12,7 +12,9 @@ synthetic-data reporting demo app. It is a **reference to be read and copied, no
 dependency to be installed**: nothing is published to npm; consumers
 source-internalize `libs/*` into their own workspaces. Components
 consume design tokens only, so brands are pure token re-emissions and the
-entire kit reskins (four demo brands, each light + dark) without touching
+entire kit reskins (twelve brands — the Instruments default plus eleven
+app-side consumers: Terminal, Ledger, Field Guide, Carbon, Brutalist, Meadow,
+Beacon, Noir, Pop, Gazette, Synth — each light + dark) without touching
 component code.
 
 ## Library graph and boundaries
@@ -58,17 +60,27 @@ testing — `seeded-random`, factories, sample table definitions.
    `--app-chart-1..6`. No raw hex in components, no per-brand selectors
    (`html.theme-x .component` is forbidden). If a brand seems to need an
    escape hatch, the contract needs a new token — a documented decision.
-2. **DESIGN.md is binding.** Read it before any visual decision: fonts,
+2. **Material is the engine, not the API.** The public surface is the
+   `m3k-*` component set plus the token contract; Angular Material is
+   internal implementation. Brands may push past the stock Material look
+   only via Material token overrides emitted inside `brand-light()` /
+   `brand-dark()` (`mat.theme-overrides` and per-component
+   `mat.<component>-overrides` mixins) — never per-brand component CSS;
+   kit-specific gaps extend the `--app-*` contract instead. The Material
+   Parity Storybook gallery (`libs/table/.storybook/parity/`) is the
+   brand-range regression surface: all 12 brands × light/dark must stay
+   presentable there.
+3. **DESIGN.md is binding.** Read it before any visual decision: fonts,
    color, density splits, spacing, radii, motion, anti-patterns. Do not
    deviate without explicit user approval.
-3. **No chart or UI library dependencies.** Charts are hand-built SVG; the
+4. **No chart or UI library dependencies.** Charts are hand-built SVG; the
    dependency surface is Angular + Material/CDK + `@ngrx/signals`, period.
    Any new dependency requires justification in `docs/DECISIONS.md`.
-4. **Synthetic data only.** Approved domains: customers, orders, invoices,
+5. **Synthetic data only.** Approved domains: customers, orders, invoices,
    support tickets, products. All data comes from `libs/testing`
    factories or repo-authored static JSON. No real data, no backends, no
    network sources.
-5. **Clean-room rules.** Public sources only; log every external consultation
+6. **Clean-room rules.** Public sources only; log every external consultation
    in `docs/BOUNDARY_LOG.md` at the time it happens. Doubt resolves to
    exclusion.
 

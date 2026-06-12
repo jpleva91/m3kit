@@ -135,13 +135,53 @@ The contract's emit helpers enforce the token names so brands cannot drift:
 - `chart-tokens($colors...)` — emits `--app-chart-1..6` from exactly six
   series colors, in order; any other count is a compile error.
 
-Reference implementations:
+### When system tokens are not enough: Material override mixins
+
+M3 system tokens cover most of a brand's range, but some registers need more
+(hard-contrast pure-white/near-black surfaces, a squared component silhouette
+Material's shape tokens don't reach). The sanctioned escape hatch is **Material
+token overrides emitted inside the brand mixins**:
+
+- `mat.theme-overrides((...))` — override M3 *system* tokens after
+  `mat.theme` (see Brutalist's surface overrides in
+  `apps/demo-reporting/src/styles/themes/_brutalist.scss`).
+- `mat.<component>-overrides((...))` — Angular Material's per-component
+  override mixins (e.g. `mat.card-overrides`, `mat.button-overrides`), for
+  pushing one Material surface beyond what system tokens express.
+
+Both are still pure token emission under the brand's root class — the
+per-brand-component-CSS ban stands. And the hatch is for *Material* tokens
+only: if the gap is kit-specific (no Material token exists for it), **extend
+the `--app-*` contract** with a new documented token rather than hardcoding.
+After any override, re-check the brand across the Material Parity Storybook
+gallery (`libs/table/.storybook/parity/`) — that gallery is the regression
+surface for the full brand range.
+
+### Reference implementations
 
 - `libs/theme/src/m3kit-theme/themes/instruments/_brand.scss` —
   the default brand, shipped inside the lib.
-- `apps/demo-reporting/src/styles/themes/_terminal.scss`, `_ledger.scss`,
-  `_field-guide.scss` — example *consumer* brands living app-side, exactly
-  where your own brands will live.
+- `apps/demo-reporting/src/styles/themes/_*.scss` — eleven example
+  *consumer* brands living app-side, exactly where your own brands will
+  live.
+
+The full roster (seeds and fonts per module; voice descriptions in
+`DESIGN.md › Multi-brand themes`):
+
+| Brand | Module | Primary / accent seeds | Fonts (heading / body + data) |
+|---|---|---|---|
+| Instruments (default) | `libs/theme` `themes/instruments` | `#1B4FD8` cobalt / `#C45F1A` burnt sienna | DM Serif Display / Instrument Sans + JetBrains Mono |
+| Terminal | `_terminal.scss` | `#2FD584` phosphor green / `#F59E0B` amber | Archivo / IBM Plex Mono |
+| Ledger | `_ledger.scss` | `#6B1F2A` oxblood / `#B08D3E` gold leaf | Fraunces / Source Sans 3 |
+| Field Guide | `_field-guide.scss` | `#1E9E5A` kelly / `#E8604C` soft coral | Outfit / DM Mono |
+| Carbon | `_carbon.scss` | `#0F62FE` IBM blue / `#6F6F6F` steel | IBM Plex Sans / IBM Plex Mono |
+| Brutalist | `_brutalist.scss` | `#111111` ink / `#E11900` signal red | Archivo 900 / Archivo 500 + IBM Plex Mono |
+| Meadow | `_meadow.scss` | `#8B7EC8` lavender / `#6FBF8F` mint | Nunito / DM Mono |
+| Beacon | `_beacon.scss` | `#0050B3` accessible blue / `#B34700` burnt orange | Atkinson Hyperlegible / Source Sans 3 |
+| Noir | `_noir.scss` | `#C9A961` champagne gold / `#8C6D4F` bronze | Cormorant Garamond / Jost + JetBrains Mono |
+| Pop | `_pop.scss` | `#D6006C` magenta / `#00B8D9` cyan | Baloo 2 / Fredoka + DM Mono |
+| Gazette | `_gazette.scss` | `#1A1A1A` ink / `#1D4ED8` link-blue | Playfair Display / Libre Franklin + PT Mono |
+| Synth | `_synth.scss` | `#00D4AA` neon teal / `#FF3D8A` neon pink | Chakra Petch / JetBrains Mono |
 
 ## Worked example: adding a "Midnight" brand
 
@@ -271,7 +311,10 @@ In `libs/table/.storybook/preview.ts`, extend the `BRANDS` array
 and the `brand` toolbar items:
 
 ```ts
-const BRANDS = ['instruments', 'terminal', 'ledger', 'field-guide', 'midnight'] as const;
+const BRANDS = [
+  'instruments', 'terminal', 'ledger', 'field-guide', 'carbon', 'brutalist',
+  'meadow', 'beacon', 'noir', 'pop', 'gazette', 'synth', 'midnight',
+] as const;
 // ...
 items: [
   // ...existing brands...
@@ -326,8 +369,10 @@ else**. Deliberately excluded:
   airy) are design decisions fixed in components and DESIGN.md, not per-brand
   variables. A brand may not move things around.
 - **Per-brand component CSS** — no `html.theme-x .some-component` selectors
-  anywhere. If a brand seems to need one, the contract needs a new token (a
-  documented decision), not an escape hatch.
+  anywhere. If a brand seems to need one, the answer is token emission: a
+  Material token override inside the brand mixins (see "When system tokens
+  are not enough" above) for Material-expressible needs, or a new `--app-*`
+  contract token (a documented decision) for kit-specific ones.
 - **Motion** — durations and easing follow DESIGN.md globally.
 
 This is recorded as a binding decision in `DESIGN.md` (Decisions Log,

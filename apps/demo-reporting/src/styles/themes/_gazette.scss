@@ -1,16 +1,125 @@
-@use 'm3kit-theme/themes/instruments';
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './gazette-colors' as palettes;
 
-/// "gazette" — STUB brand module. Implements the brand mixin contract from
-/// `@m3kit/theme` by delegating to Instruments, the default brand. The
-/// gazette brand agent will replace this file with the real palettes,
-/// typography, status/radius/font/chart token emissions.
+/// "Gazette" — alternate brand: newspaper. Ink on paper: rules, not boxes
+/// (all radii 0), Libre Franklin body with Playfair Display masthead
+/// headlines, link-blue as the only saturated accent. Light mode is paper
+/// white; dark mode is ink-black with paper-cream text.
+///
+/// Palettes generated from primary `#1A1A1A` (ink), tertiary `#1D4ED8`
+/// (link-blue), neutral `#6B6B6B` (newsprint gray) — see
+/// `_gazette-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+///
+/// Gazette's data-cell tone is PT Mono (typewriter-adjacent tabular
+/// figures for the stock-listings register).
 
-/// Emits the full light theme (delegated to Instruments for now).
+/// Typography per the brand spec: Libre Franklin (400/500) for body/UI —
+/// the classic American newspaper grotesque — and Playfair Display (700)
+/// for display/headline, the masthead serif.
+$_typography: (
+  plain-family: 'Libre Franklin',
+  brand-family: 'Playfair Display',
+  regular-weight: 400,
+  medium-weight: 500,
+  bold-weight: 700,
+);
+
+/// Status badge tokens (container / on-container pairs): ink-on-paper
+/// variants. Paid ink-green, sent link-blue, overdue ink-red, draft
+/// light-gray, void faded gray (the struck-out listing — strikethrough
+/// itself is a component-layer treatment; the token pair reads as faded
+/// ink).
+$_status-light: (
+  draft: (
+    bg: #e9e7e2,
+    fg: #3c3b38,
+  ),
+  sent: (
+    bg: #dce1ff,
+    fg: #002682,
+  ),
+  paid: (
+    bg: #dbe6d3,
+    fg: #1d3b1a,
+  ),
+  overdue: (
+    bg: #f5d9d2,
+    fg: #5c150e,
+  ),
+  void: (
+    bg: #d8d5cf,
+    fg: #56544f,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #3b3a37,
+    fg: #e9e7e2,
+  ),
+  sent: (
+    bg: #002f9b,
+    fg: #dce1ff,
+  ),
+  paid: (
+    bg: #2c4a28,
+    fg: #dbe6d3,
+  ),
+  overdue: (
+    bg: #6e2018,
+    fg: #f5d9d2,
+  ),
+  void: (
+    bg: #4a4843,
+    fg: #c9c6c0,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): pressroom inks —
+/// ink, link-blue, ink-red, newsprint gray, sepia, olive. Light mode runs
+/// the inks at full press depth on paper white; dark mode lifts every ink
+/// toward paper-cream so the series read on ink-black.
+$_chart-light: #1a1a1a, #1d4ed8, #b42318, #6b6b6b, #8a5a2b, #5c6b2f;
+$_chart-dark: #e8e2d6, #91a7ff, #f0897c, #aaa7a1, #cf9d63, #aab86a;
+
+/// Emits the full light theme: color, typography, density, status,
+/// radius, and chart tokens. Paper white surfaces.
 @mixin brand-light() {
-  @include instruments.brand-light();
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: rules, not boxes — broadsheet column rules carry the structure,
+  // so every silhouette is square (cards 0, controls 0, badges 0).
+  @include contract.radius-tokens($card: 0, $control: 0, $badge: 0);
+  @include contract.font-data("'PT Mono'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
 }
 
-/// Re-emits only what changes in dark mode (delegated to Instruments).
+/// Re-emits only the color tokens for dark mode (ink-black, paper-cream
+/// text); typography, density, and radius are inherited from light.
 @mixin brand-dark() {
-  @include instruments.brand-dark();
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
 }

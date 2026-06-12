@@ -58,20 +58,43 @@ All fonts are OFL-licensed and served from Google Fonts (license-compatible with
 - **Duration:** micro(50–100ms) short(150–250ms); nothing longer without a reason.
 
 ## Multi-brand themes
-**Instruments** (this document) is the default brand. Three alternate brand themes are selectable at runtime — a brand-switcher in the app toolbar and a Storybook toolbar apply a `theme-<brand>` class (plus `dark`) to the root element, and each brand re-emits the full token set (`--mat-sys-*`, `--app-status-*`, `--app-radius-*`, `--app-chart-*`) from its own module — Instruments ships in `libs/theme` (the rethemable kit's contract + default brand), the three alternates live in `apps/demo-reporting/src/styles/themes/` as example consumers. Every brand ships light and dark. Layout signatures are NOT token-expressible; they are delivered as shell/page presets in the demo app (see Layout), selected per brand by default while remaining freely recombinable — any brand can wear any preset.
+**Instruments** (this document) is the default brand. Eleven alternate brand themes are selectable at runtime — a brand-switcher in the app toolbar and a Storybook toolbar apply a `theme-<brand>` class (plus `dark`) to the root element, and each brand re-emits the full token set (`--mat-sys-*`, `--app-status-*`, `--app-radius-*`, `--app-font-data`, `--app-chart-*`) from its own module — Instruments ships in `libs/theme` (the rethemable kit's contract + default brand), the eleven alternates live in `apps/demo-reporting/src/styles/themes/` as example consumers. Every brand ships light and dark. Layout signatures are NOT token-expressible; they are delivered as shell/page presets in the demo app (see Layout), selected per brand by default while remaining freely recombinable — any brand can wear any preset.
 
 - **Terminal** — operations-console energy: phosphor green on charcoal, dark-first, utilitarian and dense; the dashboard should read like a monitoring console that happens to have a light mode.
 - **Ledger** — bookkeeper's heirloom: oxblood and gold on warm paper, serif-led and unhurried; financial gravitas without nostalgia kitsch.
 - **Field Guide** — naturalist's notebook: kelly green and coral on warm white, rounded and approachable; the friendliest voice the data can wear without losing rigor.
+- **Carbon** — enterprise workbench: IBM blue on cool gray chrome, Plex everywhere, squared 2px silhouettes; the register of serious internal tooling.
+- **Brutalist** — raw concrete: ink on pure paper with signal red, Archivo 900 poster headings, zero curvature anywhere; hard contrast is the brand.
+- **Meadow** — soft pastel: lavender and mint over warm white, deeply rounded, Nunito; the gentlest the kit gets without losing alignment.
+- **Beacon** — accessibility-first: deep blue and burnt orange in AAA-leaning pairings, Atkinson Hyperlegible throughout; legibility is the aesthetic.
+- **Noir** — dark-first luxury: champagne gold on warm near-black, Cormorant Garamond display; light mode is an ivory + ink + gold-rule register.
+- **Pop** — candy-bright: magenta and cyan on bright white, pill silhouettes, chunky Baloo 2 display; maximum saturation under the same density rules.
+- **Gazette** — newspaper: ink on paper, rules not boxes (all radii 0), Playfair Display masthead headlines, link-blue the only saturated accent.
+- **Synth** — synthwave instrument panel: neon teal and pink on blue-charcoal, dark-first, Chakra Petch; a documented doctrine deviation (neon-coded status/chart palettes).
 
 | Brand | Primary seed | Accent seed | Surface character | Heading / body+data fonts |
 |---|---|---|---|---|
 | Instruments (default) | `#1B4FD8` cobalt | `#C45F1A` burnt sienna | cool slate, technical paper | DM Serif Display / Instrument Sans + JetBrains Mono |
-| Terminal | phosphor green | — | charcoal console | Archivo / IBM Plex Mono |
-| Ledger | `#6B1F2A` oxblood | `#B08D3E` gold | warm paper | Fraunces / Source Sans 3 |
-| Field Guide | `#1E9E5A` kelly | `#E8604C` coral | warm white | Outfit / DM Mono |
+| Terminal | `#2FD584` phosphor green | `#F59E0B` amber signal | charcoal console, dark-first | Archivo / IBM Plex Mono |
+| Ledger | `#6B1F2A` oxblood | `#B08D3E` gold leaf | warm paper | Fraunces / Source Sans 3 |
+| Field Guide | `#1E9E5A` kelly | `#E8604C` soft coral | warm white, rounded | Outfit / DM Mono |
+| Carbon | `#0F62FE` IBM blue | `#6F6F6F` steel | cool gray workbench, squared 2px | IBM Plex Sans / IBM Plex Mono |
+| Brutalist | `#111111` ink black | `#E11900` signal red | pure paper ↔ near-black, zero curvature | Archivo 900 / Archivo 500 + IBM Plex Mono |
+| Meadow | `#8B7EC8` soft lavender | `#6FBF8F` mint | warm white pastel, deeply rounded | Nunito / DM Mono |
+| Beacon | `#0050B3` deep accessible blue | `#B34700` burnt orange | near-neutral, AAA-leaning | Atkinson Hyperlegible / Source Sans 3 |
+| Noir | `#C9A961` champagne gold | `#8C6D4F` bronze | warm near-black, dark-first luxe | Cormorant Garamond / Jost + JetBrains Mono |
+| Pop | `#D6006C` magenta | `#00B8D9` cyan | bright white candy, pill silhouettes | Baloo 2 / Fredoka + DM Mono |
+| Gazette | `#1A1A1A` ink | `#1D4ED8` link-blue | paper white, rules not boxes | Playfair Display / Libre Franklin + PT Mono |
+| Synth | `#00D4AA` neon teal | `#FF3D8A` neon pink | blue-charcoal neon panel, dark-first | Chakra Petch / JetBrains Mono |
 
-Brand modules implement the mixin contract documented in `@m3kit/theme` (`libs/theme/src/m3kit-theme/_contract.scss`, resolved via the `libs/theme/src` style includePath as `@use 'm3kit-theme'`): `brand-light()` emits `mat.theme` color+typography+density plus status and radius tokens; `brand-dark()` re-emits color and status tokens only.
+Brand modules implement the mixin contract documented in `@m3kit/theme` (`libs/theme/src/m3kit-theme/_contract.scss`, resolved via the `libs/theme/src` style includePath as `@use 'm3kit-theme'`): `brand-light()` emits `mat.theme` color+typography+density plus status, radius, font-data, and chart tokens; `brand-dark()` re-emits color, status, and chart tokens only.
+
+## Material as the engine
+The kit's public API is the `m3k-*` component set plus the token contract (`--mat-sys-*` system tokens + the `--app-*` custom-prop API). Angular Material is the **internal implementation** — an engine, not a surface adopters or brands style against. Three consequences (binding):
+
+- **Wrap, don't leak.** Demo and adopter code composes `m3k-*` components; raw Material usage inside `libs/*` is an implementation detail that may be restyled or replaced without notice. Retheming happens through tokens, never by targeting Material internals from app code.
+- **Brands may push beyond the Material look.** Where M3 system tokens cannot carry a brand's register, brand modules may override Material tokens directly inside `brand-light()` / `brand-dark()`: system-level `mat.theme-overrides(...)` (Brutalist's pure-paper / near-black surfaces) and per-component `mat.<component>-overrides(...)` mixins. This is still pure token emission under the brand's root scope — the no-per-brand-component-CSS rule stands, and kit-specific gaps (no Material token exists) still extend the `--app-*` contract instead.
+- **The parity gallery is the brand-range regression surface.** `libs/table/.storybook/parity/` (the "Material Parity" Storybook section, 33 stories) renders every Angular Material surface under the brand × mode toolbar. Any contract change, brand addition, or Material token override must keep all 12 brands × 2 modes presentable there — the gallery is where "does the engine still disappear behind the brand?" gets answered.
 
 ## Anti-patterns (binding)
 No gradients as brand. No glassmorphism. No purple bias. No shadow-on-everything. No rainbow status pills. No skeleton-shimmer theater in stories. No oversized icons (Material Symbols, small optical sizes, light weights). No hero/landing composition in the demo app.
@@ -84,4 +107,5 @@ No gradients as brand. No glassmorphism. No purple bias. No shadow-on-everything
 | 2026-06-11 | Brand layout presets | Owner direction after comparing the live app to the approved design-exploration mocks: each brand's mock composition (command bar / editorial rail / pill tabs) is implemented as a reusable layout preset; brands select a default preset at the app layer; tokens and layout remain decoupled. |
 | 2026-06-11 | Multi-brand architecture | Owner decision after design exploration: four runtime-switchable brands (Instruments default + Terminal, Ledger, Field Guide), each light+dark, as token-only re-emissions behind `theme-<brand>`/`dark` classes; layout signatures stay out of token scope. |
 | 2026-06-11 | Chart series token family (`--app-chart-1..6`) | Charts need a categorical series palette that rethemes with the brand; ad-hoc per-chart colors would break the token-only rule. Added `chart-tokens()` to the contract (closed set of six, compile-time count check, light+dark lists per brand); all four brands emit identity-fitting series sets. |
+| 2026-06-11 | Material as the engine (wrap-Material doctrine) | The public API is the `m3k-*` component set + the token contract; Angular Material is internal implementation. Brands may exceed the stock Material look via Material token overrides (`mat.theme-overrides` / per-component `mat.<component>-overrides` mixins) emitted inside brand modules — token emission only, no per-brand component CSS; kit-specific gaps extend the `--app-*` contract. The Material Parity Storybook gallery (`libs/table/.storybook/parity/`) is the brand-range regression surface across all 12 brands × 2 modes. |
 | 2026-06-11 | Token contract extracted to `libs/theme` | The `--app-*` custom-prop API, the `brand-light()`/`brand-dark()` mixin contract, and the default Instruments brand now live in the copy-in deliverable (`libs/theme/src/m3kit-theme/_contract.scss`) rather than app styles, so adopters get the theming machinery with the components. Terminal/Ledger/Field Guide stay app-side as example consumer brands. Adopter walkthrough: `docs/THEMING.md`. |
