@@ -92,13 +92,17 @@ $_chart-dark: #8a3ffc, #33b1ff, #08bdba, #ff7eb6, #fa4d56, #4589ff;
       density: 0,
     )
   );
-  @include contract.status-tokens($_status-light);
-  // Shape: squared enterprise chrome — 2px across cards, controls,
-  // and badges (no pill silhouettes in Carbon).
-  @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 2px);
-  @include contract.font-data("'IBM Plex Mono'");
-  @include contract.chart-tokens($_chart-light...);
-  color-scheme: light;
+  // `& {}`: these must follow `mat.theme`'s nested rules without Sass
+  // mixed-decls hoisting (declarations after nested rules).
+  & {
+    @include contract.status-tokens($_status-light);
+    // Shape: squared enterprise chrome — 2px across cards, controls,
+    // and badges (no pill silhouettes in Carbon).
+    @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 2px);
+    @include contract.font-data("'IBM Plex Mono'");
+    @include contract.chart-tokens($_chart-light...);
+    color-scheme: light;
+  }
 }
 
 /// Re-emits only the color tokens for dark mode; typography, density,
@@ -113,7 +117,9 @@ $_chart-dark: #8a3ffc, #33b1ff, #08bdba, #ff7eb6, #fa4d56, #4589ff;
       ),
     )
   );
-  @include contract.status-tokens($_status-dark);
-  @include contract.chart-tokens($_chart-dark...);
-  color-scheme: dark;
+  & {
+    @include contract.status-tokens($_status-dark);
+    @include contract.chart-tokens($_chart-dark...);
+    color-scheme: dark;
+  }
 }

@@ -1,9 +1,12 @@
 #!/usr/bin/env node
 /**
  * m3kit CLI shim — maps `m3kit add <libs...>` onto the @m3kit/plugin:lift
- * Nx generator, so consumers can run (from their Nx workspace root):
+ * Nx generator. The package is not published to npm (ADR-015), so today this
+ * runs from a workspace root as:
  *
- *   npx m3kit add table dashboard --scope=ui --ref=main
+ *   node <m3kit>/dist/tools/plugin/bin/m3kit.js add table dashboard --scope=ui --ref=main
+ *
+ * (`npx m3kit add ...` becomes the equivalent once published.)
  *
  * Everything after the lib names is forwarded to the generator verbatim
  * (`--scope`, `--ref`, `--repo`, `--dry-run`, ...).

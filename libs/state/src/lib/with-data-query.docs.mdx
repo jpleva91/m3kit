@@ -20,11 +20,19 @@ in-flight responses are cancelled and the newest query always wins.
 
 ## Usage
 
+The store's state signals map one-to-one onto `m3k-data-table`'s
+controlled-mode inputs, and the table's `sortChange`/`pageChange` outputs
+map straight back onto the store's methods — the store is the single
+fetch path, the table never touches the data source
+(see the live wiring in
+[DataTable/StoreDriven](?path=/story/organisms-datatable-storedriven--store-driven)):
+
 ```ts
-import { Component, OnInit, inject } from '@angular/core';
+import { Component, inject } from '@angular/core';
 import { signalStore } from '@ngrx/signals';
-import { InMemoryTableDataSource } from '@m3kit/core';
+import { InMemoryTableDataSource, TableDefinition } from '@m3kit/core';
 import { withDataQuery } from '@m3kit/state';
+import { DataTableComponent } from '@m3kit/table';
 
 interface Invoice {
   id: number;
@@ -37,17 +45,28 @@ const InvoiceStore = signalStore(withDataQuery<Invoice>());
 
 @Component({
   selector: 'app-invoices',
+  imports: [DataTableComponent],
   providers: [InvoiceStore],
   template: `
     <input (input)="store.setTextFilter($any($event.target).value)" />
-    @if (store.loading()) { <p>Loading…</p> }
-    @for (row of store.rows(); track row.id) { <p>{{ row.customer }}</p> }
+    <m3k-data-table
+      [definition]="definition"
+      [rows]="store.rows()"
+      [loading]="store.loading()"
+      [error]="store.error()"
+      [totalCount]="store.totalCount()"
+      [sort]="store.sort()"
+      [page]="store.page()"
+      (sortChange)="store.setSort($event)"
+      (pageChange)="store.setPage($event)"
+    />
   `,
 })
-export class InvoicesComponent implements OnInit {
+export class InvoicesComponent {
+  readonly definition: TableDefinition<Invoice> = INVOICE_DEFINITION;
   readonly store = inject(InvoiceStore);
 
-  ngOnInit(): void {
+  constructor() {
     this.store.connect(
       new InMemoryTableDataSource<Invoice>(rows, {
         textSearchKeys: ['customer'],
@@ -56,6 +75,10 @@ export class InvoicesComponent implements OnInit {
   }
 }
 ```
+
+Binding `[rows]` switches the table to controlled mode: it stops
+fetching from any `dataSource` of its own and renders exactly the state
+the store fetched, so there is one fetch pipeline, not two.
 
 ## API
 
@@ -102,6 +125,10 @@ export class InvoicesComponent implements OnInit {
 
 - **Do** bind a search input straight to `setTextFilter` — debouncing and
   dedup live in the store, not the template.
+- **Don't** bind `[dataSource]` on `m3k-data-table` when the store drives
+  it — the store owns the single fetch path; the table renders
+  `rows`/`loading`/`error`/`totalCount`/`sort`/`page` and reports intent
+  via `sortChange`/`pageChange`.
 - **Do** rely on the `switchMap` semantics: rapid query changes never
   produce out-of-order results.
 - **Don't** import `@ngrx/operators` for `tapResponse` — the kit's

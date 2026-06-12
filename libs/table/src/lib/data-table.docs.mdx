@@ -6,13 +6,23 @@ import * as DataTableStories from './data-table.component.stories';
 # DataTable
 
 `m3k-data-table` renders a Material table from a declarative
-`TableDefinition<T>` backed by any `TableDataSource<T>`, owning the full
-query state (text filter, field filters, sort, page) as signals and
-re-fetching on every change. Use it for any tabular report where columns,
-formatting, sorting, and pagination should be driven by data rather than
-hand-written templates. It ships type-aware cell formatting (`text`,
-`number`, `date`, `currency`, `badge`), a loading bar, an empty state, and a
-distinct error state.
+`TableDefinition<T>`, in one of two modes:
+
+- **Uncontrolled (default):** bind `dataSource` and the table owns the
+  full query state (text filter, field filters, sort, page) as signals,
+  re-fetching from the `TableDataSource<T>` on every change.
+- **Controlled:** bind `rows` (its presence switches the mode) and the
+  table never fetches — it renders externally owned state
+  (`rows`/`loading`/`error`/`totalCount`/`sort`/`page`) and emits
+  `sortChange`/`pageChange` so the owner (typically a `withDataQuery`
+  SignalStore from `@m3kit/state`) stays the single fetch path. See the
+  [StoreDriven story](?path=/story/organisms-datatable-storedriven--store-driven).
+
+Use it for any tabular report where columns, formatting, sorting, and
+pagination should be driven by data rather than hand-written templates.
+It ships type-aware cell formatting (`text`, `number`, `date`,
+`currency`, `badge`), a loading bar, an empty state, and a distinct
+error state.
 
 **Atomic level:** Organism — composed from Material table, sort header,
 paginator, and progress bar atoms, plus the `@m3kit/core` query contracts.
@@ -80,19 +90,49 @@ export class InvoicesComponent {
 }
 ```
 
+## Controlled mode — store-driven
+
+Binding `[rows]` switches the table to controlled mode: `dataSource` is
+ignored (never fetched), the provided state renders as-is, and sort/page
+interactions surface as events instead of feeding the internal pipeline.
+A `withDataQuery` store composes onto the bindings one-to-one:
+
+```html
+<m3k-data-table
+  [definition]="definition"
+  [rows]="store.rows()"
+  [loading]="store.loading()"
+  [error]="store.error()"
+  [totalCount]="store.totalCount()"
+  [sort]="store.sort()"
+  [page]="store.page()"
+  (sortChange)="store.setSort($event)"
+  (pageChange)="store.setPage($event)"
+/>
+```
+
 ## Inputs and outputs
 
 | Name | Kind | Type | Default | Description |
 | --- | --- | --- | --- | --- |
 | `definition` | input (required) | `TableDefinition<T>` | — | Declarative report definition driving columns, formatting, default sort, and default page size. |
-| `dataSource` | input (required) | `TableDataSource<T>` | — | Source the table fetches pages from on every query change. |
-| `textFilter` | input | `string` | `''` | Free-text filter applied across searchable fields (wire to `m3k-table-filter-bar`'s `filterChange`). |
-| `fieldFilters` | input | `Readonly<Record<string, unknown>>` | `{}` | Per-field exact-match filters, keyed by row property (wire to `m3k-filter-form`'s `filtersChange`). |
+| `dataSource` | input | `TableDataSource<T> \| undefined` | `undefined` | Source the table fetches pages from on every query change (uncontrolled mode). Ignored while `rows` is bound. |
+| `textFilter` | input | `string` | `''` | Free-text filter applied across searchable fields (uncontrolled mode; wire to `m3k-table-filter-bar`'s `filterChange`). |
+| `fieldFilters` | input | `Readonly<Record<string, unknown>>` | `{}` | Per-field exact-match filters, keyed by row property (uncontrolled mode; wire to `m3k-filter-form`'s `filtersChange`). |
+| `rows` | input | `readonly T[] \| undefined` | `undefined` | Externally fetched rows. Binding a value switches the table to controlled mode. |
+| `loading` | input | `boolean \| undefined` | `undefined` | External loading flag (controlled mode). |
+| `error` | input | `string \| null \| undefined` | `undefined` | External error message, rendered in the error row; `null` when healthy (controlled mode). |
+| `totalCount` | input | `number \| undefined` | `undefined` | External filtered (pre-pagination) row count for the paginator (controlled mode; falls back to `rows.length`). |
+| `sort` | input | `SortState \| null \| undefined` | `undefined` | External sort state shown by the headers (controlled mode). |
+| `page` | input | `PageState \| undefined` | `undefined` | External pagination state shown by the paginator (controlled mode). |
 | `rowClicked` | output | `T` | — | Emits the clicked (or Enter/Space-activated) row. |
+| `sortChange` | output | `SortState \| null` | — | Emits the sort the user chose via a header (`null` clears). Fired in both modes; in controlled mode it is the only effect. |
+| `pageChange` | output | `PageState` | — | Emits the page index/size the user chose via the paginator. Fired in both modes; in controlled mode it is the only effect. |
 
 Public API beyond inputs: `applyTextFilter(text)` and
-`applyFieldFilters(fields)` set filters imperatively (overriding the
-inputs); `loading`, `error`, and `query` are readable signals.
+`applyFieldFilters(fields)` set filters imperatively in uncontrolled mode
+(overriding the inputs); `isLoading`, `hasError`, `controlled`, and
+`query` are readable signals.
 
 ## Theming
 
@@ -112,8 +152,12 @@ Density is locked to `-2` (compact, analytical) via a host-scoped
 ## Do / Don't
 
 - **Do** drive filtering through `textFilter` / `fieldFilters` (or the
-  imperative `apply*` methods) and let the table own sort and page state —
-  it resets to page 1 on any filter or definition change for you.
+  imperative `apply*` methods) and let the table own sort and page state
+  in uncontrolled mode — it resets to page 1 on any filter or definition
+  change for you.
+- **Do** pick exactly one mode per table: either the table fetches
+  (`dataSource`) or a store does (`rows` + friends) — never both
+  pipelines at once.
 - **Don't** pre-filter or pre-sort the rows you hand to the data source to
   mirror UI state; the table sends the complete `DataQuery` to
   `TableDataSource.fetch` and duplicating that logic outside desynchronizes
@@ -124,3 +168,4 @@ Density is locked to `-2` (compact, analytical) via a host-scoped
 - [Molecules/TableFilterBar](?path=/docs/molecules-tablefilterbar--docs) — debounced free-text search for `textFilter`
 - [Organisms/FilterForm](?path=/docs/organisms-filterform--docs) — generated per-field filters for `fieldFilters`
 - [Molecules/PageToolbar](?path=/docs/molecules-pagetoolbar--docs) — title/actions row typically placed above the table
+- [State/WithDataQuery](?path=/docs/state-withdataquery--docs) — headless SignalStore feature that drives the table in controlled mode

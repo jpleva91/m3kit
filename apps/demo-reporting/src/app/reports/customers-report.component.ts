@@ -35,9 +35,10 @@ const CustomersReportStore = signalStore(
  * Customers report demo: reuses the exact same building blocks as the
  * invoices report (`m3k-page-toolbar`, `m3k-table-filter-bar`,
  * `m3k-data-table`) with a different definition and data source,
- * demonstrating reusability of the reporting components. Query state
- * lives in a `@m3kit/state` store that feeds the table's inputs and
- * consumes its outputs.
+ * demonstrating reusability of the reporting components. The
+ * `@m3kit/state` store is the single fetch path: it owns the query and
+ * the fetched page, and the table runs in controlled mode driven
+ * entirely by store state and `sortChange`/`pageChange` events.
  */
 @Component({
   selector: 'app-customers-report',
@@ -52,7 +53,7 @@ export class CustomersReportComponent {
 
   protected readonly dataSource = new InMemoryTableDataSource<Customer>(CUSTOMERS);
 
-  /** Drives the toolbar count and the table's filter inputs. */
+  /** Single source of truth: fetches pages and drives the table and toolbar. */
   protected readonly store = inject(CustomersReportStore);
 
   /** Last customer the user clicked (selection is tracked by id in the store). */
@@ -61,6 +62,11 @@ export class CustomersReportComponent {
   );
 
   constructor() {
+    // Seed the store with the definition's default sort before the
+    // first (and only) fetch that `connect` runs. Widened because the
+    // store's query carries untyped sort state.
+    const sort = this.definition.defaultSort;
+    this.store.setSort(sort ? { key: sort.key, direction: sort.direction } : null);
     this.store.connect(this.dataSource);
   }
 

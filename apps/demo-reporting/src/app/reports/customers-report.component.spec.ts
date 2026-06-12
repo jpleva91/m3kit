@@ -1,11 +1,13 @@
 import { ComponentFixture, TestBed } from '@angular/core/testing';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { InMemoryTableDataSource } from '@m3kit/core';
 
 import { CustomersReportComponent } from './customers-report.component';
 
 describe('CustomersReportComponent', () => {
   let fixture: ComponentFixture<CustomersReportComponent>;
   let element: HTMLElement;
+  let fetchSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -13,9 +15,14 @@ describe('CustomersReportComponent', () => {
       providers: [provideNoopAnimations()],
     }).compileComponents();
 
+    fetchSpy = vi.spyOn(InMemoryTableDataSource.prototype, 'fetch');
     fixture = TestBed.createComponent(CustomersReportComponent);
     fixture.detectChanges();
     element = fixture.nativeElement as HTMLElement;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('renders the customers report toolbar with the total row count', () => {
@@ -30,5 +37,23 @@ describe('CustomersReportComponent', () => {
     // Default page size of the customers definition is 10.
     expect(rows.length).toBe(10);
     expect(element.textContent).toContain('Customer 0');
+  });
+
+  it('fetches exactly once on init, through the store only', () => {
+    // The table is controlled ([rows] bound), so the store's connect()
+    // is the single fetch path — no second pipeline inside the table.
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('routes paginator events through the store as the only fetch path', () => {
+    const next = element.querySelector(
+      'button.mat-mdc-paginator-navigation-next',
+    ) as HTMLButtonElement;
+    next.click();
+    fixture.detectChanges();
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    const query = fetchSpy.mock.calls[1][0] as { page: unknown };
+    expect(query.page).toEqual({ index: 1, size: 10 });
   });
 });

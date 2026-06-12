@@ -91,13 +91,17 @@ $_chart-dark: #e08a96, #d9b765, #8fc4a0, #9db5d9, #c9a3b8, #d99a6e;
       density: 0,
     )
   );
-  @include contract.status-tokens($_status-light);
-  // Shape: square editorial print — cards 2px, controls 2px,
-  // badges 0 (rules and stamps, not pills).
-  @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 0px);
-  @include contract.font-data("'Source Sans 3'");
-  @include contract.chart-tokens($_chart-light...);
-  color-scheme: light;
+  // `& {}`: these must follow `mat.theme`'s nested rules without Sass
+  // mixed-decls hoisting (declarations after nested rules).
+  & {
+    @include contract.status-tokens($_status-light);
+    // Shape: square editorial print — cards 2px, controls 2px,
+    // badges 0 (rules and stamps, not pills).
+    @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 0px);
+    @include contract.font-data("'Source Sans 3'");
+    @include contract.chart-tokens($_chart-light...);
+    color-scheme: light;
+  }
 }
 
 /// Re-emits only the color tokens for dark mode; typography, density,
@@ -112,7 +116,9 @@ $_chart-dark: #e08a96, #d9b765, #8fc4a0, #9db5d9, #c9a3b8, #d99a6e;
       ),
     )
   );
-  @include contract.status-tokens($_status-dark);
-  @include contract.chart-tokens($_chart-dark...);
-  color-scheme: dark;
+  & {
+    @include contract.status-tokens($_status-dark);
+    @include contract.chart-tokens($_chart-dark...);
+    color-scheme: dark;
+  }
 }

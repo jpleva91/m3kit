@@ -1,7 +1,15 @@
 {
   "name": "@m3kit/plugin",
   "version": "0.0.1",
+  "description": "Nx generators for m3kit: source-internalize the libs into a consumer workspace (lift) and scaffold on-contract components, brands, and pages.",
   "private": true,
+  "license": "Apache-2.0",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/jpleva91/m3kit.git",
+    "directory": "tools/plugin"
+  },
+  "keywords": ["nx", "nx-plugin", "angular", "material", "m3", "generators"],
   "type": "commonjs",
   "main": "./src/index.js",
   "types": "./src/index.d.ts",
@@ -9,6 +17,7 @@
   "bin": {
     "m3kit": "./bin/m3kit.js"
   },
+  "files": ["bin", "src", "generators.json", "README.md"],
   "dependencies": {
     "@nx/devkit": "20.8.4",
     "tslib": "^2.3.0"

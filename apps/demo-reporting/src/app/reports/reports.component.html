@@ -19,9 +19,14 @@
 
   <m3k-data-table
     [definition]="definition"
-    [dataSource]="dataSource"
-    [textFilter]="store.textFilter()"
-    [fieldFilters]="store.fieldFilters()"
+    [rows]="store.rows()"
+    [loading]="store.loading()"
+    [error]="store.error()"
+    [totalCount]="store.totalCount()"
+    [sort]="store.sort()"
+    [page]="store.page()"
+    (sortChange)="store.setSort($event)"
+    (pageChange)="store.setPage($event)"
     (rowClicked)="onRowClicked($event)"
   />
 

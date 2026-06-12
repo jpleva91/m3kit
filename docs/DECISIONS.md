@@ -348,6 +348,35 @@ misleading identity at publication. Doing the rename pre-publication makes a
 clean break free: no published artifact, no semver contract, no consumers to
 migrate.
 
+## ADR-015 — `@m3kit/plugin` stays unpublished; docs may not advertise npx
+
+**Status:** Accepted (2026-06-12)
+
+**Decision:** The Nx plugin (`tools/plugin`, package `@m3kit/plugin`) is
+**not published to npm** and remains `private: true` pending a deliberate
+publishing decision (which would get its own ADR: registry, versioning,
+release process, support expectations). Two consequences:
+
+- `package.json` is kept *publish-ready* — correct `bin` entry, `files`
+  list, `repository`/`license`/`description` — so flipping the decision
+  later is a one-line change, but the `private` flag is the source of truth
+  until then.
+- Documentation must not present `npx m3kit ...` / `m3kit add ...` as
+  working commands. Docs lead with what works today: `npx nx g
+  @m3kit/plugin:...` from this repo, or from a consumer workspace after
+  building (`npx nx build m3kit-plugin`) and installing the output
+  (`pnpm add -D @m3kit/plugin@file:.../dist/tools/plugin`); the CLI shim
+  runs as `node dist/tools/plugin/bin/m3kit.js add ...` (or `pnpm exec
+  m3kit` once the built package is installed). The npx form may be
+  mentioned only as future, post-publication behavior.
+
+**Rationale:** The repository's distribution doctrine is fetch-and-own —
+nothing is published to npm (README, ADR-001). Advertising `npx m3kit add`
+while the package is private contradicted that doctrine and could not work
+for external consumers. Publishing is a real commitment (semver contract,
+release cadence, registry hygiene) that should be taken deliberately, not
+implied by docs; until it is, claims and reality must match.
+
 ## Verification record — scaffold phase (2026-06-11)
 
 - In-workspace gate: `npx nx run-many -t lint test build` green for all four

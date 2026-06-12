@@ -98,13 +98,17 @@ $_chart-dark: #e8e2d6, #91a7ff, #f0897c, #aaa7a1, #cf9d63, #aab86a;
       density: 0,
     )
   );
-  @include contract.status-tokens($_status-light);
-  // Shape: rules, not boxes — broadsheet column rules carry the structure,
-  // so every silhouette is square (cards 0, controls 0, badges 0).
-  @include contract.radius-tokens($card: 0, $control: 0, $badge: 0);
-  @include contract.font-data("'PT Mono'");
-  @include contract.chart-tokens($_chart-light...);
-  color-scheme: light;
+  // `& {}`: these must follow `mat.theme`'s nested rules without Sass
+  // mixed-decls hoisting (declarations after nested rules).
+  & {
+    @include contract.status-tokens($_status-light);
+    // Shape: rules, not boxes — broadsheet column rules carry the structure,
+    // so every silhouette is square (cards 0, controls 0, badges 0).
+    @include contract.radius-tokens($card: 0, $control: 0, $badge: 0);
+    @include contract.font-data("'PT Mono'");
+    @include contract.chart-tokens($_chart-light...);
+    color-scheme: light;
+  }
 }
 
 /// Re-emits only the color tokens for dark mode (ink-black, paper-cream
@@ -119,7 +123,9 @@ $_chart-dark: #e8e2d6, #91a7ff, #f0897c, #aaa7a1, #cf9d63, #aab86a;
       ),
     )
   );
-  @include contract.status-tokens($_status-dark);
-  @include contract.chart-tokens($_chart-dark...);
-  color-scheme: dark;
+  & {
+    @include contract.status-tokens($_status-dark);
+    @include contract.chart-tokens($_chart-dark...);
+    color-scheme: dark;
+  }
 }

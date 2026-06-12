@@ -111,6 +111,33 @@
       }
     </mat-form-field>
   }
+  @case ('date') {
+    <!--
+      The toggle must be a direct child of mat-form-field: a control-flow
+      branch with more than one root node is projected into the catch-all
+      slot, so [matSuffix] would never reach the suffix slot (NG8011).
+    -->
+    <mat-form-field class="m3k-form-field__field" appearance="outline">
+      <mat-label>{{ label() }}</mat-label>
+      <input
+        matInput
+        [matDatepicker]="picker"
+        [formControl]="ctrl()"
+        [required]="required()"
+        [attr.aria-label]="label()"
+      />
+      <mat-datepicker-toggle matSuffix [for]="picker" />
+      <mat-datepicker #picker />
+
+      @if (hint()) {
+        <mat-hint>{{ hint() }}</mat-hint>
+      }
+
+      @if (errorMessage(); as message) {
+        <mat-error>{{ message }}</mat-error>
+      }
+    </mat-form-field>
+  }
   @default {
     <mat-form-field class="m3k-form-field__field" appearance="outline">
       <mat-label>{{ label() }}</mat-label>
@@ -181,17 +208,6 @@
             [required]="required()"
             [attr.aria-label]="label()"
           ></textarea>
-        }
-        @case ('date') {
-          <input
-            matInput
-            [matDatepicker]="picker"
-            [formControl]="ctrl()"
-            [required]="required()"
-            [attr.aria-label]="label()"
-          />
-          <mat-datepicker-toggle matSuffix [for]="picker" />
-          <mat-datepicker #picker />
         }
         @case ('number') {
           <input

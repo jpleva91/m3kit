@@ -7,6 +7,22 @@ consumer workspace (`lift`), and scaffold on-contract artifacts
 m3kit is a reference to be read and copied, not a dependency to be
 installed — `lift` is the automated form of `docs/ADOPTION_GUIDE.md`.
 
+## Distribution status
+
+**The plugin is not published to npm** (ADR-015 in `docs/DECISIONS.md`):
+`package.json` is kept publish-ready (`bin`, `files`, `repository`,
+`license`) but deliberately `private: true` until a publishing decision is
+made. Until then, `npx m3kit` / `m3kit add` does not work anywhere — the
+commands below show what works today:
+
+- **From this repo:** `npx nx g @m3kit/plugin:...` works directly
+  (`@m3kit/plugin` resolves via the `tsconfig.base.json` path).
+- **From a consumer workspace:** build the plugin here
+  (`npx nx build m3kit-plugin` → `dist/tools/plugin`), then
+  `pnpm add -D @m3kit/plugin@file:<m3kit>/dist/tools/plugin` (or
+  `npm/pnpm link`, or vendor the directory) and run the same
+  `npx nx g @m3kit/plugin:...` commands from your workspace root.
+
 ## Generators
 
 ### `lift` — internalize m3kit libs
@@ -86,16 +102,16 @@ npx nx g @m3kit/plugin:dashboard-page revenue-overview --project=demo-reporting
 ## CLI shim
 
 `bin/m3kit.ts` (built to `dist/tools/plugin/bin/m3kit.js`, package `bin`
-entry `m3kit`) maps `m3kit add <libs...>` onto the lift generator:
+entry `m3kit`) maps `m3kit add <libs...>` onto the lift generator. The
+`npx m3kit ...` / `m3kit add ...` form only becomes available **once the
+package is published to npm** (it is not — see Distribution status). What
+works today, from an Nx workspace with `@m3kit/plugin` resolvable:
 
 ```sh
-m3kit add table dashboard --scope=acme --ref=main
+node <m3kit>/dist/tools/plugin/bin/m3kit.js add table dashboard --scope=acme --ref=main
+# or, if the built plugin is installed in the workspace: pnpm exec m3kit add ...
 # → npx nx generate @m3kit/plugin:lift --libs=table,dashboard --scope=acme --ref=main
 ```
-
-It requires an Nx workspace with `@m3kit/plugin` resolvable (nothing is
-published to npm — build the plugin and `npm/pnpm link` or vendor
-`dist/tools/plugin`, consistent with the source-internalization model).
 
 ## Verify
 

@@ -34,21 +34,30 @@ import {
 } from '@m3kit/core';
 
 /**
- * Material table for a `TableDefinition<T>` backed by any
- * `TableDataSource<T>`.
+ * Material table for a `TableDefinition<T>`, usable in two modes.
  *
- * Owns the full query state (text filter, sort, page) as signals and
- * re-fetches whenever any part of it — or the data source itself —
- * changes. Renders columns dynamically from the definition with
+ * **Uncontrolled (default):** bind `dataSource` and the table owns the
+ * full query state (text filter, sort, page) as signals, re-fetching
+ * whenever any part of it — or the data source itself — changes.
+ *
+ * **Controlled:** bind `rows` (its presence switches the mode) and the
+ * table never fetches; it renders the externally owned state
+ * (`rows`/`loading`/`error`/`totalCount`/`sort`/`page`) and surfaces
+ * user intent through `sortChange`/`pageChange` instead of feeding its
+ * internal pipeline. This is how a `withDataQuery` SignalStore from
+ * `@m3kit/state` drives the table as the single fetch path.
+ *
+ * Both modes render columns dynamically from the definition with
  * type-aware cell formatting (`text`, `number`, `date`, `currency`,
  * `badge`), header sorting, pagination, a loading bar, an empty state
- * row, and a distinct error state row when the data source errors.
+ * row, and a distinct error state row.
  *
- * Text filtering is driven either by the `textFilter` input (e.g. wired
- * to `m3k-table-filter-bar`'s `filterChange` output) or imperatively
- * via {@link applyTextFilter}. Per-field exact-match filtering is driven
- * the same way: by the `fieldFilters` input (e.g. wired to a filter
- * form's output) or imperatively via {@link applyFieldFilters}.
+ * In uncontrolled mode, text filtering is driven either by the
+ * `textFilter` input (e.g. wired to `m3k-table-filter-bar`'s
+ * `filterChange` output) or imperatively via {@link applyTextFilter}.
+ * Per-field exact-match filtering is driven the same way: by the
+ * `fieldFilters` input (e.g. wired to a filter form's output) or
+ * imperatively via {@link applyFieldFilters}.
  */
 @Component({
   selector: 'm3k-data-table',
@@ -61,22 +70,56 @@ export class DataTableComponent<T> {
   /** Declarative report definition driving columns and defaults. */
   readonly definition = input.required<TableDefinition<T>>();
 
-  /** Source the table fetches pages from on every query change. */
-  readonly dataSource = input.required<TableDataSource<T>>();
+  /**
+   * Source the table fetches pages from on every query change
+   * (uncontrolled mode). Ignored — never fetched — while `rows` is bound.
+   */
+  readonly dataSource = input<TableDataSource<T> | undefined>(undefined);
 
-  /** Free-text filter applied across searchable fields. */
+  /** Free-text filter applied across searchable fields (uncontrolled mode). */
   readonly textFilter = input<string>('');
 
-  /** Per-field exact-match filters, keyed by row property name. */
+  /** Per-field exact-match filters, keyed by row property name (uncontrolled mode). */
   readonly fieldFilters = input<Readonly<Record<string, unknown>>>({});
+
+  /**
+   * Externally fetched rows. Binding a value switches the table to
+   * controlled mode: it stops fetching from `dataSource` and renders
+   * the provided state as-is.
+   */
+  readonly rows = input<readonly T[] | undefined>(undefined);
+
+  /** External loading flag (controlled mode). */
+  readonly loading = input<boolean | undefined>(undefined);
+
+  /** External error message, or `null` when healthy (controlled mode). */
+  readonly error = input<string | null | undefined>(undefined);
+
+  /** External filtered (pre-pagination) row count (controlled mode). */
+  readonly totalCount = input<number | undefined>(undefined);
+
+  /** External sort state (controlled mode). */
+  readonly sort = input<SortState | null | undefined>(undefined);
+
+  /** External pagination state (controlled mode). */
+  readonly page = input<PageState | undefined>(undefined);
 
   /** Emits the clicked row. */
   readonly rowClicked = output<T>();
+
+  /** Emits the sort the user chose via a header (`null` clears the sort). */
+  readonly sortChange = output<SortState | null>();
+
+  /** Emits the page index/size the user chose via the paginator. */
+  readonly pageChange = output<PageState>();
 
   /** Page size choices offered by the paginator. */
   protected readonly pageSizeOptions: readonly number[] = [5, 10, 25, 50, 100];
 
   private readonly locale = inject(LOCALE_ID);
+
+  /** True when `rows` is bound: external state renders, internal fetching is off. */
+  readonly controlled = computed(() => this.rows() !== undefined);
 
   /** Effective text filter; tracks the input until overridden imperatively. */
   private readonly text = linkedSignal(() => this.textFilter());
@@ -84,16 +127,16 @@ export class DataTableComponent<T> {
   /** Effective field filters; track the input until overridden imperatively. */
   private readonly fields = linkedSignal(() => this.fieldFilters());
 
-  /** Active sort; resets to the definition's default when it changes. */
-  private readonly sort = linkedSignal<SortState<T> | null>(
+  /** Table-owned sort; resets to the definition's default when it changes. */
+  private readonly ownSort = linkedSignal<SortState<T> | null>(
     () => this.definition().defaultSort ?? null,
   );
 
   /**
-   * Active page. Returns to the first page whenever the definition or
-   * any filter changes, preserving a user-chosen page size.
+   * Table-owned page. Returns to the first page whenever the definition
+   * or any filter changes, preserving a user-chosen page size.
    */
-  private readonly page = linkedSignal<
+  private readonly ownPage = linkedSignal<
     {
       readonly defaultSize: number;
       readonly text: string;
@@ -112,9 +155,9 @@ export class DataTableComponent<T> {
     }),
   });
 
-  /** Complete query sent to the data source. */
+  /** Complete query sent to the data source (uncontrolled mode). */
   readonly query = computed<DataQuery>(() => {
-    const sort = this.sort();
+    const sort = this.ownSort();
     const fields = this.fields();
     return {
       filter: {
@@ -123,7 +166,7 @@ export class DataTableComponent<T> {
       },
       // Widen `keyof T & string` to the untyped sort state `DataQuery` carries.
       sort: sort ? { key: sort.key, direction: sort.direction } : null,
-      page: this.page(),
+      page: this.ownPage(),
     };
   });
 
@@ -131,22 +174,29 @@ export class DataTableComponent<T> {
 
   private readonly errorState = signal(false);
 
-  private readonly request = computed(() => ({
-    dataSource: this.dataSource(),
-    query: this.query(),
-  }));
+  /** Fetch request, or `null` when controlled or without a data source. */
+  private readonly request = computed(() => {
+    if (this.controlled()) {
+      return null;
+    }
+    const dataSource = this.dataSource();
+    return dataSource ? { dataSource, query: this.query() } : null;
+  });
 
   private readonly pageResult = toSignal(
     toObservable(this.request).pipe(
-      switchMap(({ dataSource, query }) => {
+      switchMap((request) => {
+        if (!request) {
+          return of(createEmptyPage<T>());
+        }
         this.loadingState.set(true);
         this.errorState.set(false);
-        return dataSource.fetch(query).pipe(
+        return request.dataSource.fetch(request.query).pipe(
           tap(() => this.loadingState.set(false)),
           catchError(() => {
             this.errorState.set(true);
             this.loadingState.set(false);
-            return of(createEmptyPage<T>(query));
+            return of(createEmptyPage<T>(request.query));
           }),
         );
       }),
@@ -154,11 +204,20 @@ export class DataTableComponent<T> {
     { initialValue: createEmptyPage<T>() },
   );
 
-  /** Whether a fetch is in flight. */
-  readonly loading = this.loadingState.asReadonly();
+  /** Whether the table is loading: the `loading` input when controlled, the in-flight fetch otherwise. */
+  readonly isLoading = computed(() =>
+    this.controlled() ? (this.loading() ?? false) : this.loadingState(),
+  );
 
-  /** Whether the most recent fetch errored; cleared on the next fetch. */
-  readonly error = this.errorState.asReadonly();
+  /** Whether the table is in an error state: the `error` input when controlled, the last fetch otherwise. */
+  readonly hasError = computed(() =>
+    this.controlled() ? this.error() != null : this.errorState(),
+  );
+
+  /** Error row message; controlled mode renders the `error` input's text. */
+  protected readonly errorText = computed(
+    () => (this.controlled() && this.error()) || 'Failed to load data.',
+  );
 
   /** Column definitions of the current report. */
   readonly columns = computed(() => this.definition().columns);
@@ -166,21 +225,45 @@ export class DataTableComponent<T> {
   /** Column keys, in render order. */
   readonly displayedColumns = computed(() => this.columns().map((column) => column.key));
 
-  /** Rows of the current page. */
-  readonly rows = computed(() => this.pageResult().rows);
+  /** Rows currently rendered: the `rows` input when controlled, the fetched page otherwise. */
+  readonly displayedRows = computed(() =>
+    this.controlled() ? (this.rows() ?? []) : this.pageResult().rows,
+  );
 
   /** Filtered (pre-pagination) row count, for the paginator. */
-  readonly totalCount = computed(() => this.pageResult().totalCount);
+  readonly totalRows = computed(() =>
+    this.controlled()
+      ? (this.totalCount() ?? this.rows()?.length ?? 0)
+      : this.pageResult().totalCount,
+  );
+
+  /** Sort rendered by the headers; widened because the `sort` input is untyped. */
+  private readonly effectiveSort = computed<SortState | null>(() => {
+    if (this.controlled()) {
+      return this.sort() ?? null;
+    }
+    const sort = this.ownSort();
+    // Widen `keyof T & string` to the untyped sort state.
+    return sort ? { key: sort.key, direction: sort.direction } : null;
+  });
+
+  private readonly effectivePage = computed<PageState>(
+    () =>
+      (this.controlled() ? this.page() : this.ownPage()) ?? {
+        index: 0,
+        size: this.definition().defaultPageSize ?? DEFAULT_PAGE_SIZE,
+      },
+  );
 
   /** Zero-based index of the current page. */
-  readonly pageIndex = computed(() => this.page().index);
+  readonly pageIndex = computed(() => this.effectivePage().index);
 
   /** Size of the current page. */
-  readonly pageSize = computed(() => this.page().size);
+  readonly pageSize = computed(() => this.effectivePage().size);
 
-  protected readonly sortActive = computed(() => this.sort()?.key ?? '');
+  protected readonly sortActive = computed(() => this.effectiveSort()?.key ?? '');
 
-  protected readonly sortDirection = computed(() => this.sort()?.direction ?? '');
+  protected readonly sortDirection = computed(() => this.effectiveSort()?.direction ?? '');
 
   /** Applies a free-text filter, overriding the `textFilter` input. */
   applyTextFilter(text: string): void {
@@ -193,19 +276,27 @@ export class DataTableComponent<T> {
   }
 
   protected onSortChange(sortEvent: Sort): void {
-    this.sort.set(
+    const sort: SortState<T> | null =
       sortEvent.direction === ''
         ? null
         : {
             key: sortEvent.active as keyof T & string,
             direction: sortEvent.direction,
-          },
-    );
-    this.page.update((page) => ({ ...page, index: 0 }));
+          };
+    if (!this.controlled()) {
+      this.ownSort.set(sort);
+      this.ownPage.update((page) => ({ ...page, index: 0 }));
+    }
+    // Widen `keyof T & string` to the untyped sort state the output carries.
+    this.sortChange.emit(sort ? { key: sort.key, direction: sort.direction } : null);
   }
 
   protected onPage(event: PageEvent): void {
-    this.page.set({ index: event.pageIndex, size: event.pageSize });
+    const page: PageState = { index: event.pageIndex, size: event.pageSize };
+    if (!this.controlled()) {
+      this.ownPage.set(page);
+    }
+    this.pageChange.emit(page);
   }
 
   /** Formats a cell value according to its column's type and format hints. */

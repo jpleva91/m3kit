@@ -1,6 +1,15 @@
-import { Component } from '@angular/core';
+import { Component, signal } from '@angular/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
-import { InMemoryTableDataSource, TableDefinition } from '@m3kit/core';
+import { Observable } from 'rxjs';
+import {
+  InMemoryTableDataSource,
+  PageState,
+  SortState,
+  TableDataSource,
+  TableDefinition,
+  DataPage,
+  DataQuery,
+} from '@m3kit/core';
 
 import { DataTableComponent } from './data-table.component';
 
@@ -87,5 +96,80 @@ describe(DataTableComponent.name, () => {
     cy.get('span.m3k-badge[data-color="warn"]').should('contain.text', 'overdue');
     cy.get('span.m3k-badge[data-color="success"]').should('contain.text', 'paid');
     cy.get('span.m3k-badge[data-color="default"]').should('contain.text', 'draft');
+  });
+});
+
+/** Counts fetches so the controlled-mode tests can prove there are none. */
+class CountingDataSource implements TableDataSource<InvoiceRow> {
+  fetches = 0;
+
+  constructor(private readonly inner: TableDataSource<InvoiceRow>) {}
+
+  fetch(query: DataQuery): Observable<DataPage<InvoiceRow>> {
+    this.fetches += 1;
+    return this.inner.fetch(query);
+  }
+}
+
+@Component({
+  imports: [DataTableComponent],
+  template: `
+    <m3k-data-table
+      [definition]="definition"
+      [dataSource]="dataSource"
+      [rows]="rows()"
+      [loading]="false"
+      [error]="null"
+      [totalCount]="42"
+      [sort]="sort()"
+      [page]="page()"
+      (sortChange)="lastSort.set($event)"
+      (pageChange)="lastPage.set($event)"
+    />
+    <p data-cy="last-sort">{{ lastSort()?.key }} {{ lastSort()?.direction }}</p>
+    <p data-cy="last-page">{{ lastPage()?.index }} {{ lastPage()?.size }}</p>
+  `,
+})
+class ControlledDataTableHostComponent {
+  readonly definition = INVOICE_DEFINITION;
+  readonly dataSource = new CountingDataSource(
+    new InMemoryTableDataSource<InvoiceRow>(makeInvoices(12)),
+  );
+  readonly rows = signal<readonly InvoiceRow[]>(makeInvoices(3));
+  readonly sort = signal<SortState | null>(null);
+  readonly page = signal<PageState>({ index: 0, size: 5 });
+  readonly lastSort = signal<SortState | null>(null);
+  readonly lastPage = signal<PageState | null>(null);
+}
+
+describe(`${DataTableComponent.name} (controlled mode)`, () => {
+  let host: ControlledDataTableHostComponent;
+
+  beforeEach(() => {
+    cy.mount(ControlledDataTableHostComponent, {
+      providers: [provideNoopAnimations()],
+    }).then(({ component }) => {
+      host = component;
+    });
+  });
+
+  it('renders the provided rows without fetching from the data source', () => {
+    cy.get('tr.m3k-data-table__row').should('have.length', 3);
+    cy.get('tr.m3k-data-table__row').first().should('contain.text', 'INV-0001');
+    cy.then(() => expect(host.dataSource.fetches).to.eq(0));
+  });
+
+  it('emits sortChange from header clicks and leaves row order untouched', () => {
+    cy.get('th').contains('Invoice').click();
+    cy.get('[data-cy="last-sort"]').should('contain.text', 'id asc');
+    cy.get('tr.m3k-data-table__row').first().should('contain.text', 'INV-0001');
+    cy.then(() => expect(host.dataSource.fetches).to.eq(0));
+  });
+
+  it('emits pageChange from the paginator instead of paging internally', () => {
+    cy.get('.mat-mdc-paginator-navigation-next').click();
+    cy.get('[data-cy="last-page"]').should('contain.text', '1 5');
+    cy.get('tr.m3k-data-table__row').should('have.length', 3);
+    cy.then(() => expect(host.dataSource.fetches).to.eq(0));
   });
 });

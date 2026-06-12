@@ -38,9 +38,11 @@ const InvoicesReportStore = signalStore(
  * Invoices report demo: composes `m3k-page-toolbar`,
  * `m3k-table-filter-bar`, `m3k-filter-form` (in an expansion panel),
  * and `m3k-data-table` over an in-memory data source of 120 synthetic
- * invoices. Query state lives in a `@m3kit/state` store
- * (`withDataQuery` + `withSelection`) that feeds the table's inputs and
- * consumes its outputs.
+ * invoices. The `@m3kit/state` store (`withDataQuery` + `withSelection`)
+ * is the single fetch path: it owns the query and the fetched page, the
+ * table runs in controlled mode (`rows`/`loading`/`error`/`totalCount`/
+ * `sort`/`page` in, `sortChange`/`pageChange` out) and never touches the
+ * data source itself.
  */
 @Component({
   selector: 'app-reports',
@@ -61,7 +63,7 @@ export class ReportsComponent {
 
   protected readonly dataSource = new InMemoryTableDataSource<Invoice>(INVOICES);
 
-  /** Drives the toolbar count and the table's filter inputs. */
+  /** Single source of truth: fetches pages and drives the table and toolbar. */
   protected readonly store = inject(InvoicesReportStore);
 
   /** Distinct badge values per column, as select options for the filter form. */
@@ -77,6 +79,11 @@ export class ReportsComponent {
   );
 
   constructor() {
+    // Seed the store with the definition's default sort before the
+    // first (and only) fetch that `connect` runs. Widened because the
+    // store's query carries untyped sort state.
+    const sort = this.definition.defaultSort;
+    this.store.setSort(sort ? { key: sort.key, direction: sort.direction } : null);
     this.store.connect(this.dataSource);
   }
 

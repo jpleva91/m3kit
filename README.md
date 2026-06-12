@@ -61,13 +61,27 @@ For a reproducible install from a fresh clone, use
 `pnpm install --frozen-lockfile`.
 
 To adopt the kit in your own Nx workspace, the `@m3kit/plugin:lift`
-generator automates the source-internalization (libs + dependency closure,
-alias/tag rewiring, theme includePath, boundary guidance):
+generator (`tools/plugin`) automates the source-internalization (libs +
+dependency closure, alias/tag rewiring, theme includePath, boundary
+guidance). The plugin follows the same fetch-and-own model as the libs — it
+is **not published to npm** (ADR-015 in `docs/DECISIONS.md`) — so build it
+from this repo and install the built output into your workspace first:
 
 ```sh
+# in this repo
+npx nx build m3kit-plugin            # → dist/tools/plugin
+
+# in your workspace
+pnpm add -D @m3kit/plugin@file:<path-to-m3kit>/dist/tools/plugin
 npx nx g @m3kit/plugin:lift --libs=table,dashboard --scope=acme
-# or, via the CLI shim: m3kit add table dashboard --scope=acme
 ```
+
+(The same `npx nx g @m3kit/plugin:...` commands also run directly from a
+checkout of this repo.) The `m3kit add` CLI shim wraps the lift generator;
+`npx m3kit add table dashboard --scope=acme` becomes available only once
+the package is published to npm. Today's equivalent is
+`node <path-to-m3kit>/dist/tools/plugin/bin/m3kit.js add table dashboard
+--scope=acme`, or `pnpm exec m3kit add ...` with the built plugin installed.
 
 Companion scaffolds — `component`, `brand`, `report-page`,
 `dashboard-page` — generate on-contract starting points; see

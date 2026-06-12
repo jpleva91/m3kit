@@ -1,6 +1,6 @@
 <div class="m3k-data-table">
   <div class="m3k-data-table__progress">
-    @if (loading()) {
+    @if (isLoading()) {
       <mat-progress-bar mode="indeterminate" aria-label="Loading report data" />
     }
   </div>
@@ -9,7 +9,7 @@
   <table
     mat-table
     matSort
-    [dataSource]="rows()"
+    [dataSource]="displayedRows()"
     [matSortActive]="sortActive()"
     [matSortDirection]="sortDirection()"
     (matSortChange)="onSortChange($event)"
@@ -54,12 +54,12 @@
     ></tr>
 
     <tr class="m3k-data-table__empty-row" *matNoDataRow>
-      @if (error()) {
+      @if (hasError()) {
         <td
           class="m3k-data-table__error-cell"
           [attr.colspan]="displayedColumns().length"
         >
-          Failed to load data.
+          {{ errorText() }}
         </td>
       } @else {
         <td
@@ -74,7 +74,7 @@
   </div>
 
   <mat-paginator
-    [length]="totalCount()"
+    [length]="totalRows()"
     [pageIndex]="pageIndex()"
     [pageSize]="pageSize()"
     [pageSizeOptions]="pageSizeOptions"

@@ -160,10 +160,16 @@ plus their dependency closure, rewrites `@m3kit/*` to your `@<scope>/*`,
 remaps project names/tags, strips demo-only targets, patches theme
 `includePaths` where detectable, and prints the eslint `depConstraints` to
 add (it never rewrites your eslint config). Idempotent: lifted libs are
-owned and never overwritten on re-run.
+owned and never overwritten on re-run. The plugin is **not published to
+npm** (ADR-015): from this repo the generator runs directly; a consumer
+workspace must first build it (`npx nx build m3kit-plugin` →
+`dist/tools/plugin`) and install the output
+(`pnpm add -D @m3kit/plugin@file:<m3kit>/dist/tools/plugin`).
 
 ```sh
-npx nx g @m3kit/plugin:lift --libs=table,dashboard --scope=acme   # or: m3kit add table dashboard --scope=acme
+npx nx g @m3kit/plugin:lift --libs=table,dashboard --scope=acme
+# CLI shim (today): node <m3kit>/dist/tools/plugin/bin/m3kit.js add table dashboard --scope=acme
+# `npx m3kit add ...` only once the package is published to npm
 ```
 
 Companion scaffolds (all on-contract, all covered by devkit unit tests —

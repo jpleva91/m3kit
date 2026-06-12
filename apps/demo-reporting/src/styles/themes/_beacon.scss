@@ -94,16 +94,20 @@ $_chart-dark: #7ab0ff, #ffb681, #4ed8de, #ff9ed1, #ddb88a, #b3b3b3;
       density: 0,
     )
   );
-  @include contract.status-tokens($_status-light);
-  // Shape: modest, consistent radii — 6/4/6. Visible focus affordances
-  // matter more than silhouette play; no pills.
-  @include contract.radius-tokens($card: 6px, $control: 4px, $badge: 6px);
-  // Data cells: Source Sans 3 — its figures are clear at small sizes;
-  // consumers should enable `font-variant-numeric: tabular-nums` so
-  // columns align.
-  @include contract.font-data("'Source Sans 3'");
-  @include contract.chart-tokens($_chart-light...);
-  color-scheme: light;
+  // `& {}`: these must follow `mat.theme`'s nested rules without Sass
+  // mixed-decls hoisting (declarations after nested rules).
+  & {
+    @include contract.status-tokens($_status-light);
+    // Shape: modest, consistent radii — 6/4/6. Visible focus affordances
+    // matter more than silhouette play; no pills.
+    @include contract.radius-tokens($card: 6px, $control: 4px, $badge: 6px);
+    // Data cells: Source Sans 3 — its figures are clear at small sizes;
+    // consumers should enable `font-variant-numeric: tabular-nums` so
+    // columns align.
+    @include contract.font-data("'Source Sans 3'");
+    @include contract.chart-tokens($_chart-light...);
+    color-scheme: light;
+  }
 }
 
 /// Re-emits only the color tokens for dark mode; typography, density,
@@ -118,7 +122,9 @@ $_chart-dark: #7ab0ff, #ffb681, #4ed8de, #ff9ed1, #ddb88a, #b3b3b3;
       ),
     )
   );
-  @include contract.status-tokens($_status-dark);
-  @include contract.chart-tokens($_chart-dark...);
-  color-scheme: dark;
+  & {
+    @include contract.status-tokens($_status-dark);
+    @include contract.chart-tokens($_chart-dark...);
+    color-scheme: dark;
+  }
 }

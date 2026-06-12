@@ -1,6 +1,7 @@
 import { ComponentFixture, TestBed, fakeAsync, tick } from '@angular/core/testing';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { InMemoryTableDataSource } from '@m3kit/core';
 import { makeInvoices } from '@m3kit/testing';
 
 import { ReportsComponent } from './reports.component';
@@ -8,6 +9,7 @@ import { ReportsComponent } from './reports.component';
 describe('ReportsComponent', () => {
   let fixture: ComponentFixture<ReportsComponent>;
   let element: HTMLElement;
+  let fetchSpy: ReturnType<typeof vi.spyOn>;
 
   beforeEach(async () => {
     await TestBed.configureTestingModule({
@@ -15,9 +17,14 @@ describe('ReportsComponent', () => {
       providers: [provideNoopAnimations(), provideNativeDateAdapter()],
     }).compileComponents();
 
+    fetchSpy = vi.spyOn(InMemoryTableDataSource.prototype, 'fetch');
     fixture = TestBed.createComponent(ReportsComponent);
     fixture.detectChanges();
     element = fixture.nativeElement as HTMLElement;
+  });
+
+  afterEach(() => {
+    vi.restoreAllMocks();
   });
 
   it('renders the invoices report toolbar with the total row count', () => {
@@ -32,6 +39,44 @@ describe('ReportsComponent', () => {
     // Default page size of the invoices definition is 10.
     expect(rows.length).toBe(10);
     expect(element.textContent).toContain('INV-2026-');
+  });
+
+  it('fetches exactly once on init, through the store only', () => {
+    // The table is controlled ([rows] bound), so the store's connect()
+    // is the single fetch path — no second pipeline inside the table.
+    expect(fetchSpy).toHaveBeenCalledTimes(1);
+  });
+
+  it('routes table sort events through the store as the only fetch path', () => {
+    const customerSort = element.querySelector(
+      'th.cdk-column-customerName .mat-sort-header-container',
+    ) as HTMLElement;
+    customerSort.click();
+    fixture.detectChanges();
+
+    // Exactly one more fetch (store.setSort), none from the table itself.
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    const query = fetchSpy.mock.calls[1][0] as { sort: unknown };
+    expect(query.sort).toEqual({ key: 'customerName', direction: 'asc' });
+    expect(element.querySelector('th.cdk-column-customerName')?.getAttribute('aria-sort')).toBe(
+      'ascending',
+    );
+  });
+
+  it('routes paginator events through the store as the only fetch path', () => {
+    const next = element.querySelector(
+      'button.mat-mdc-paginator-navigation-next',
+    ) as HTMLButtonElement;
+    next.click();
+    fixture.detectChanges();
+
+    expect(fetchSpy).toHaveBeenCalledTimes(2);
+    const query = fetchSpy.mock.calls[1][0] as { page: unknown };
+    expect(query.page).toEqual({ index: 1, size: 10 });
+    const numbers = Array.from(
+      element.querySelectorAll('m3k-data-table td.cdk-column-number'),
+    ).map((cell) => cell.textContent?.trim());
+    expect(numbers.length).toBe(10);
   });
 
   it('renders the field-filter form inside an expansion panel', () => {

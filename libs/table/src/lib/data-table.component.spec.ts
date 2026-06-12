@@ -8,6 +8,8 @@ import {
   TableDefinition,
   DataPage,
   DataQuery,
+  PageState,
+  SortState,
 } from '@m3kit/core';
 
 import { DataTableComponent } from './data-table.component';
@@ -289,8 +291,8 @@ describe('DataTableComponent', () => {
     });
 
     it('sets the error signal and clears loading', () => {
-      expect(table().error()).toBe(true);
-      expect(table().loading()).toBe(false);
+      expect(table().hasError()).toBe(true);
+      expect(table().isLoading()).toBe(false);
       expect(element().querySelector('mat-progress-bar')).toBeNull();
     });
 
@@ -298,9 +300,127 @@ describe('DataTableComponent', () => {
       host.dataSource = new InMemoryTableDataSource(makeInvoices(3));
       fixture.detectChanges();
 
-      expect(table().error()).toBe(false);
+      expect(table().hasError()).toBe(false);
       expect(element().querySelector('.m3k-data-table__error-cell')).toBeNull();
       expect(element().querySelectorAll('tr[mat-row]').length).toBe(3);
     });
+  });
+});
+
+@Component({
+  imports: [DataTableComponent],
+  template: `
+    <m3k-data-table
+      [definition]="definition"
+      [dataSource]="dataSource"
+      [rows]="rows"
+      [loading]="loading"
+      [error]="error"
+      [totalCount]="totalCount"
+      [sort]="sort"
+      [page]="page"
+      (sortChange)="sortChanges.push($event)"
+      (pageChange)="pageChanges.push($event)"
+    />
+  `,
+})
+class ControlledHostComponent {
+  definition = INVOICE_DEFINITION;
+  dataSource: TableDataSource<InvoiceRow> = new RecordingDataSource(
+    new InMemoryTableDataSource(makeInvoices(12)),
+  );
+  rows: readonly InvoiceRow[] = makeInvoices(3);
+  loading = false;
+  error: string | null = null;
+  totalCount = 42;
+  sort: SortState | null = { key: 'amount', direction: 'asc' };
+  page: PageState = { index: 0, size: 5 };
+  readonly sortChanges: (SortState | null)[] = [];
+  readonly pageChanges: PageState[] = [];
+}
+
+describe('DataTableComponent (controlled mode)', () => {
+  let fixture: ComponentFixture<ControlledHostComponent>;
+  let host: ControlledHostComponent;
+  let recording: RecordingDataSource;
+
+  const element = (): HTMLElement => fixture.nativeElement as HTMLElement;
+
+  beforeEach(async () => {
+    await TestBed.configureTestingModule({
+      imports: [ControlledHostComponent],
+      providers: [provideNoopAnimations()],
+    }).compileComponents();
+
+    fixture = TestBed.createComponent(ControlledHostComponent);
+    host = fixture.componentInstance;
+    recording = host.dataSource as RecordingDataSource;
+    fixture.detectChanges();
+  });
+
+  it('renders the provided rows without fetching from the data source', () => {
+    expect(element().querySelectorAll('tr[mat-row]').length).toBe(3);
+    expect(element().textContent).toContain('INV-0001');
+    expect(recording.queries.length).toBe(0);
+  });
+
+  it('drives the paginator from the totalCount and page inputs', () => {
+    const range = element().querySelector('.mat-mdc-paginator-range-label');
+    expect(range?.textContent).toContain('of 42');
+  });
+
+  it('emits sortChange from header clicks instead of sorting internally', () => {
+    const amountSort = element().querySelector(
+      'th.cdk-column-amount .mat-sort-header-container',
+    ) as HTMLElement;
+    // The header is already sorted asc via the `sort` input, so the
+    // next click requests desc.
+    amountSort.click();
+    fixture.detectChanges();
+
+    expect(host.sortChanges).toEqual([{ key: 'amount', direction: 'desc' }]);
+    expect(recording.queries.length).toBe(0);
+    // Row order is untouched: ordering is the owner's job.
+    expect(element().querySelector('tr[mat-row]')?.textContent).toContain('INV-0001');
+  });
+
+  it('emits pageChange from the paginator instead of paging internally', () => {
+    const next = element().querySelector(
+      'button.mat-mdc-paginator-navigation-next',
+    ) as HTMLButtonElement;
+    next.click();
+    fixture.detectChanges();
+
+    expect(host.pageChanges).toEqual([{ index: 1, size: 5 }]);
+    expect(recording.queries.length).toBe(0);
+  });
+
+  it('honors the loading input', () => {
+    expect(element().querySelector('mat-progress-bar')).toBeNull();
+
+    host.loading = true;
+    fixture.detectChanges();
+
+    expect(element().querySelector('mat-progress-bar')).toBeTruthy();
+  });
+
+  it('renders the error input message in the error state row', () => {
+    host.rows = [];
+    host.error = 'synthetic store failure';
+    fixture.detectChanges();
+
+    expect(element().querySelector('.m3k-data-table__error-cell')?.textContent).toContain(
+      'synthetic store failure',
+    );
+    expect(element().querySelector('.m3k-data-table__empty-cell')).toBeNull();
+  });
+
+  it('shows the empty state when the provided rows are empty and error is null', () => {
+    host.rows = [];
+    fixture.detectChanges();
+
+    expect(element().querySelector('.m3k-data-table__empty-cell')?.textContent).toContain(
+      'No matching records.',
+    );
   });
 });
