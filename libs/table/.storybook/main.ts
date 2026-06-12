@@ -3,6 +3,7 @@ import type { StorybookConfig } from '@storybook/angular';
 const config: StorybookConfig = {
   stories: [
     './Introduction.mdx',
+    './parity/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../charts/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
     '../../dashboard/src/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
@@ -11,6 +12,9 @@ const config: StorybookConfig = {
     '../../../apps/demo-reporting/src/app/**/*.@(mdx|stories.@(js|jsx|ts|tsx))',
   ],
   addons: ['@storybook/addon-essentials', '@storybook/addon-interactions'],
+  core: {
+    disableTelemetry: true,
+  },
   framework: {
     name: '@storybook/angular',
     options: {},

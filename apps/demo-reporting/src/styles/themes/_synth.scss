@@ -1,0 +1,130 @@
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './synth-colors' as palettes;
+
+/// "Synth" — alternate brand: synthwave instrument panel. Neon teal +
+/// neon pink on blue-charcoal, Chakra Petch throughout.
+///
+/// DELIBERATE DOCTRINE DEVIATION (noted per brand spec): Synth is a
+/// neon-on-charcoal brand — dark mode is the primary expression, with
+/// deep #14161F-register blue-charcoal surfaces carrying saturated neon
+/// accents at full intensity. Light mode is the secondary expression: a
+/// cool-gray panel with the same teal/pink signals run at strong ink
+/// depth. Status and chart palettes are neon-coded rather than the
+/// muted container tones the house doctrine prefers.
+///
+/// Palettes generated from primary `#00D4AA` (neon teal), tertiary
+/// `#FF3D8A` (neon pink), neutral `#2A2D3A` (blue-charcoal) — see
+/// `_synth-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+
+/// Typography: Chakra Petch for body/UI (400/500) and display/headline
+/// (600) — a squared techno grotesque that keeps the synth register.
+/// Data cells run JetBrains Mono via `--app-font-data`.
+$_typography: (
+  plain-family: 'Chakra Petch',
+  brand-family: 'Chakra Petch',
+  regular-weight: 400,
+  medium-weight: 500,
+  bold-weight: 600,
+);
+
+/// Status badge tokens (container / on-container pairs), neon-coded.
+///
+/// Seeds — draft blue-gray, sent neon cyan, paid neon teal/green,
+/// overdue neon pink/red, void neon violet. Dark mode runs neon
+/// foregrounds on deep charcoal-tinted containers; light mode runs
+/// the same hues as tinted containers with ink-depth foregrounds.
+$_status-light: (
+  draft: (
+    bg: #dfe2f0,
+    fg: #2b2e3c,
+  ),
+  sent: (
+    bg: #b8ecf7,
+    fg: #00252c,
+  ),
+  paid: (
+    bg: #b6f2d8,
+    fg: #00281a,
+  ),
+  overdue: (
+    bg: #ffd9e2,
+    fg: #3f0021,
+  ),
+  void: (
+    bg: #e6ddff,
+    fg: #221542,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #41455a,
+    fg: #dfe2f0,
+  ),
+  sent: (
+    bg: #004e5f,
+    fg: #4dd8f0,
+  ),
+  paid: (
+    bg: #00513a,
+    fg: #54f2c8,
+  ),
+  overdue: (
+    bg: #65103e,
+    fg: #ff8fbe,
+  ),
+  void: (
+    bg: #463473,
+    fg: #cdbbff,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): neon channel set —
+/// teal, pink, yellow, violet, green, orange. Dark mode (the primary
+/// expression) runs the channels at full neon intensity against
+/// blue-charcoal; light mode deepens each hue for contrast on the
+/// cool-gray panel.
+$_chart-light: #00876b, #c9145f, #9a7400, #6b3fd4, #15803d, #c25e0a;
+$_chart-dark: #00d4aa, #ff3d8a, #ffd23f, #9d6bff, #4ade80, #ff8a3d;
+
+/// Emits the full light theme: color, typography, density, status,
+/// radius, data font, and chart tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: tight uniform chamfer — cards, controls, and badges all 4px
+  // (no pill silhouettes in Synth).
+  @include contract.radius-tokens($card: 4px, $control: 4px, $badge: 4px);
+  @include contract.font-data("'JetBrains Mono'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
+}

@@ -14,4 +14,12 @@ export const BRAND_LAYOUT_PRESETS: Record<ThemeBrand, ShellPreset> = {
   terminal: 'command-bar',
   ledger: 'contents-rail',
   'field-guide': 'pill-tabs',
+  carbon: 'sidenav',
+  brutalist: 'command-bar',
+  meadow: 'pill-tabs',
+  beacon: 'sidenav',
+  noir: 'contents-rail',
+  pop: 'pill-tabs',
+  gazette: 'contents-rail',
+  synth: 'command-bar',
 };

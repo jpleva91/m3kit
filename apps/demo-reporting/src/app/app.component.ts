@@ -49,6 +49,14 @@ export class AppComponent {
     { value: 'terminal', label: 'Terminal' },
     { value: 'ledger', label: 'Ledger' },
     { value: 'field-guide', label: 'Field Guide' },
+    { value: 'carbon', label: 'Carbon' },
+    { value: 'brutalist', label: 'Brutalist' },
+    { value: 'meadow', label: 'Meadow' },
+    { value: 'beacon', label: 'Beacon' },
+    { value: 'noir', label: 'Noir' },
+    { value: 'pop', label: 'Pop' },
+    { value: 'gazette', label: 'Gazette' },
+    { value: 'synth', label: 'Synth' },
   ];
 
   protected readonly navLinks: readonly ShellNavItem[] = [

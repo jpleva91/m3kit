@@ -1,12 +1,25 @@
 import type { Preview } from '@storybook/angular';
 
-const BRANDS = ['instruments', 'terminal', 'ledger', 'field-guide'] as const;
+const BRANDS = [
+  'instruments',
+  'terminal',
+  'ledger',
+  'field-guide',
+  'carbon',
+  'brutalist',
+  'meadow',
+  'beacon',
+  'noir',
+  'pop',
+  'gazette',
+  'synth',
+] as const;
 
 /**
  * Theme toolbars: `brand` applies a `theme-<brand>` class (Instruments, the
  * default, carries no brand class) and `mode` toggles the `dark` class on the
  * preview root element, so the M3 system tokens emitted by
- * storybook-theme.scss switch between the four brands and light/dark.
+ * storybook-theme.scss switch between all registered brands and light/dark.
  */
 const preview: Preview = {
   globalTypes: {
@@ -20,6 +33,14 @@ const preview: Preview = {
           { value: 'terminal', title: 'Terminal' },
           { value: 'ledger', title: 'Ledger' },
           { value: 'field-guide', title: 'Field Guide' },
+          { value: 'carbon', title: 'Carbon' },
+          { value: 'brutalist', title: 'Brutalist' },
+          { value: 'meadow', title: 'Meadow' },
+          { value: 'beacon', title: 'Beacon' },
+          { value: 'noir', title: 'Noir' },
+          { value: 'pop', title: 'Pop' },
+          { value: 'gazette', title: 'Gazette' },
+          { value: 'synth', title: 'Synth' },
         ],
         dynamicTitle: true,
       },

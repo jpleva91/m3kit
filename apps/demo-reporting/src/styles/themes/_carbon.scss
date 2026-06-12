@@ -1,0 +1,119 @@
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './carbon-colors' as palettes;
+
+/// "Carbon" — enterprise blue-gray. IBM-blue signal on cool gray chrome,
+/// IBM Plex Sans throughout with IBM Plex Mono data cells; light mode is a
+/// cool near-white workbench, dark mode deep #161616-family grays. Squared
+/// 2px silhouettes everywhere — no pills, no soft corners.
+///
+/// Palettes generated from primary `#0F62FE` (IBM blue), tertiary
+/// `#6F6F6F` (steel), neutral `#525252` (cool gray) — see
+/// `_carbon-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+
+/// Typography: IBM Plex Sans for body/UI and display/headline — one
+/// engineered grotesque keeps the enterprise register; brand emphasis
+/// runs at 600.
+$_typography: (
+  plain-family: 'IBM Plex Sans',
+  brand-family: 'IBM Plex Sans',
+  bold-weight: 600,
+);
+
+/// Status badge tokens (container / on-container pairs).
+///
+/// Seeds — paid IBM green `#198038`, sent IBM blue `#0F62FE`, overdue
+/// IBM red `#DA1E28`, draft cool gray, void muted IBM purple `#8A3FFC`.
+$_status-light: (
+  draft: (
+    bg: #e0e0e0,
+    fg: #393939,
+  ),
+  sent: (
+    bg: #d0e2ff,
+    fg: #002d9c,
+  ),
+  paid: (
+    bg: #defbe6,
+    fg: #044317,
+  ),
+  overdue: (
+    bg: #ffd7d9,
+    fg: #750e13,
+  ),
+  void: (
+    bg: #e8daff,
+    fg: #491d8b,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #393939,
+    fg: #e0e0e0,
+  ),
+  sent: (
+    bg: #002d9c,
+    fg: #d0e2ff,
+  ),
+  paid: (
+    bg: #044317,
+    fg: #a7f0ba,
+  ),
+  overdue: (
+    bg: #750e13,
+    fg: #ffd7d9,
+  ),
+  void: (
+    bg: #491d8b,
+    fg: #e8daff,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): IBM-style categorical set —
+/// purple, cyan, teal, magenta, red, blue. Light list runs the deeper
+/// tones for cool near-white surfaces; dark list lifts each hue for
+/// the #161616-family grays.
+$_chart-light: #6929c4, #1192e8, #005d5d, #9f1853, #fa4d56, #002d9c;
+$_chart-dark: #8a3ffc, #33b1ff, #08bdba, #ff7eb6, #fa4d56, #4589ff;
+
+/// Emits the full light theme: color, typography, density, status,
+/// radius, font-data, and chart tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: squared enterprise chrome — 2px across cards, controls,
+  // and badges (no pill silhouettes in Carbon).
+  @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 2px);
+  @include contract.font-data("'IBM Plex Mono'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
+}

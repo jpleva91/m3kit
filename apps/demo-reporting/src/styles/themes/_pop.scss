@@ -1,0 +1,119 @@
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './pop-colors' as palettes;
+
+/// "Pop" — candy-bright brand: saturated magenta + cyan confectionery on
+/// bright white; dark mode is a deep berry charcoal that keeps the accents
+/// at full saturation. Rounded Fredoka body with chunky Baloo 2 display,
+/// pill silhouettes everywhere. See DESIGN.md › Multi-brand themes.
+///
+/// Palettes generated from primary `#D6006C` (magenta), tertiary `#00B8D9`
+/// (cyan), neutral `#8E8A95` (violet-cast gray → berry charcoal darks) —
+/// see `_pop-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+
+/// Typography: Fredoka (rounded geometric) for body/UI at 400/500,
+/// Baloo 2 at 700 for display/headline — the chunky candy register.
+$_typography: (
+  plain-family: 'Fredoka',
+  brand-family: 'Baloo 2',
+  regular-weight: 400,
+  medium-weight: 500,
+  bold-weight: 700,
+);
+
+/// Status badge tokens (container / on-container pairs): saturated-pastel
+/// candy containers — bubblegum lilac (draft), blue-raspberry (sent),
+/// lime gummy (paid), strawberry coral (overdue), licorice gray (void).
+$_status-light: (
+  draft: (
+    bg: #ecdcff,
+    fg: #38265c,
+  ),
+  sent: (
+    bg: #aeefff,
+    fg: #00363f,
+  ),
+  paid: (
+    bg: #d9f99d,
+    fg: #2a3500,
+  ),
+  overdue: (
+    bg: #ffd9d2,
+    fg: #511300,
+  ),
+  void: (
+    bg: #e6e1ec,
+    fg: #47434e,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #4a3a66,
+    fg: #ecdcff,
+  ),
+  sent: (
+    bg: #004e5c,
+    fg: #aeefff,
+  ),
+  paid: (
+    bg: #3a4d00,
+    fg: #d9f99d,
+  ),
+  overdue: (
+    bg: #7a2415,
+    fg: #ffd9d2,
+  ),
+  void: (
+    bg: #4a4550,
+    fg: #e6e1ec,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): the candy jar — magenta,
+/// cyan, amber, lime, violet, coral. Light mode deepens each hue for
+/// contrast on bright white; dark mode runs them sweet and bright on the
+/// berry charcoal.
+$_chart-light: #d6006c, #008ca8, #d97706, #65a30d, #7c3aed, #e04a33;
+$_chart-dark: #ff4fa0, #33d6f2, #ffc14d, #a3e635, #a78bfa, #ff8a70;
+
+/// Emits the full light theme: color, typography, density, status,
+/// and radius tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: gumdrop geometry — generous 24px cards, full-pill controls
+  // and badges.
+  @include contract.radius-tokens($card: 24px, $control: 999px, $badge: 999px);
+  @include contract.font-data("'DM Mono'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
+}

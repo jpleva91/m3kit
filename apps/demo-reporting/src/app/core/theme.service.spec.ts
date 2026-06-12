@@ -7,6 +7,14 @@ const BRAND_CLASSES = [
   'theme-terminal',
   'theme-ledger',
   'theme-field-guide',
+  'theme-carbon',
+  'theme-brutalist',
+  'theme-meadow',
+  'theme-beacon',
+  'theme-noir',
+  'theme-pop',
+  'theme-gazette',
+  'theme-synth',
 ];
 
 describe('ThemeService', () => {
@@ -88,6 +96,23 @@ describe('ThemeService', () => {
     ).toBe(true);
     expect(document.documentElement.classList.contains('theme-ledger')).toBe(
       false
+    );
+  });
+
+  it('applies the brand class for a newly registered brand (carbon)', () => {
+    localStorage.setItem(
+      THEME_STORAGE_KEY,
+      JSON.stringify({ brand: 'instruments', mode: 'light' })
+    );
+    const service = create();
+
+    service.setBrand('carbon');
+    expect(service.brand()).toBe('carbon');
+    expect(localStorage.getItem(THEME_STORAGE_KEY)).toBe(
+      JSON.stringify({ brand: 'carbon', mode: 'light' })
+    );
+    expect(document.documentElement.classList.contains('theme-carbon')).toBe(
+      true
     );
   });
 

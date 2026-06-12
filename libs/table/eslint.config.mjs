@@ -31,4 +31,12 @@ export default [
     // Override or add rules here
     rules: {},
   },
+  {
+    // Parity-gallery story hosts are storybook-only scaffolding, not
+    // published components; the selector contract doesn't apply to them.
+    files: ['**/.storybook/parity/**/*.stories.ts'],
+    rules: {
+      '@angular-eslint/component-selector': 'off',
+    },
+  },
 ];

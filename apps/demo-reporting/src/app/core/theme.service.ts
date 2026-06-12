@@ -1,7 +1,19 @@
 import { DOCUMENT } from '@angular/common';
 import { Injectable, inject, signal } from '@angular/core';
 
-export type ThemeBrand = 'instruments' | 'terminal' | 'ledger' | 'field-guide';
+export type ThemeBrand =
+  | 'instruments'
+  | 'terminal'
+  | 'ledger'
+  | 'field-guide'
+  | 'carbon'
+  | 'brutalist'
+  | 'meadow'
+  | 'beacon'
+  | 'noir'
+  | 'pop'
+  | 'gazette'
+  | 'synth';
 export type ThemeMode = 'light' | 'dark';
 
 export const THEME_BRANDS: readonly ThemeBrand[] = [
@@ -9,6 +21,14 @@ export const THEME_BRANDS: readonly ThemeBrand[] = [
   'terminal',
   'ledger',
   'field-guide',
+  'carbon',
+  'brutalist',
+  'meadow',
+  'beacon',
+  'noir',
+  'pop',
+  'gazette',
+  'synth',
 ];
 
 const THEME_STORAGE_KEY = 'demo-reporting.theme';

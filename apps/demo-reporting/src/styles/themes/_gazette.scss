@@ -1,0 +1,16 @@
+@use 'm3kit-theme/themes/instruments';
+
+/// "gazette" — STUB brand module. Implements the brand mixin contract from
+/// `@m3kit/theme` by delegating to Instruments, the default brand. The
+/// gazette brand agent will replace this file with the real palettes,
+/// typography, status/radius/font/chart token emissions.
+
+/// Emits the full light theme (delegated to Instruments for now).
+@mixin brand-light() {
+  @include instruments.brand-light();
+}
+
+/// Re-emits only what changes in dark mode (delegated to Instruments).
+@mixin brand-dark() {
+  @include instruments.brand-dark();
+}

@@ -1,0 +1,138 @@
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './brutalist-colors' as palettes;
+
+/// "Brutalist" — black/white + signal red. Raw concrete register: pure
+/// white paper in light mode, pure-ish black (`#0A0A0A`) in dark, hard
+/// contrast everywhere, zero curvature. Archivo throughout — 500 for
+/// body/UI, 900 for display/headline. See DESIGN.md › Multi-brand themes.
+///
+/// Palettes generated from primary `#111111` (ink black), tertiary
+/// `#E11900` (signal red), neutral `#777777` (concrete gray) — see
+/// `_brutalist-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+
+/// Typography: a single utilitarian grotesque at two extremes — Archivo
+/// 500 carries body/UI, Archivo 900 carries display/headline (the
+/// poster-weight brutalist voice). No intermediate softening.
+$_typography: (
+  plain-family: 'Archivo',
+  brand-family: 'Archivo',
+  regular-weight: 500,
+  medium-weight: 700,
+  bold-weight: 900,
+);
+
+/// Status badge tokens (container / on-container pairs) — stark, not
+/// pastel. Paid is ink on acid green `#C8F04C`; sent is the black/white
+/// inversion stamp; overdue is solid signal red `#E11900`; draft is
+/// quiet outlined-register gray; void is dimmed strikethrough gray.
+$_status-light: (
+  draft: (
+    bg: #f2f2f2,
+    fg: #444444,
+  ),
+  sent: (
+    bg: #111111,
+    fg: #ffffff,
+  ),
+  paid: (
+    bg: #c8f04c,
+    fg: #111111,
+  ),
+  overdue: (
+    bg: #e11900,
+    fg: #ffffff,
+  ),
+  void: (
+    bg: #dddddd,
+    fg: #595959,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #1f1f1f,
+    fg: #bbbbbb,
+  ),
+  sent: (
+    bg: #ffffff,
+    fg: #0a0a0a,
+  ),
+  paid: (
+    bg: #c8f04c,
+    fg: #0a0a0a,
+  ),
+  overdue: (
+    bg: #ff5436,
+    fg: #0a0a0a,
+  ),
+  void: (
+    bg: #2a2a2a,
+    fg: #8c8c8c,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): the brand's whole alphabet —
+/// ink, signal red, two concrete grays, one acid accent, and a deep red.
+/// Light mode runs ink-on-white depth; dark mode lifts every channel onto
+/// pure-ish black (series 1 flips to paper white).
+$_chart-light: #111111, #e11900, #5e5e5e, #7e9a00, #9a9a9a, #8c1007;
+$_chart-dark: #f5f5f5, #ff5436, #ababab, #c8f04c, #757575, #a61200;
+
+/// Emits the full light theme: color, typography, density, status,
+/// radius, font-data, and chart tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  // Hard-contrast surface: pure white paper, ink foreground (the
+  // generated neutral tones are too soft for the brutalist register).
+  @include mat.theme-overrides(
+    (
+      surface: #ffffff,
+      surface-container-lowest: #ffffff,
+      on-surface: #111111,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: zero curvature anywhere — cards, controls, and badges are all
+  // hard 90° corners.
+  @include contract.radius-tokens($card: 0, $control: 0, $badge: 0);
+  @include contract.font-data("'IBM Plex Mono'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  // Pure-ish black, paper-white foreground.
+  @include mat.theme-overrides(
+    (
+      surface: #0a0a0a,
+      surface-container-lowest: #050505,
+      on-surface: #f5f5f5,
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
+}

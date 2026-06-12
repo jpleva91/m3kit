@@ -1,0 +1,124 @@
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './beacon-colors' as palettes;
+
+/// "Beacon" — accessibility-first high-contrast brand. Deep accessible blue
+/// with a burnt-orange tertiary on near-neutral surfaces; every pairing
+/// leans AAA. Atkinson Hyperlegible (the Braille Institute's
+/// legibility-optimized family, OFL) throughout.
+///
+/// Palettes generated from primary `#0050B3` (deep accessible blue),
+/// tertiary `#B34700` (burnt orange), neutral `#444444` — see
+/// `_beacon-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+///
+/// Note: a slightly larger body size would suit Beacon, but the
+/// `mat.theme` typography shorthand (and the `--app-*` contract) carries
+/// families/weights only — type scale stays global per DESIGN.md.
+
+/// Typography: Atkinson Hyperlegible for body/UI and display/headline —
+/// one hyperlegible family everywhere; emphasis lands on the 700 cut.
+$_typography: (
+  plain-family: 'Atkinson Hyperlegible',
+  brand-family: 'Atkinson Hyperlegible',
+  bold-weight: 700,
+);
+
+/// Status badge tokens (container / on-container pairs). AAA-leaning:
+/// very dark text on pale containers in light mode, very light text on
+/// deep containers in dark mode — contrast well past 7:1 in both modes.
+$_status-light: (
+  draft: (
+    bg: #e2e2e2,
+    fg: #1b1b1b,
+  ),
+  sent: (
+    bg: #d6e3ff,
+    fg: #002757,
+  ),
+  paid: (
+    bg: #c4eecb,
+    fg: #00210a,
+  ),
+  overdue: (
+    bg: #ffdad6,
+    fg: #410002,
+  ),
+  void: (
+    bg: #e9ddff,
+    fg: #22005d,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #3f3f3f,
+    fg: #f1f1f1,
+  ),
+  sent: (
+    bg: #003d85,
+    fg: #d6e3ff,
+  ),
+  paid: (
+    bg: #0d5223,
+    fg: #c4eecb,
+  ),
+  overdue: (
+    bg: #93000a,
+    fg: #ffdad6,
+  ),
+  void: (
+    bg: #43328c,
+    fg: #e9ddff,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): six high-contrast,
+/// colorblind-safe hues in distinguishable order — blue, orange, teal,
+/// magenta, brown, gray. Light mode runs deep tones against pale
+/// surfaces; dark mode lifts each hue for near-black surfaces.
+$_chart-light: #0050b3, #b34700, #00696d, #98266b, #6f4a21, #595959;
+$_chart-dark: #7ab0ff, #ffb681, #4ed8de, #ff9ed1, #ddb88a, #b3b3b3;
+
+/// Emits the full light theme: color, typography, density, status,
+/// radius, font-data, and chart tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: modest, consistent radii — 6/4/6. Visible focus affordances
+  // matter more than silhouette play; no pills.
+  @include contract.radius-tokens($card: 6px, $control: 4px, $badge: 6px);
+  // Data cells: Source Sans 3 — its figures are clear at small sizes;
+  // consumers should enable `font-variant-numeric: tabular-nums` so
+  // columns align.
+  @include contract.font-data("'Source Sans 3'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
+}

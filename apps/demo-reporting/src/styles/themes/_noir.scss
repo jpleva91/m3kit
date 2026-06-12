@@ -1,0 +1,121 @@
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './noir-colors' as palettes;
+
+/// "Noir" — dark-first luxury. Champagne gold on warm near-black; dark
+/// mode is the primary expression (near-black `#121110`-family surfaces,
+/// gold glows), light mode an ivory + ink + gold-rule register —
+/// Ledger-adjacent but colder glam. Jost for body/UI, Cormorant Garamond
+/// for display/headline. See DESIGN.md › Multi-brand themes.
+///
+/// Palettes generated from primary `#C9A961` (champagne gold), tertiary
+/// `#8C6D4F` (bronze), neutral `#3A3733` (warm charcoal) — see
+/// `_noir-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+
+/// Typography: Jost (geometric sans, 400/500 cuts) carries body and UI;
+/// Cormorant Garamond 600 carries display/headline for the luxury serif
+/// register.
+$_typography: (
+  plain-family: 'Jost',
+  brand-family: "'Cormorant Garamond'",
+  regular-weight: 400,
+  medium-weight: 500,
+  bold-weight: 600,
+);
+
+/// Status badge tokens (container / on-container pairs).
+///
+/// Seeds — draft smoke `#6E6A64`, sent champagne gold `#C9A961`, paid
+/// deep green `#2E6B3E`, overdue oxblood `#7A2226`, void plum `#6E4B78`.
+$_status-light: (
+  draft: (
+    bg: #e4e1da,
+    fg: #2b2926,
+  ),
+  sent: (
+    bg: #f3e2b8,
+    fg: #3f2e00,
+  ),
+  paid: (
+    bg: #c3e8c6,
+    fg: #07210c,
+  ),
+  overdue: (
+    bg: #f4d6d2,
+    fg: #410507,
+  ),
+  void: (
+    bg: #e8d9ec,
+    fg: #34203b,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #44413c,
+    fg: #e4e1da,
+  ),
+  sent: (
+    bg: #4c3800,
+    fg: #f3e2b8,
+  ),
+  paid: (
+    bg: #1a4524,
+    fg: #c3e8c6,
+  ),
+  overdue: (
+    bg: #5e1518,
+    fg: #f7d8d4,
+  ),
+  void: (
+    bg: #4b3553,
+    fg: #e8d9ec,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): gold, bronze, ivory, sage,
+/// wine, slate. Dark mode is the primary expression — champagne gold and
+/// candlelit neighbors glowing on warm near-black; light mode runs the
+/// same set at ink depth so each series reads on ivory.
+$_chart-light: #8f7331, #6f543c, #6e6549, #4e6b4d, #7a2e3b, #46566b;
+$_chart-dark: #e4c278, #b08862, #ede5d3, #a3bf9f, #cf8490, #93a2b6;
+
+/// Emits the full light theme: color, typography, density, status,
+/// radius, font-data, and chart tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: knife-edge luxury chrome — 2px everywhere, no pills.
+  @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 2px);
+  @include contract.font-data("'JetBrains Mono'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
+}

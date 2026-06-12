@@ -85,6 +85,14 @@ describe('AppComponent', () => {
       'Terminal',
       'Ledger',
       'Field Guide',
+      'Carbon',
+      'Brutalist',
+      'Meadow',
+      'Beacon',
+      'Noir',
+      'Pop',
+      'Gazette',
+      'Synth',
     ]);
 
     items[1].click();

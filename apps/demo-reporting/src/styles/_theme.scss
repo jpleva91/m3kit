@@ -2,6 +2,14 @@
 @use './themes/terminal';
 @use './themes/ledger';
 @use './themes/field-guide';
+@use './themes/carbon';
+@use './themes/brutalist';
+@use './themes/meadow';
+@use './themes/beacon';
+@use './themes/noir';
+@use './themes/pop';
+@use './themes/gazette';
+@use './themes/synth';
 
 /// Multi-brand Material 3 theming aggregator.
 ///
@@ -18,7 +26,8 @@
 ///
 /// Class scheme on the root element (managed by ThemeService):
 /// - no brand class (or `theme-instruments`) → Instruments, the default
-/// - `theme-terminal` / `theme-ledger` / `theme-field-guide` → alternates
+/// - `theme-<brand>` (terminal, ledger, field-guide, carbon, brutalist,
+///   meadow, beacon, noir, pop, gazette, synth) → alternates
 /// - `dark` → dark mode for whichever brand is active
 ///
 /// Dark selectors re-emit only color tokens; typography, density, and
@@ -56,5 +65,69 @@
 
   html.theme-field-guide.dark {
     @include field-guide.brand-dark();
+  }
+
+  html.theme-carbon {
+    @include carbon.brand-light();
+  }
+
+  html.theme-carbon.dark {
+    @include carbon.brand-dark();
+  }
+
+  html.theme-brutalist {
+    @include brutalist.brand-light();
+  }
+
+  html.theme-brutalist.dark {
+    @include brutalist.brand-dark();
+  }
+
+  html.theme-meadow {
+    @include meadow.brand-light();
+  }
+
+  html.theme-meadow.dark {
+    @include meadow.brand-dark();
+  }
+
+  html.theme-beacon {
+    @include beacon.brand-light();
+  }
+
+  html.theme-beacon.dark {
+    @include beacon.brand-dark();
+  }
+
+  html.theme-noir {
+    @include noir.brand-light();
+  }
+
+  html.theme-noir.dark {
+    @include noir.brand-dark();
+  }
+
+  html.theme-pop {
+    @include pop.brand-light();
+  }
+
+  html.theme-pop.dark {
+    @include pop.brand-dark();
+  }
+
+  html.theme-gazette {
+    @include gazette.brand-light();
+  }
+
+  html.theme-gazette.dark {
+    @include gazette.brand-dark();
+  }
+
+  html.theme-synth {
+    @include synth.brand-light();
+  }
+
+  html.theme-synth.dark {
+    @include synth.brand-dark();
   }
 }

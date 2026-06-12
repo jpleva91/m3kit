@@ -1,0 +1,118 @@
+@use '@angular/material' as mat;
+@use 'm3kit-theme' as contract;
+@use './meadow-colors' as palettes;
+
+/// "Meadow" — soft-pastel brand: lavender and mint over warm white, rounded
+/// and gentle. Nunito throughout (rounded humanist sans); data cells in
+/// DM Mono. Light mode is the primary expression (warm white, airy pastel
+/// containers); dark mode is a deep plum-gray dusk with desaturated pastels.
+///
+/// Palettes generated from primary `#8B7EC8` (soft lavender), tertiary
+/// `#6FBF8F` (mint), neutral `#9C97A8` (warm gray-lilac) — see
+/// `_meadow-colors.scss`. Implements the brand mixin contract from
+/// `@m3kit/theme` (`@use 'm3kit-theme'`).
+
+/// Typography: Nunito for body/UI (400 regular, 600 medium) and for
+/// display/headline at 700 — one rounded family keeps the meadow register
+/// soft and friendly.
+$_typography: (
+  plain-family: 'Nunito',
+  brand-family: 'Nunito',
+  regular-weight: 400,
+  medium-weight: 600,
+  bold-weight: 700,
+);
+
+/// Status badge tokens (container / on-container pairs) — gentle pastel
+/// containers: sage paid, sky sent, blush overdue, sand draft, lilac void.
+$_status-light: (
+  draft: (
+    bg: #f0e7d8,
+    fg: #4a3f2a,
+  ),
+  sent: (
+    bg: #d6e9f8,
+    fg: #1e3a52,
+  ),
+  paid: (
+    bg: #dceedd,
+    fg: #243d2a,
+  ),
+  overdue: (
+    bg: #f8dee2,
+    fg: #58252e,
+  ),
+  void: (
+    bg: #e8e0f4,
+    fg: #3b2e55,
+  ),
+);
+
+$_status-dark: (
+  draft: (
+    bg: #4a4232,
+    fg: #f0e7d8,
+  ),
+  sent: (
+    bg: #2a4258,
+    fg: #d6e9f8,
+  ),
+  paid: (
+    bg: #2e4a35,
+    fg: #dceedd,
+  ),
+  overdue: (
+    bg: #5c323a,
+    fg: #f8dee2,
+  ),
+  void: (
+    bg: #443a60,
+    fg: #e8e0f4,
+  ),
+);
+
+/// Chart series palette (`--app-chart-1..6`): pastel categorical set —
+/// lavender, mint, rose, sky, apricot, teal. Light mode runs each hue at
+/// ink depth so it reads on warm white; dark mode lifts and softens them
+/// into true pastels over the plum-gray dusk.
+$_chart-light: #7568b0, #4e9b6f, #c76a8a, #4d89b8, #c08a4e, #449896;
+$_chart-dark: #b3a7e3, #8fd4aa, #eba8c0, #92c2e8, #e8b98a, #8ad0cc;
+
+/// Emits the full light theme: color, typography, density, status,
+/// radius, font, and chart tokens.
+@mixin brand-light() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: light,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+      typography: $_typography,
+      density: 0,
+    )
+  );
+  @include contract.status-tokens($_status-light);
+  // Shape: generously rounded — cards 20px, controls 14px, badges pill.
+  @include contract.radius-tokens($card: 20px, $control: 14px, $badge: 999px);
+  @include contract.font-data("'DM Mono'");
+  @include contract.chart-tokens($_chart-light...);
+  color-scheme: light;
+}
+
+/// Re-emits only the color tokens for dark mode; typography, density,
+/// and radius are inherited from the light theme.
+@mixin brand-dark() {
+  @include mat.theme(
+    (
+      color: (
+        theme-type: dark,
+        primary: palettes.$primary-palette,
+        tertiary: palettes.$tertiary-palette,
+      ),
+    )
+  );
+  @include contract.status-tokens($_status-dark);
+  @include contract.chart-tokens($_chart-dark...);
+  color-scheme: dark;
+}
