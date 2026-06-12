@@ -1,0 +1,85 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as StatListStories from './stat-list.component.stories';
+
+{/* Attached docs page: renders as Molecules/StatList/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={StatListStories} />
+
+# StatList
+
+`m3k-stat-list` renders compact label/value rows for summary panels: a muted
+label on the left, a right-aligned value in the brand data (mono) stack with
+tabular figures, and an optional sentiment-colored delta. It carries no card
+chrome of its own — drop it inside a
+[DetailCard](?path=/docs/molecules-detailcard--docs), a sidebar panel, or any
+surface that already provides a frame. For a titled card with built-in rows
+use DetailCard; for headline metrics use
+[KpiStrip](?path=/docs/molecules-kpistrip--docs).
+
+**Atomic level:** Molecule — a hand-built semantic list, no Material surfaces.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { StatListComponent } from '@m3kit/dashboard';
+
+@Component({
+  selector: 'app-billing-summary',
+  imports: [StatListComponent],
+  template: `
+    <m3k-stat-list
+      [items]="[
+        { label: 'Total billed', value: 1284902.44, format: 'currency', delta: 4.2 },
+        { label: 'Overdue balance', value: 86240.55, format: 'currency', delta: -2.1 },
+        { label: 'Collection rate', value: 0.866, format: 'percent' },
+      ]"
+    />
+  `,
+})
+export class BillingSummaryComponent {}
+```
+
+<Canvas of={StatListStories.Default} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly StatListItem[]` | required | Rows rendered top to bottom, separated by hairline dividers. |
+| `dense` | `boolean` | `false` | Tightens row padding and type one step for sidebar-grade panels. |
+| `currencyCode` | `string` | `'USD'` | ISO currency code used by the `currency` format. |
+
+`StatListItem`: `{ label: string; value: string | number; delta?: number;
+format?: 'plain' | 'currency' | 'percent' }`. `plain` (the default) renders
+numbers as-is; `delta` renders with an explicit sign — positive in the
+tertiary color, negative in the error color (the kit-wide delta convention).
+
+Outputs: none.
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--app-font-data` | Value font family (brand data/mono stack, tabular figures). |
+| `--mat-sys-on-surface` | Value text. |
+| `--mat-sys-on-surface-variant` | Labels and zero deltas. |
+| `--mat-sys-tertiary` | Positive delta (M3 has no success role). |
+| `--mat-sys-error` | Negative delta. |
+| `--mat-sys-outline-variant` | Hairline row dividers. |
+
+## Do / Don't
+
+- **Do** pass raw numbers with a `format` (`{ value: 86240.55, format:
+  'currency' }`) so locale and currency formatting stay consistent across the
+  panel.
+- **Don't** pre-format values into strings (`value: '$86,240.55'`) — string
+  values bypass `format`/`currencyCode` and won't follow the active locale.
+
+## Related
+
+- [DetailCard](?path=/docs/molecules-detailcard--docs) — label/value rows inside a titled card.
+- [KpiStrip](?path=/docs/molecules-kpistrip--docs) — headline readouts in a hairline-divided strip.
+- [DescriptionList](?path=/docs/molecules-descriptionlist--docs) — definition-list semantics for record detail panes.

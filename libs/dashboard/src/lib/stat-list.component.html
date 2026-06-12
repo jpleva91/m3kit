@@ -1,0 +1,18 @@
+<ul class="m3k-stat-list" [class.m3k-stat-list--dense]="dense()">
+  @for (row of rows(); track $index) {
+    <li class="m3k-stat-list__row">
+      <span class="m3k-stat-list__label">{{ row.label }}</span>
+
+      @if (row.delta !== null) {
+        <span
+          class="m3k-stat-list__delta"
+          [class.m3k-stat-list__delta--up]="row.delta > 0"
+          [class.m3k-stat-list__delta--down]="row.delta < 0"
+          >{{ row.formattedDelta }}</span
+        >
+      }
+
+      <span class="m3k-stat-list__value">{{ row.value }}</span>
+    </li>
+  }
+</ul>

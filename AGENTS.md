@@ -43,13 +43,15 @@ tsconfig alias and is resolved via `stylePreprocessorOptions.includePaths:
 
 Component inventory (exported barrels, `libs/*/src/index.ts`):
 core — models, query engine, datasource interfaces, in-memory datasource;
-table — `data-table`, `table-filter-bar`, `page-toolbar`;
-dashboard — `dashboard-grid`, `kpi-card`, `kpi-strip`, `detail-card`;
+table — `data-table`, `table-filter-bar`, `page-toolbar`, `tree`;
+dashboard — `dashboard-grid`, `kpi-card`, `kpi-strip`, `detail-card`,
+`stat-list`, `description-list`, `timeline`;
 charts — `line-chart`, `bar-chart`, `donut-chart`, `chart-legend`,
 `chart-card`; forms — `form-field`, `form-section`, `filter-form`;
 shell — `app-shell` (four chrome presets), `page-header`, `breadcrumbs`,
-`content-layout`, `tabs-page`, `stepper-flow`, `overflow-menu`, plus the
-`ShellToolbarActionsDirective` / `ShellRailFooterDirective` template slots;
+`content-layout`, `tabs-page`, `stepper-flow`, `overflow-menu`,
+`list-page`, plus the `ShellToolbarActionsDirective` /
+`ShellRailFooterDirective` template slots;
 feedback — `empty-state`, `error-state`, `banner`, `skeleton`,
 `confirm-dialog` (component + service), `snackbar` (service);
 testing — `seeded-random`, factories, sample table definitions.

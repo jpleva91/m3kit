@@ -1,0 +1,12 @@
+<dl class="m3k-description-list" [class.m3k-description-list--two-column]="columns() === 2">
+  @for (item of items(); track $index) {
+    <div class="m3k-description-list__item">
+      <dt class="m3k-description-list__term">{{ item.term }}</dt>
+      <dd
+        class="m3k-description-list__description"
+        [class.m3k-description-list__description--mono]="item.mono ?? false"
+        >{{ item.description }}</dd
+      >
+    </div>
+  }
+</dl>

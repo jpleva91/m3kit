@@ -1,0 +1,42 @@
+:host {
+  display: block;
+}
+
+.m3k-description-list {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr);
+  gap: 0.75rem 1.5rem;
+  margin: 0;
+
+  &--two-column {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+
+  &__item {
+    min-width: 0;
+  }
+
+  // Terms take M3 label typography on the muted on-surface-variant role.
+  &__term {
+    font-size: 0.6875rem;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__description {
+    margin: 0.125rem 0 0;
+    font-size: 0.875rem;
+    line-height: 1.4;
+    color: var(--mat-sys-on-surface);
+    overflow-wrap: anywhere;
+
+    // Identifiers, dates, amounts: brand data stack with tabular figures.
+    &--mono {
+      font-family: var(--app-font-data, 'JetBrains Mono'), monospace;
+      font-variant-numeric: tabular-nums;
+      font-size: 0.8125rem;
+    }
+  }
+}

@@ -1,0 +1,131 @@
+:host {
+  display: block;
+}
+
+.m3k-timeline {
+  margin: 0;
+  padding: 0;
+  list-style: none;
+
+  &__event {
+    display: flex;
+    gap: 0.75rem;
+
+    &:last-child .m3k-timeline__body {
+      padding-bottom: 0;
+    }
+  }
+
+  // Marker + connector column; fixed width so bodies align whether the
+  // marker is a bare dot or carries an icon.
+  &__rail {
+    flex: none;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 1.75rem;
+  }
+
+  &__marker {
+    flex: none;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0.75rem;
+    height: 0.75rem;
+    margin-top: 0.3125rem;
+    border-radius: 50%;
+
+    &--with-icon {
+      width: 1.75rem;
+      height: 1.75rem;
+      margin-top: 0;
+    }
+
+    // Severity pairs come from the optional `--app-severity-*` contract
+    // tokens with chained fallbacks following the DESIGN.md semantic mapping
+    // (info = primary family, success = paid/status family, warning =
+    // tertiary family, error = error family) — the same chains as
+    // banner.component.scss — so brands that haven't adopted
+    // `severity-tokens()` still render correctly (docs/THEMING.md).
+    &--info {
+      background: var(--app-severity-info-bg, var(--mat-sys-primary-container));
+      color: var(--app-severity-info-fg, var(--mat-sys-on-primary-container));
+    }
+
+    &--success {
+      background: var(
+        --app-severity-success-bg,
+        var(--app-status-paid-bg, var(--mat-sys-primary-container))
+      );
+      color: var(
+        --app-severity-success-fg,
+        var(--app-status-paid-fg, var(--mat-sys-on-primary-container))
+      );
+    }
+
+    &--warning {
+      background: var(--app-severity-warning-bg, var(--mat-sys-tertiary-container));
+      color: var(--app-severity-warning-fg, var(--mat-sys-on-tertiary-container));
+    }
+
+    &--error {
+      background: var(--app-severity-error-bg, var(--mat-sys-error-container));
+      color: var(--app-severity-error-fg, var(--mat-sys-on-error-container));
+    }
+  }
+
+  // Small optical size per DESIGN.md (no oversized icons); inherits the
+  // severity foreground so the glyph stays on-pair.
+  &__marker-icon {
+    font-size: 1rem;
+    width: 1rem;
+    height: 1rem;
+    color: inherit;
+  }
+
+  &__connector {
+    flex: 1 1 auto;
+    width: 1px;
+    min-height: 0.75rem;
+    margin: 0.25rem 0;
+    background: var(--mat-sys-outline-variant);
+  }
+
+  &__body {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-bottom: 1.25rem;
+  }
+
+  &__heading {
+    display: flex;
+    align-items: baseline;
+    flex-wrap: wrap;
+    gap: 0.25rem 0.75rem;
+  }
+
+  &__title {
+    font-size: 0.875rem;
+    font-weight: 500;
+    line-height: 1.4;
+    color: var(--mat-sys-on-surface);
+  }
+
+  &__timestamp {
+    margin-left: auto;
+    // Timestamps use the brand data stack with tabular figures so the
+    // feed's time column aligns like an instrument panel.
+    font-family: var(--app-font-data, 'JetBrains Mono'), monospace;
+    font-variant-numeric: tabular-nums;
+    font-size: 0.75rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__description {
+    margin: 0.25rem 0 0;
+    font-size: 0.8125rem;
+    line-height: 1.4;
+    color: var(--mat-sys-on-surface-variant);
+  }
+}

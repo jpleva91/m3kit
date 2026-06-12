@@ -1,0 +1,41 @@
+<mat-tree
+  class="m3k-tree"
+  [dataSource]="roots()"
+  [childrenAccessor]="childrenAccessor"
+  [expansionKey]="expansionKey"
+  [trackBy]="trackBy"
+>
+  <mat-tree-node
+    *matTreeNodeDef="let node"
+    class="m3k-tree__node"
+    matTreeNodePadding
+    [matTreeNodePaddingIndent]="24"
+    [isExpandable]="hasChildren(node)"
+    [cdkTreeNodeTypeaheadLabel]="node.label"
+    [class.m3k-tree__node--selectable]="selectable()"
+    [class.m3k-tree__node--selected]="isSelected(node)"
+    [attr.aria-selected]="selectable() ? isSelected(node) : null"
+    (expandedChange)="onExpandedChange(node, $event)"
+    (activation)="select(node)"
+    (click)="select(node)"
+  >
+    @if (hasChildren(node)) {
+      <button
+        mat-icon-button
+        matTreeNodeToggle
+        type="button"
+        class="m3k-tree__toggle"
+        [attr.aria-label]="'Toggle ' + node.label"
+      >
+        <mat-icon>{{ isExpanded(node) ? 'expand_more' : 'chevron_right' }}</mat-icon>
+      </button>
+    } @else {
+      <!-- Disabled icon button keeps leaf labels aligned with parents. -->
+      <button mat-icon-button type="button" disabled aria-hidden="true"></button>
+    }
+    @if (node.icon) {
+      <mat-icon class="m3k-tree__icon" aria-hidden="true">{{ node.icon }}</mat-icon>
+    }
+    <span class="m3k-tree__label">{{ node.label }}</span>
+  </mat-tree-node>
+</mat-tree>

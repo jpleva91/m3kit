@@ -1,0 +1,64 @@
+@use '@angular/material' as mat;
+
+// DESIGN.md density: hierarchy panels sit in the forms/filter-panel band
+// (-1) — denser than landmark navigation (0), roomier than the -2
+// analytical table. Re-emitting the density tokens scoped to the host
+// keeps the override local to this component's tree.
+:host {
+  display: block;
+
+  @include mat.theme(
+    (
+      density: -1,
+    )
+  );
+}
+
+.m3k-tree {
+  // The tree inherits whatever surface it sits on (card, rail, page)
+  // instead of painting its own.
+  background: transparent;
+
+  &__node {
+    border-radius: var(--app-radius-control, 6px);
+
+    &:focus-visible {
+      outline: 2px solid var(--mat-sys-primary);
+      outline-offset: -2px;
+    }
+
+    &--selectable {
+      cursor: pointer;
+
+      &:hover {
+        background: var(--mat-sys-surface-container);
+      }
+    }
+
+    // DESIGN.md selected state: the secondary container pair.
+    &--selected,
+    &--selected:hover {
+      background: var(--mat-sys-secondary-container);
+      color: var(--mat-sys-on-secondary-container);
+    }
+  }
+
+  &__toggle {
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  &__icon {
+    margin-right: 0.5rem;
+    color: var(--mat-sys-on-surface-variant);
+  }
+
+  // Selected rows carry their icon on the container's `on` color.
+  &__node--selected &__icon,
+  &__node--selected &__toggle {
+    color: currentColor;
+  }
+
+  &__label {
+    font: var(--mat-sys-body-medium);
+  }
+}

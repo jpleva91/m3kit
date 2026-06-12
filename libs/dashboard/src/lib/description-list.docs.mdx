@@ -1,0 +1,81 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as DescriptionListStories from './description-list.component.stories';
+
+{/* Attached docs page: renders as Molecules/DescriptionList/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={DescriptionListStories} />
+
+# DescriptionList
+
+`m3k-description-list` renders term/description pairs with real definition-list
+semantics (`dl`/`dt`/`dd`) for record detail panes: muted uppercase terms in
+label typography over body-type descriptions, optionally in a two-column grid.
+Descriptions flagged `mono` render in the brand data (mono) stack so
+identifiers, dates, and amounts align like data. It carries no card chrome —
+compose it inside a [DetailCard](?path=/docs/molecules-detailcard--docs) or
+any record-detail surface.
+
+**Atomic level:** Molecule — a hand-built semantic definition list, no
+Material surfaces.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { DescriptionListComponent } from '@m3kit/dashboard';
+
+@Component({
+  selector: 'app-customer-record',
+  imports: [DescriptionListComponent],
+  template: `
+    <m3k-description-list
+      [columns]="2"
+      [items]="[
+        { term: 'Customer', description: 'Acme Manufacturing GmbH' },
+        { term: 'Account ID', description: 'CUST-00482', mono: true },
+        { term: 'Payment terms', description: 'Net 30' },
+        { term: 'VAT number', description: 'DE 271 828 182', mono: true },
+      ]"
+    />
+  `,
+})
+export class CustomerRecordComponent {}
+```
+
+<Canvas of={DescriptionListStories.TwoColumns} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly DescriptionListItem[]` | required | Term/description pairs rendered in source order. |
+| `columns` | `1 \| 2` | `1` | Column count; `2` lays pairs out in a two-column grid. |
+
+`DescriptionListItem`: `{ term: string; description: string; mono?: boolean }`.
+`mono` switches the description to the brand data stack (`--app-font-data`,
+tabular figures).
+
+Outputs: none.
+
+## Theming
+
+Token-only styling. Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--mat-sys-on-surface-variant` | Terms (label typography). |
+| `--mat-sys-on-surface` | Descriptions (body typography). |
+| `--app-font-data` | Mono descriptions (brand data/mono stack). |
+
+## Do / Don't
+
+- **Do** flag identifiers, dates, and amounts as `mono: true` so they take the
+  brand data stack and align like data.
+- **Don't** abuse the list for metrics with deltas — that's
+  [StatList](?path=/docs/molecules-statlist--docs); this component is for
+  describing one record, not summarizing many.
+
+## Related
+
+- [StatList](?path=/docs/molecules-statlist--docs) — compact label/value rows with deltas for summary panels.
+- [DetailCard](?path=/docs/molecules-detailcard--docs) — titled card to frame a record detail pane.

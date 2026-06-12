@@ -1,0 +1,36 @@
+<div class="m3k-list-page">
+  <div class="m3k-list-page__header">
+    @if (breadcrumbs().length > 0) {
+      <m3k-breadcrumbs [items]="breadcrumbs()" />
+    }
+    <m3k-page-header [title]="title()" [subtitle]="description()">
+      <div m3kPageHeaderActions class="m3k-list-page__actions">
+        @if (primaryAction(); as action) {
+          <button
+            mat-flat-button
+            type="button"
+            class="m3k-list-page__primary-action"
+            (click)="primaryActionClick.emit()"
+          >
+            @if (action.icon) {
+              <mat-icon>{{ action.icon }}</mat-icon>
+            }
+            {{ action.label }}
+          </button>
+        }
+      </div>
+    </m3k-page-header>
+  </div>
+  <div class="m3k-list-page__toolbar">
+    <ng-content select="[m3kListPageToolbar]" />
+  </div>
+  @if (empty()) {
+    <div class="m3k-list-page__empty">
+      <ng-content select="[m3kListPageEmpty]" />
+    </div>
+  } @else {
+    <div class="m3k-list-page__content">
+      <ng-content />
+    </div>
+  }
+</div>

@@ -1,0 +1,26 @@
+:host {
+  display: block;
+}
+
+// Landmark rhythm between page regions (density 0 — landmarks breathe).
+.m3k-list-page {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+// Breadcrumb trail sits tight above the header inside one landmark.
+.m3k-list-page__header {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+// Collapse the toolbar region (and its flex gap) when nothing is projected.
+.m3k-list-page__toolbar:empty {
+  display: none;
+}
+
+.m3k-list-page__empty {
+  padding-block: 16px;
+}

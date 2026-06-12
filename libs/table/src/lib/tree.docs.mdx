@@ -1,0 +1,113 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as TreeStories from './tree.component.stories';
+
+<Meta of={TreeStories} />
+
+# Tree
+
+`m3k-tree` renders hierarchical `TreeNode` data — report folders, product
+taxonomies, account groupings — with id-based two-way expansion and
+optional single selection. It wraps Material's `childrenAccessor` tree,
+so children mount lazily: a branch's nodes render only while the branch
+is expanded, at arbitrary depth.
+
+**Atomic level:** Organism — composed from `mat-tree`, toggle icon
+buttons, and per-node icon + label rows.
+
+## Usage
+
+```ts
+import { Component, signal } from '@angular/core';
+import { TreeComponent, TreeNode } from '@m3kit/table';
+
+@Component({
+  selector: 'app-report-rail',
+  imports: [TreeComponent],
+  template: `
+    <m3k-tree
+      [nodes]="library"
+      [(expandedIds)]="expandedIds"
+      [selectable]="true"
+      [(selectedId)]="selectedReportId"
+    />
+  `,
+})
+export class ReportRailComponent {
+  library: readonly TreeNode[] = [
+    {
+      id: 'orders',
+      label: 'Orders',
+      icon: 'folder',
+      children: [{ id: 'orders-open', label: 'Open orders', icon: 'table_chart' }],
+    },
+  ];
+  expandedIds = signal<readonly string[]>(['orders']);
+  selectedReportId = signal<string | undefined>(undefined);
+}
+```
+
+`TreeNode<T>` carries an optional `data?: T` payload, so the consumer can
+hang its own record (a report definition, a category row) on each node and
+read it back from the id the tree emits.
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `nodes` | `readonly TreeNode<T>[]` | required | Root nodes of the hierarchy. Ids must be unique across the tree. |
+| `expandedIds` | `readonly string[]` | `[]` | Two-way (`model()`) set of expanded node ids. |
+| `selectable` | `boolean` | `false` | Enables row selection; when `false`, row clicks are inert. |
+| `selectedId` | `string \| undefined` | `undefined` | Two-way (`model()`) id of the selected node. |
+
+## Outputs
+
+Both models emit their change events (`expandedIdsChange`,
+`selectedIdChange`); there are no separate outputs. Parent writes are
+applied without re-emission — only user interaction (toggle clicks, arrow
+keys, row activation) reaches the consumer.
+
+Collapsing a branch keeps its descendants' ids in `expandedIds`, so
+re-expanding the branch restores the previous shape.
+
+## Accessibility
+
+The CDK tree supplies the interaction contract: `role="tree"` /
+`role="treeitem"`, `aria-expanded`/`aria-level`/`aria-posinset`, arrow-key
+navigation, Home/End, and label typeahead. Each branch's chevron is a real
+button with a `Toggle <label>` aria-label; selected rows carry
+`aria-selected` when `selectable` is on.
+
+## Theming
+
+Token-only styling at density `-1` (the DESIGN.md forms/filter-panel
+band); consumes:
+
+- `--mat-sys-secondary-container` / `--mat-sys-on-secondary-container` —
+  selected row pair
+- `--mat-sys-surface-container` — selectable-row hover
+- `--mat-sys-on-surface-variant` — node and toggle icons
+- `--mat-sys-primary` — focus outline
+- `--mat-sys-body-medium` — label type
+- `--app-radius-control` (fallback `6px`) — row radius, from the
+  `--app-*` contract
+
+The tree paints no surface of its own; it inherits the card, rail, or
+page it sits on.
+
+## Do / Don't
+
+- **Do** persist `expandedIds` (route state, store) so a report rail
+  reopens the way the user left it.
+- **Do** key nodes with stable ids — expansion and selection survive
+  `nodes` rebuilds only if ids do.
+- **Don't** bind `selectedId` without `selectable`; the tree won't write
+  it and rows won't take the selected treatment.
+
+## Related
+
+- [DataTable](?path=/docs/organisms-datatable--docs) — the report surface a
+  tree rail typically drives
+- [TabsPage](?path=/docs/templates-tabspage--docs) — flat alternative when
+  the hierarchy is one level deep
+
+<Stories />

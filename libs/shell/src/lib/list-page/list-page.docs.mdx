@@ -1,0 +1,118 @@
+import { Meta, Canvas, Stories } from '@storybook/blocks';
+import * as ListPageStories from './list-page.component.stories';
+
+<Meta of={ListPageStories} />
+
+# ListPage
+
+`m3k-list-page` is the kit's canonical list/index page template. It composes
+the shell's existing chrome — an optional [Breadcrumbs](?path=/docs/molecules-breadcrumbs--docs)
+trail above a [PageHeader](?path=/docs/molecules-pageheader--docs) — over
+three content regions: a toolbar slot for filter bars and secondary controls,
+the default slot for the table or list itself, and an empty-state slot that
+replaces the content while `empty` is true. An optional primary action
+(`{ label, icon? }`) renders as the header's filled button and emits
+`(primaryActionClick)` on click; the host owns what the action does.
+
+**Atomic level:** Template — the page-body scaffold for every index route,
+pairing with [AppShell](?path=/docs/templates-appshell--docs) around it and
+the data-table family inside it.
+
+<Canvas of={ListPageStories.InvoicesIndex} />
+
+## Usage
+
+```ts
+import { Component, signal } from '@angular/core';
+import { ListPageComponent } from '@m3kit/shell';
+
+@Component({
+  selector: 'app-invoices',
+  imports: [ListPageComponent],
+  template: `
+    <m3k-list-page
+      title="Invoices"
+      description="Billing period June 2026"
+      [breadcrumbs]="[{ label: 'Reports', path: '/reports' }, { label: 'Invoices' }]"
+      [primaryAction]="{ label: 'New invoice', icon: 'add' }"
+      [empty]="invoices().length === 0"
+      (primaryActionClick)="createInvoice()"
+    >
+      <div m3kListPageToolbar><!-- filter bar --></div>
+      <table><!-- invoice rows --></table>
+      <div m3kListPageEmpty><!-- empty state --></div>
+    </m3k-list-page>
+  `,
+})
+export class InvoicesComponent {
+  readonly invoices = signal<Invoice[]>([]);
+  createInvoice(): void {
+    /* open the create flow */
+  }
+}
+```
+
+## Inputs & Outputs
+
+| Name | Kind | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `title` | input (required) | `string` | — | Page title, forwarded to the header's only `h1`. |
+| `description` | input | `string` | `''` | Supporting line beneath the title (the header's subtitle). |
+| `breadcrumbs` | input | `readonly BreadcrumbItem[]` | `[]` | Trail rendered above the header; the nav is omitted entirely when the array is empty. |
+| `primaryAction` | input | `ListPagePrimaryAction \| undefined` | `undefined` | `{ label: string; icon?: string }` — the header's filled button; omitted when `undefined`. |
+| `empty` | input | `boolean` | `false` | While true, removes the default content slot and renders the `[m3kListPageEmpty]` slot in its place. The toolbar stays — active filters may be why the list is empty. |
+| `primaryActionClick` | output | `void` | — | Emits on each primary-action button click. (`Click`-suffixed: the Angular style guide's no-output-rename rule forbids an output sharing the `primaryAction` input's name.) |
+
+**Content slots** (attribute selects, the same mechanism as
+`m3kPageHeaderActions`):
+
+- `[m3kListPageToolbar]` — filter bars / secondary controls, directly beneath
+  the header; the region collapses when nothing is projected.
+- default slot — the table or list.
+- `[m3kListPageEmpty]` — rendered instead of the default slot while `empty`
+  is true.
+
+## Composing an empty state
+
+The empty slot exists so a feedback empty-state component drops in without
+this library depending on it — slots keep the dependency graph clean
+(`@m3kit/shell` depends only on core + theme). An app that already uses
+`@m3kit/feedback` composes its `m3k-empty-state` straight into the slot:
+
+```html
+<m3k-list-page title="Invoices" [empty]="invoices().length === 0">
+  <table><!-- invoice rows --></table>
+  <m3k-empty-state
+    m3kListPageEmpty
+    icon="receipt_long"
+    headline="No invoices match the current filters"
+    description="Clear the status filter to see all 214 invoices."
+  />
+</m3k-list-page>
+```
+
+## Theming
+
+Token-only styling. The template itself is pure layout (8px-base region
+rhythm); every visible surface comes from the composed pieces — the header's
+`--mat-sys-display-small` title, the breadcrumbs' system-token trail, and the
+Material filled button carrying `--mat-sys-primary` for the primary action.
+
+## Do / Don't
+
+- **Do** keep exactly one primary action — the desperate path of the page.
+  Secondary commands belong in the toolbar slot or an
+  [OverflowMenu](?path=/docs/molecules-overflowmenu--docs) per row.
+- **Do** drive `empty` from the *filtered* result set and keep the toolbar
+  populated, so users can undo the filters that emptied the list.
+- **Don't** project page chrome (titles, breadcrumbs) into the content slot —
+  the inputs own the header so every index page reads the same.
+
+## Related
+
+- [PageHeader](?path=/docs/molecules-pageheader--docs) — the title row this template composes
+- [Breadcrumbs](?path=/docs/molecules-breadcrumbs--docs) — the trail above the header
+- [AppShell](?path=/docs/templates-appshell--docs) — chrome the list page lives in
+- [TabsPage](?path=/docs/templates-tabspage--docs) — the matching detail-page template
+
+<Stories />

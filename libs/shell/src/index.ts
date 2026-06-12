@@ -10,3 +10,4 @@ export * from './lib/stepper-flow/stepper-flow.component';
 export * from './lib/stepper-flow/stepper-flow-model';
 export * from './lib/overflow-menu/overflow-menu.component';
 export * from './lib/overflow-menu/overflow-menu-model';
+export * from './lib/list-page/list-page.component';

@@ -1,0 +1,87 @@
+import { Meta, Canvas } from '@storybook/blocks';
+import * as TimelineStories from './timeline.component.stories';
+
+{/* Attached docs page: renders as Molecules/Timeline/Docs. The CSF meta carries no autodocs tag - this MDX is the Docs page. */}
+
+<Meta of={TimelineStories} />
+
+# Timeline
+
+`m3k-timeline` is a vertical activity feed: an ordered list of events, each
+with a severity-tinted marker dot (optionally carrying a Material icon) on a
+shared connector rail, a headline, a `time` element in the brand data stack,
+and optional supporting copy. Use it for record activity — support-ticket
+history, order fulfillment, sync runs — wherever "what happened, when" reads
+better as a feed than a table.
+
+**Atomic level:** Molecule — a hand-built semantic list plus Material
+`mat-icon` for optional marker glyphs.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { TimelineComponent } from '@m3kit/dashboard';
+
+@Component({
+  selector: 'app-ticket-activity',
+  imports: [TimelineComponent],
+  template: `
+    <m3k-timeline
+      [events]="[
+        { id: 'evt-1', title: 'Ticket created', timestamp: '2026-05-28 09:14' },
+        { id: 'evt-2', title: 'Escalated', timestamp: '2026-05-28 11:02', kind: 'warning' },
+        { id: 'evt-3', title: 'Fix deployed', timestamp: '2026-05-29 16:40', kind: 'success' },
+      ]"
+    />
+  `,
+})
+export class TicketActivityComponent {}
+```
+
+<Canvas of={TimelineStories.Default} />
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `events` | `readonly TimelineEvent[]` | required | Events rendered top to bottom in source order. |
+
+`TimelineEvent`: `{ id: string; title: string; timestamp: string;
+description?: string; icon?: string; kind?: 'info' | 'success' | 'warning' |
+'error' }`. `id` is the list-tracking identity; `timestamp` renders verbatim
+in a `time` element (pass a pre-formatted string); `kind` defaults to `info`.
+
+Outputs: none.
+
+## Theming
+
+Token-only styling. Marker dots take the kit's severity pairs — the optional
+`--app-severity-*` contract tokens with the same chained M3 fallbacks as
+`m3k-banner` (info = primary family, success = paid/status family, warning =
+tertiary family, error = error family). Tokens consumed by the stylesheet:
+
+| Token | Used for |
+| --- | --- |
+| `--app-severity-info-bg` / `-fg` (→ `--mat-sys-primary-container` pair) | Info marker. |
+| `--app-severity-success-bg` / `-fg` (→ `--app-status-paid-*`, then primary pair) | Success marker. |
+| `--app-severity-warning-bg` / `-fg` (→ `--mat-sys-tertiary-container` pair) | Warning marker. |
+| `--app-severity-error-bg` / `-fg` (→ `--mat-sys-error-container` pair) | Error marker. |
+| `--mat-sys-outline-variant` | Connector rail. |
+| `--mat-sys-on-surface` | Event titles. |
+| `--mat-sys-on-surface-variant` | Timestamps and descriptions. |
+| `--app-font-data` | Timestamps (brand data/mono stack, tabular figures). |
+
+## Do / Don't
+
+- **Do** give every event a stable `id` — the feed tracks by identity, so
+  prepending new events doesn't re-render existing ones.
+- **Don't** reach for `warning`/`error` kinds as decoration — severity colors
+  follow the kit-wide semantic mapping, and a feed that's all red reads as an
+  incident, not activity.
+
+## Related
+
+- [Banner](?path=/docs/molecules-banner--docs) — the same severity pairs as an inline alert strip.
+- [DetailCard](?path=/docs/molecules-detailcard--docs) — titled card to frame an activity pane.
+- [StatList](?path=/docs/molecules-statlist--docs) — compact label/value rows for summary panels.

@@ -1,0 +1,35 @@
+<ol class="m3k-timeline">
+  @for (event of views(); track event.id) {
+    <li class="m3k-timeline__event">
+      <div class="m3k-timeline__rail" aria-hidden="true">
+        <span
+          class="m3k-timeline__marker"
+          [class.m3k-timeline__marker--with-icon]="event.icon !== null"
+          [class.m3k-timeline__marker--info]="event.kind === 'info'"
+          [class.m3k-timeline__marker--success]="event.kind === 'success'"
+          [class.m3k-timeline__marker--warning]="event.kind === 'warning'"
+          [class.m3k-timeline__marker--error]="event.kind === 'error'"
+        >
+          @if (event.icon; as iconName) {
+            <mat-icon class="m3k-timeline__marker-icon">{{ iconName }}</mat-icon>
+          }
+        </span>
+        @if (!$last) {
+          <span class="m3k-timeline__connector"></span>
+        }
+      </div>
+
+      <div class="m3k-timeline__body">
+        <div class="m3k-timeline__heading">
+          <span class="m3k-timeline__title">{{ event.title }}</span>
+          <time class="m3k-timeline__timestamp" [attr.datetime]="event.timestamp">
+            {{ event.timestamp }}
+          </time>
+        </div>
+        @if (event.description; as description) {
+          <p class="m3k-timeline__description">{{ description }}</p>
+        }
+      </div>
+    </li>
+  }
+</ol>
