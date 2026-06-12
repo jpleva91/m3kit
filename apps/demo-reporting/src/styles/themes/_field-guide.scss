@@ -175,7 +175,6 @@ $_chart-dark: #57d38c, #ff9180, #93b4e8, #e8c26b, #5bc8de, #c5a6f2;
     // Shape: rounded, approachable notebook chrome — cards 16px,
     // controls 12px, badges full pills.
     @include contract.radius-tokens($card: 16px, $control: 12px, $badge: 999px);
-    @include contract.material-shape-bridge();
     @include contract.font-data("'DM Mono'");
     @include contract.chart-tokens($_chart-light...);
     // Deltas: the soft-coral tertiary sits in the error family, so the
@@ -187,6 +186,10 @@ $_chart-dark: #57d38c, #ff9180, #93b4e8, #e8c26b, #5bc8de, #c5a6f2;
       $negative: var(--mat-sys-error)
     );
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    @include contract.material-shape-bridge();
   }
 }
 

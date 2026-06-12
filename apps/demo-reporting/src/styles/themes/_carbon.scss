@@ -105,10 +105,13 @@ $_chart-dark: #8a3ffc, #33b1ff, #08bdba, #ff7eb6, #fa4d56, #4589ff;
     // Shape: squared enterprise chrome — 2px across cards, controls,
     // and badges (no pill silhouettes in Carbon).
     @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 2px);
-    @include contract.material-shape-bridge();
     @include contract.font-data("'IBM Plex Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    @include contract.material-shape-bridge();
   }
 }
 

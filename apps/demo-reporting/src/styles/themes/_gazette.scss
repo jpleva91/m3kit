@@ -108,10 +108,13 @@ $_chart-dark: #e8e2d6, #91a7ff, #f0897c, #aaa7a1, #cf9d63, #aab86a;
     // Shape: rules, not boxes — broadsheet column rules carry the structure,
     // so every silhouette is square (cards 0, controls 0, badges 0).
     @include contract.radius-tokens($card: 0, $control: 0, $badge: 0);
-    @include contract.material-shape-bridge();
     @include contract.font-data("'PT Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    @include contract.material-shape-bridge();
   }
 }
 

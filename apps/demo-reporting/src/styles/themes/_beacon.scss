@@ -104,13 +104,16 @@ $_chart-dark: #7ab0ff, #ffb681, #4ed8de, #ff9ed1, #ddb88a, #b3b3b3;
     // Shape: modest, consistent radii — 6/4/6. Visible focus affordances
     // matter more than silhouette play; no pills.
     @include contract.radius-tokens($card: 6px, $control: 4px, $badge: 6px);
-    @include contract.material-shape-bridge();
     // Data cells: Source Sans 3 — its figures are clear at small sizes;
     // consumers should enable `font-variant-numeric: tabular-nums` so
     // columns align.
     @include contract.font-data("'Source Sans 3'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    @include contract.material-shape-bridge();
   }
 }
 

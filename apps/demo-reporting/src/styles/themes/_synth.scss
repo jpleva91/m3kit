@@ -113,10 +113,13 @@ $_chart-dark: #00d4aa, #ff3d8a, #ffd23f, #9d6bff, #4ade80, #ff8a3d;
     // Shape: tight uniform chamfer — cards, controls, and badges all 4px
     // (no pill silhouettes in Synth).
     @include contract.radius-tokens($card: 4px, $control: 4px, $badge: 4px);
-    @include contract.material-shape-bridge();
     @include contract.font-data("'JetBrains Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    @include contract.material-shape-bridge();
   }
 }
 

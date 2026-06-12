@@ -284,12 +284,14 @@ Documented decisions, not defects — kept as-is deliberately:
   tertiary container — semantically muted but on-register for the enterprise
   chrome. Revisit with a tuned `severity-tokens()` map only if a
   warning-severity story ships.
-- **Six fallback brands are correct-by-construction but not yet
-  pixel-checked.** Meadow, Beacon, Noir, Pop, Gazette, and Synth render
-  severity from the contract's fallback chain; their banner and timeline
-  surfaces deserve a visual spot-check in both modes before leaning on them
-  for severity-heavy screens. (Terminal, Field Guide, and Carbon fallbacks
-  have been verified in both modes.)
+- **All nine fallback brands are pixel-verified.** Meadow, Beacon, Noir,
+  Pop, Gazette, and Synth render severity from the contract's fallback
+  chain and have been visually verified (banner and timeline stories, both
+  modes): each resolves to its own M3 palette — lavender/mint (Meadow),
+  signal blue/burnt orange (Beacon), gold/bronze (Noir), magenta/cyan
+  (Pop), ink-gray/link-blue (Gazette), teal/pink (Synth) — with legible
+  on-container text in light and dark. Terminal, Field Guide, and Carbon
+  were verified earlier the same way.
 - **Gazette's warning reads as link ink.** Its tertiary *is* the link-blue
   accent, so the warning fallback is a blue container — attention as ink, not
   amber. On-register for a newspaper; adopt a tuned map if warnings need

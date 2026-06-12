@@ -140,11 +140,14 @@ $_chart-dark: #8fa9ff, #f0a36b, #5ec8e0, #b79cff, #6fcf8f, #f286b2;
     @include contract.status-tokens($_status-light);
     @include contract.severity-tokens($_severity-light);
     @include contract.radius-tokens();
-    // Buttons follow the control radius (M3 defaults them to full pills).
-    @include contract.material-shape-bridge();
     @include contract.font-data("'JetBrains Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    // Buttons follow the control radius (M3 defaults them to full pills).
+    @include contract.material-shape-bridge();
   }
 }
 

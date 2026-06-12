@@ -102,12 +102,15 @@ $_chart-dark: #ff4fa0, #33d6f2, #ffc14d, #a3e635, #a78bfa, #ff8a70;
     // Shape: gumdrop geometry — generous 24px cards, full-pill controls
     // and badges.
     @include contract.radius-tokens($card: 24px, $control: 999px, $badge: 999px);
-    // The bridge resolves to the 999px control radius, so Pop's documented
-    // pill buttons are preserved.
-    @include contract.material-shape-bridge();
     @include contract.font-data("'DM Mono'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    // The bridge resolves to the 999px control radius, so Pop's documented
+    // pill buttons are preserved.
+    @include contract.material-shape-bridge();
   }
 }
 

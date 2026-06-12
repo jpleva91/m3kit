@@ -144,10 +144,13 @@ $_chart-dark: #e08a96, #d9b765, #8fc4a0, #9db5d9, #c9a3b8, #d99a6e;
     // Shape: square editorial print — cards 2px, controls 2px,
     // badges 0 (rules and stamps, not pills).
     @include contract.radius-tokens($card: 2px, $control: 2px, $badge: 0px);
-    @include contract.material-shape-bridge();
     @include contract.font-data("'Source Sans 3'");
     @include contract.chart-tokens($_chart-light...);
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    @include contract.material-shape-bridge();
   }
 }
 

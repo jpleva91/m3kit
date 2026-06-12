@@ -156,7 +156,6 @@ $_chart-dark: #f5f5f5, #ff5436, #ababab, #c8f04c, #757575, #a61200;
     // Shape: zero curvature anywhere — cards, controls, and badges are all
     // hard 90° corners.
     @include contract.radius-tokens($card: 0, $control: 0, $badge: 0);
-    @include contract.material-shape-bridge();
     @include contract.font-data("'IBM Plex Mono'");
     @include contract.chart-tokens($_chart-light...);
     // Deltas: the signal-red tertiary collides with the error role, so the
@@ -168,6 +167,10 @@ $_chart-dark: #f5f5f5, #ff5436, #ababab, #c8f04c, #757575, #a61200;
       $negative: var(--mat-sys-error)
     );
     color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested rules
+    // (mixed-decls); emission order does not change the resolved styles.
+    @include contract.material-shape-bridge();
   }
 }
 
