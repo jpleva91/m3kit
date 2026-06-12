@@ -19,8 +19,10 @@
       "@m3kit/core": ["libs/core/src/index.ts"],
       "@m3kit/dashboard": ["libs/dashboard/src/index.ts"],
       "@m3kit/forms": ["libs/forms/src/index.ts"],
-      "@m3kit/table": ["libs/table/src/index.ts"],
+      "@m3kit/plugin": ["tools/plugin/src/index.ts"],
       "@m3kit/shell": ["libs/shell/src/index.ts"],
+      "@m3kit/state": ["libs/state/src/index.ts"],
+      "@m3kit/table": ["libs/table/src/index.ts"],
       "@m3kit/testing": ["libs/testing/src/index.ts"]
     }
   },
