@@ -38,6 +38,9 @@ testem.log
 .DS_Store
 Thumbs.db
 
+# local tooling state (never publish)
+.hermes/
+
 .nx/cache
 .nx/workspace-data
 
