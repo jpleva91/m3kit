@@ -377,6 +377,71 @@ for external consumers. Publishing is a real commitment (semver contract,
 release cadence, registry hygiene) that should be taken deliberately, not
 implied by docs; until it is, claims and reality must match.
 
+## ADR-016 — Reporting foundation: versioned contracts, baseline-vs-adapter boundary, headless column state, telemetry redaction
+
+**Status:** Accepted (2026-06-12)
+
+**Decision:** The enterprise-reporting foundation
+(`specs/005-reporting-foundation/`) lands on five settled policies:
+
+- **Schema versioning: one version constant + one migration hook per
+  serialized artifact.** `SerializedDataQuery` and `SavedView` each carry an
+  explicit integer schema version (`DATA_QUERY_SCHEMA_VERSION = 1`,
+  `SAVED_VIEW_SCHEMA_VERSION = 1`) and deserialize through a single
+  migration switch (`migrateSerializedQuery`, and the saved-view
+  equivalent) — older versions migrate forward, garbage and *future*
+  (higher) versions return `null`, never throw. No migration framework;
+  the empty-at-v1 switch is spec-fixtured so the upgrade path is proven
+  before it is needed (the deferred `SavedView` density field is the
+  designated first v2 consumer).
+- **Baseline-vs-adapter boundary.** The kit's deliverable is the contracts
+  plus a pure CSV/JSON export baseline (`rowsToCsv`, `rowsToJson`,
+  deterministic filename builder — no Blob/anchor/download code in
+  `libs/core`). Everything beyond that line is adapter/consumer code:
+  XLSX/PDF/print rendering, server export jobs, saved-view persistence
+  (localStorage/REST/IndexedDB), and telemetry sinks. The demo app's
+  router sync, in-memory saved-view registry, download trigger, and
+  console reporter are app policy — documented as the parts consumers
+  replace (`docs/REPORTING_FOUNDATION.md`).
+- **Headless column view-state model.** Column visibility/order/pinning/
+  width is a serializable `ColumnViewState[]` (array order = display
+  order) resolved by a pure `resolveColumns` helper; `m3k-data-table`
+  gains one `columnState` input and no new outputs. Interactive chrome
+  (drag-reorder, resize grips, column-picker UI) is explicitly not part
+  of this wave — saved views, URL state, and app code are the writers.
+- **Telemetry redaction rule.** `ReportTelemetryEvent`s identify queries
+  exclusively by `dataQueryHash` (pure FNV-1a over the canonical
+  serialized query) and never carry raw filter text or row data; the rule
+  is documented on the types and asserted in specs. The reporter is
+  injected via an `InjectionToken` in `libs/state` (defaulting to a
+  no-op) because `libs/core` is Angular-free and owns only the pure
+  `ReportTelemetryReporter` interface and event union.
+- **`withDataQuery` error type change.** The store's `error` state becomes
+  `ReportError | null` (normalized via `toReportError`, closed `kind`
+  taxonomy, required `retryable` flag). A new `errorMessage: string | null`
+  computed preserves the existing string binding; the in-repo consumers
+  (demo report pages, store-driven story) are migrated in the same change.
+
+**Considered alternatives:** a migration *framework* or per-field
+versioning (rejected — one constant + one switch covers the closed,
+small schemas with no machinery); shipping XLSX/PDF or a persistence
+adapter in-kit (rejected — pulls vendor dependencies and backend opinions
+into a copy-in reference; contradicts ADR-001/ADR-003 minimalism);
+interactive column chrome alongside the model (rejected for this wave —
+the serializable model is the durable contract, the chrome is replaceable
+UI); keeping `error` a plain string (rejected — a typed taxonomy is the
+parity feature; the string survives as a computed).
+
+**Rationale:** Versioned-from-day-one serialization makes URL state, saved
+views, and export snapshots durable artifacts rather than incidental JSON —
+the migration hook is cheap now and impossible to retrofit honestly later.
+The baseline-vs-adapter line keeps `libs/core` UI-free and dependency-free
+(constitution Principles II/III) while still giving consumers a working
+CSV/JSON path; naming what the kit will *not* do is what makes the parity
+claim against commercial suites honest. Headless column state and
+hash-only telemetry follow the same doctrine: the kit ships contracts and
+pure functions, consumers own policy and sinks.
+
 ## Verification record — scaffold phase (2026-06-11)
 
 - In-workspace gate: `npx nx run-many -t lint test build` green for all four
