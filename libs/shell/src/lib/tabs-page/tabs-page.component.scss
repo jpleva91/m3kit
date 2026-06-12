@@ -1,0 +1,27 @@
+:host {
+  display: block;
+}
+
+.m3k-tabs-page {
+  // Label-count badges are informational (open items, new events), not
+  // alerts: re-emit the Material badge engine tokens from the
+  // secondary-container pair instead of the default error pair — same
+  // token-re-emission move as snackbar.styles.scss, values stay pure
+  // system tokens.
+  --mat-badge-background-color: var(--mat-sys-secondary-container);
+  --mat-badge-text-color: var(--mat-sys-on-secondary-container);
+}
+
+.m3k-tabs-page__icon {
+  margin-right: 8px;
+}
+
+// Room for the after-positioned label badge inside the tab header.
+.m3k-tabs-page__label {
+  margin-right: 4px;
+}
+
+// Tab panels are page content: landmark rhythm (density 0, base-unit pad).
+.m3k-tabs-page__panel {
+  padding-block: 16px;
+}

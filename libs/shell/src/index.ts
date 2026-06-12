@@ -5,3 +5,8 @@ export * from './lib/page-header/page-header.component';
 export * from './lib/breadcrumbs/breadcrumb-item';
 export * from './lib/breadcrumbs/breadcrumbs.component';
 export * from './lib/content-layout/content-layout.component';
+export * from './lib/tabs-page/tabs-page.component';
+export * from './lib/stepper-flow/stepper-flow.component';
+export * from './lib/stepper-flow/stepper-flow-model';
+export * from './lib/overflow-menu/overflow-menu.component';
+export * from './lib/overflow-menu/overflow-menu-model';

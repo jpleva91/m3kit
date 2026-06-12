@@ -1,0 +1,108 @@
+import { Meta, Canvas, Stories } from '@storybook/blocks';
+import * as StepperFlowStories from './stepper-flow.component.stories';
+
+<Meta of={StepperFlowStories} />
+
+# StepperFlow
+
+`m3k-stepper-flow` is a wizard/flow template wrapping the Material stepper:
+typed steps (`StepDefinition[]`), step content projected per step id, and a
+consistent Back / Next / Finish footer on every step. Use it for multi-step
+entry flows (order entry, customer onboarding, ticket escalation) so every
+wizard in the app shares one navigation contract.
+
+**Atomic level:** Template — it owns flow structure and navigation chrome
+(Material stepper + footer buttons) while all step content is consumer-projected.
+
+<Canvas of={StepperFlowStories.OrderEntry} />
+
+## Usage
+
+```ts
+import { Component, signal } from '@angular/core';
+import {
+  StepDefinition,
+  StepperFlowComponent,
+  StepperFlowPanelDirective,
+} from '@m3kit/shell';
+
+@Component({
+  selector: 'app-order-entry-page',
+  imports: [StepperFlowComponent, StepperFlowPanelDirective],
+  template: `
+    <m3k-stepper-flow
+      [steps]="steps()"
+      [(activeStepIndex)]="activeStepIndex"
+      (completed)="submitOrder()"
+    >
+      <ng-template m3kStepPanel="customer">…customer form…</ng-template>
+      <ng-template m3kStepPanel="items">…line items…</ng-template>
+      <ng-template m3kStepPanel="review" let-step>…summary…</ng-template>
+    </m3k-stepper-flow>
+  `,
+})
+export class OrderEntryPageComponent {
+  readonly activeStepIndex = signal(0);
+  readonly steps = signal<readonly StepDefinition[]>([
+    { id: 'customer', label: 'Customer' },
+    { id: 'items', label: 'Line items' },
+    { id: 'review', label: 'Review & submit' },
+  ]);
+
+  submitOrder() {
+    /* the Finish button on the last step landed here */
+  }
+}
+```
+
+Progress is consumer-owned: the flow never marks a step `completed` itself.
+Re-emit the `steps` array with `completed: true` when a step's own validity
+rule passes (e.g. its form becomes valid); in linear mode the footer's
+Next/Finish buttons stay disabled — and header jumps stay blocked — until then.
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `steps` | `readonly StepDefinition[]` | required | Ordered step definitions; each `id` keys a projected `m3kStepPanel` template. |
+| `orientation` | `'horizontal' \| 'vertical'` | `'horizontal'` | Stepper layout direction. |
+| `linear` | `boolean` | `true` | Gate advancement on each step's `completed`/`optional` flags. |
+| `activeStepIndex` | `number` (two-way) | `0` | Index of the active step; emits `activeStepIndexChange`. Programmatic jumps obey the same linear gating. |
+
+## Outputs
+
+| Output | Payload | Description |
+| --- | --- | --- |
+| `completed` | `void` | Fired by the Finish button on the last step. |
+| `activeStepIndexChange` | `number` | The two-way half of `activeStepIndex`; fires for every selection change (footer buttons and header clicks alike). There is deliberately no separate `stepChange` output — it would duplicate this event. |
+
+**Content slots:** `ng-template[m3kStepPanel]="<step id>"` — one panel per
+step, with the `StepDefinition` as implicit template context (`let-step`);
+`ng-template[m3kStepperFooterExtras]` — optional, stamped into every step's
+footer between Back and Next/Finish (autosave notes, a cancel link).
+
+## Theming
+
+Stepper chrome (header indicators, labels, connector lines) and the footer
+buttons are themed entirely by Material's M3 system tokens as re-emitted per
+brand — this component carries **zero Material token overrides**. Its own
+styles add layout only:
+
+- `--mat-sys-outline-variant` — hairline rule separating the footer from the panel
+- `--mat-sys-body-small` / `--mat-sys-on-surface-variant` — footer-extras text
+
+## Do / Don't
+
+- **Do** keep `StepDefinition` arrays immutable — re-emit a new array when
+  flipping `completed`, so OnPush change detection sees the update.
+- **Don't** wire a step's Next gating to anything but `completed`/`optional`
+  — the footer is the single navigation surface; per-panel custom nav buttons
+  fork the wizard contract.
+
+## Related
+
+- [TabsPage](?path=/docs/templates-tabspage--docs) — peer template for parallel (non-sequential) page sections
+- [ContentLayout](?path=/docs/templates-contentlayout--docs) — width wrapper the flow typically sits in
+- [FilterForm](?path=/docs/organisms-filterform--docs) — typed form composition for step panels
+
+<Stories />

@@ -1,0 +1,97 @@
+import { Meta, Canvas, Stories } from '@storybook/blocks';
+import * as TabsPageStories from './tabs-page.component.stories';
+
+<Meta of={TabsPageStories} />
+
+# TabsPage
+
+`m3k-tabs-page` is a page-level tabbed template: it wraps a Material tab
+group in the kit's page chrome so report and detail pages get consistent tab
+navigation from a data-driven tab model. Tabs are described as data
+(`{ id, label, icon?, badge? }`); each panel is a projected
+`ng-template[m3kTabPanel]` matched to its tab by id and instantiated lazily
+on first activation. Selection is id-based and two-way bindable, so the
+active tab can live in a route param or page state. Keyboard interaction
+(arrow keys, Home/End, focus management) and header overflow pagination come
+from the Material tab header.
+
+**Atomic level:** Template — a page-body scaffold pairing with
+[PageHeader](?path=/docs/molecules-pageheader--docs) above it and
+[AppShell](?path=/docs/templates-appshell--docs) around it.
+
+<Canvas of={TabsPageStories.InvoiceDetail} />
+
+## Usage
+
+```ts
+import { Component, signal } from '@angular/core';
+import {
+  TabsPageComponent,
+  TabsPagePanelDirective,
+  TabsPageTab,
+} from '@m3kit/shell';
+
+@Component({
+  selector: 'app-invoice-detail',
+  imports: [TabsPageComponent, TabsPagePanelDirective],
+  template: `
+    <m3k-tabs-page [tabs]="tabs" [(activeTabId)]="activeTab">
+      <ng-template m3kTabPanel="overview">Invoice facts…</ng-template>
+      <ng-template m3kTabPanel="line-items">Line-item table…</ng-template>
+      <ng-template m3kTabPanel="activity" let-tab>{{ tab.badge }} new events…</ng-template>
+    </m3k-tabs-page>
+  `,
+})
+export class InvoiceDetailComponent {
+  readonly tabs: TabsPageTab[] = [
+    { id: 'overview', label: 'Overview' },
+    { id: 'line-items', label: 'Line items' },
+    { id: 'activity', label: 'Activity', badge: 3 },
+  ];
+  readonly activeTab = signal('overview');
+}
+```
+
+## Inputs & Outputs
+
+| Name | Kind | Type | Default | Description |
+| --- | --- | --- | --- | --- |
+| `tabs` | input (required) | `readonly TabsPageTab[]` | — | Tabs in order. `TabsPageTab` is `{ id: string; label: string; icon?: string; badge?: number \| string }`; ids must be unique. |
+| `activeTabId` | model (two-way) | `string \| undefined` | `undefined` | Id of the selected tab; an unknown or absent id selects the first tab. |
+| `activeTabIdChange` | output (model half) | `string \| undefined` | — | The two-way half of `activeTabId`. Emits on tab selection inside the component (header clicks); programmatic parent writes are not re-emitted (`model()` semantics, the same mechanism as StepperFlow's `activeStepIndex`). |
+
+**Content slots:** one `ng-template m3kTabPanel="<tab id>"` per tab, with
+the `TabsPageTab` as implicit template context (`let-tab`) — handy for
+rendering the tab's `label`/`badge` inside its panel. Panels are lazy
+(`matTabContent`): a panel instantiates on first activation and is destroyed
+when its tab deactivates. A tab without a matching template renders an empty
+panel.
+
+## Theming
+
+Token-only styling; Material's tab header carries the brand through its own
+system-token mappings (`--mat-sys-title-small` labels,
+`--mat-sys-primary` ink bar). The component itself adds:
+
+- `--mat-sys-secondary-container` / `--mat-sys-on-secondary-container` —
+  re-emitted as the badge engine tokens (`--mat-badge-*`), because label
+  count badges are informational, not alerts (the Material default is the
+  error pair).
+
+## Do / Don't
+
+- **Do** keep tab ids stable (they are the selection contract and the panel
+  key) — labels can change freely.
+- **Do** reserve `badge` for actionable counts (new events, open items), not
+  decoration — rainbow status pills are a DESIGN.md anti-pattern.
+- **Don't** use this for primary app navigation — that is
+  [AppShell](?path=/docs/templates-appshell--docs)'s job (`pill-tabs` preset);
+  this template sections one page's content.
+
+## Related
+
+- [PageHeader](?path=/docs/molecules-pageheader--docs) — title row directly above the tabs
+- [AppShell](?path=/docs/templates-appshell--docs) — chrome the tabbed page lives in
+- [ContentLayout](?path=/docs/templates-contentlayout--docs) — width policy around or inside panels
+
+<Stories />

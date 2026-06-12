@@ -1,0 +1,12 @@
+:host {
+  display: inline-flex;
+}
+
+// The trigger and the menu surface keep Material's own token-themed
+// styling (brands restyle them via system tokens / `mat.menu-overrides`);
+// the component only re-points the per-item Material tokens at the error
+// role for destructive items.
+.m3k-overflow-menu__item--destructive {
+  --mat-menu-item-label-text-color: var(--mat-sys-error);
+  --mat-menu-item-icon-color: var(--mat-sys-error);
+}

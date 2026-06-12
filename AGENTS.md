@@ -48,8 +48,8 @@ dashboard — `dashboard-grid`, `kpi-card`, `kpi-strip`, `detail-card`;
 charts — `line-chart`, `bar-chart`, `donut-chart`, `chart-legend`,
 `chart-card`; forms — `form-field`, `form-section`, `filter-form`;
 shell — `app-shell` (four chrome presets), `page-header`, `breadcrumbs`,
-`content-layout`, plus the `ShellToolbarActionsDirective` /
-`ShellRailFooterDirective` template slots;
+`content-layout`, `tabs-page`, `stepper-flow`, `overflow-menu`, plus the
+`ShellToolbarActionsDirective` / `ShellRailFooterDirective` template slots;
 feedback — `empty-state`, `error-state`, `banner`, `skeleton`,
 `confirm-dialog` (component + service), `snackbar` (service);
 testing — `seeded-random`, factories, sample table definitions.

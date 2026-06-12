@@ -1,0 +1,99 @@
+import { Meta, Stories } from '@storybook/blocks';
+import * as OverflowMenuStories from './overflow-menu.component.stories';
+
+<Meta of={OverflowMenuStories} />
+
+# OverflowMenu
+
+`m3k-overflow-menu` is the kit's canonical row/card action menu: a Material
+icon-button trigger (default `more_vert`) opening a `MatMenu` built from
+typed `MenuActionItem`s. Selecting an item emits its `id` through the
+`action` output — the host owns what each id means. Items can carry a
+leading icon, render disabled (visible but never emitting), be flagged
+`destructive` (label and icon in the error role), or request a divider
+before themselves. Use it for table rows, detail-card headers, and anywhere
+secondary actions should not earn their own buttons.
+
+**Atomic level:** Molecule — an icon-button trigger plus a `MatMenu`
+surface; the menu panel keeps Material's own token-themed styling.
+
+## Usage
+
+```ts
+import { Component } from '@angular/core';
+import { MenuActionItem, OverflowMenuComponent } from '@m3kit/shell';
+
+@Component({
+  selector: 'app-invoice-row-actions',
+  imports: [OverflowMenuComponent],
+  template: `
+    <m3k-overflow-menu
+      ariaLabel="Invoice INV-2026-0042 actions"
+      [items]="actions"
+      (action)="onAction($event)"
+    />
+  `,
+})
+export class InvoiceRowActionsComponent {
+  readonly actions: MenuActionItem[] = [
+    { id: 'view', label: 'View invoice', icon: 'visibility' },
+    { id: 'duplicate', label: 'Duplicate as draft', icon: 'content_copy' },
+    { id: 'void', label: 'Void invoice', icon: 'block',
+      destructive: true, divider: true },
+  ];
+
+  onAction(id: string): void {
+    // switch on the stable item id — 'view' | 'duplicate' | 'void'
+  }
+}
+```
+
+Animations must be provided (the menu is a Material overlay).
+
+## Inputs
+
+| Input | Type | Default | Description |
+| --- | --- | --- | --- |
+| `items` | `readonly MenuActionItem[]` | required | Menu entries, in render order. `MenuActionItem` is `{ id: string; label: string; icon?: string; disabled?: boolean; destructive?: boolean; divider?: boolean }`; `divider` renders a divider **before** the item. |
+| `icon` | `string` | `'more_vert'` | Material Symbol shown on the trigger button. |
+| `ariaLabel` | `string` | `'More actions'` | Accessible name for the trigger. Name the subject — "Invoice INV-2026-0042 actions" — so rows stay distinguishable to screen readers. |
+| `disabled` | `boolean` | `false` | Disables the trigger; the menu cannot open. |
+
+## Outputs
+
+| Output | Type | Description |
+| --- | --- | --- |
+| `action` | `string` | The selected item's `id`. Never fires for disabled items. |
+
+## Theming
+
+Token-only styling. The trigger and the menu surface keep Material's own
+token-themed appearance (brands restyle them through system tokens and
+`mat.menu-overrides` in their brand modules — no extra overrides here);
+the component itself only re-points two Material menu-item tokens for
+destructive items:
+
+- `--mat-sys-error` — destructive item label and icon (via
+  `--mat-menu-item-label-text-color` / `--mat-menu-item-icon-color`)
+
+No `--app-*` contract tokens.
+
+## Do / Don't
+
+- **Do** keep ids stable and machine-friendly (`'void'`, not the label) —
+  hosts switch on them.
+- **Do** pair destructive ids with a
+  [ConfirmDialog](?path=/docs/molecules-confirmdialog--docs) before
+  mutating anything.
+- **Don't** put the row's primary action in the overflow — the menu is for
+  secondary actions; primary actions earn their own affordance.
+- **Don't** reach for `destructive` styling on more than the genuinely
+  irreversible items — a menu of red rows warns about nothing.
+
+## Related
+
+- [ConfirmDialog](?path=/docs/molecules-confirmdialog--docs) — confirm destructive ids before acting
+- [DataTable](?path=/docs/organisms-datatable--docs) — the row surface this menu usually sits on
+- [PageHeader](?path=/docs/molecules-pageheader--docs) — page-level actions slot for promoted actions
+
+<Stories />

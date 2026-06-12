@@ -1,0 +1,59 @@
+<mat-stepper
+  class="m3k-stepper-flow"
+  [orientation]="orientation()"
+  [linear]="linear()"
+  [selectedIndex]="activeStepIndex()"
+  (selectionChange)="onSelectionChange($event)"
+>
+  @for (step of steps(); track step.id; let index = $index, last = $last) {
+    <mat-step
+      [label]="step.label"
+      [optional]="step.optional ?? false"
+      [completed]="step.completed ?? false"
+      [editable]="true"
+    >
+      <div class="m3k-stepper-flow__panel">
+        <ng-container
+          [ngTemplateOutlet]="panelTemplate(step.id)"
+          [ngTemplateOutletContext]="{ $implicit: step }"
+        />
+      </div>
+      <footer class="m3k-stepper-flow__footer">
+        <button
+          mat-button
+          type="button"
+          class="m3k-stepper-flow__back"
+          [disabled]="index === 0"
+          (click)="back()"
+        >
+          Back
+        </button>
+        <span class="m3k-stepper-flow__footer-spacer"></span>
+        <div class="m3k-stepper-flow__footer-extras">
+          <ng-container [ngTemplateOutlet]="footerExtrasTemplate()" />
+        </div>
+        @if (!last) {
+          <button
+            mat-flat-button
+            type="button"
+            class="m3k-stepper-flow__next"
+            [disabled]="advanceBlocked(step)"
+            (click)="next()"
+          >
+            Next
+          </button>
+        } @else {
+          <button
+            mat-flat-button
+            type="button"
+            class="m3k-stepper-flow__finish"
+            [disabled]="advanceBlocked(step)"
+            (click)="finish()"
+          >
+            Finish
+          </button>
+        }
+      </footer>
+    </mat-step>
+  }
+</mat-stepper>

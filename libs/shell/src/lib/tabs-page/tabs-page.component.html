@@ -1,0 +1,36 @@
+<mat-tab-group
+  class="m3k-tabs-page"
+  [mat-stretch-tabs]="false"
+  [selectedIndex]="selectedIndex()"
+  (selectedIndexChange)="onSelectedIndexChange($event)"
+>
+  @for (tab of tabs(); track tab.id) {
+    <mat-tab>
+      <ng-template mat-tab-label>
+        @if (tab.icon) {
+          <mat-icon class="m3k-tabs-page__icon">{{ tab.icon }}</mat-icon>
+        }
+        @if (tab.badge !== undefined) {
+          <span
+            class="m3k-tabs-page__label"
+            [matBadge]="tab.badge"
+            matBadgeOverlap="false"
+            matBadgeSize="small"
+            >{{ tab.label }}</span
+          >
+        } @else {
+          <span class="m3k-tabs-page__label">{{ tab.label }}</span>
+        }
+      </ng-template>
+      <!-- Lazy panel: instantiated on first activation (matTabContent). -->
+      <ng-template matTabContent>
+        <div class="m3k-tabs-page__panel">
+          <ng-container
+            [ngTemplateOutlet]="panelTemplate(tab.id)"
+            [ngTemplateOutletContext]="{ $implicit: tab }"
+          />
+        </div>
+      </ng-template>
+    </mat-tab>
+  }
+</mat-tab-group>

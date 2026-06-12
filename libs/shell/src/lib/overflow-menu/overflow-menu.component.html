@@ -1,0 +1,31 @@
+<button
+  mat-icon-button
+  type="button"
+  class="m3k-overflow-menu__trigger"
+  [matMenuTriggerFor]="menu"
+  [disabled]="disabled()"
+  [attr.aria-label]="ariaLabel()"
+>
+  <mat-icon>{{ icon() }}</mat-icon>
+</button>
+
+<mat-menu #menu="matMenu">
+  @for (item of items(); track item.id) {
+    @if (item.divider) {
+      <mat-divider />
+    }
+    <button
+      mat-menu-item
+      type="button"
+      class="m3k-overflow-menu__item"
+      [class.m3k-overflow-menu__item--destructive]="item.destructive"
+      [disabled]="item.disabled"
+      (click)="select(item)"
+    >
+      @if (item.icon) {
+        <mat-icon>{{ item.icon }}</mat-icon>
+      }
+      <span>{{ item.label }}</span>
+    </button>
+  }
+</mat-menu>
