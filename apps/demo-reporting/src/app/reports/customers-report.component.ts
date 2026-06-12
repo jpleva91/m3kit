@@ -4,8 +4,15 @@ import {
   computed,
   inject,
 } from '@angular/core';
-import { signalStore } from '@ngrx/signals';
-import { InMemoryTableDataSource, TableDefinition } from '@m3kit/core';
+import { ActivatedRoute, Router } from '@angular/router';
+import { patchState, signalStore, type WritableStateSource } from '@ngrx/signals';
+import {
+  InMemoryTableDataSource,
+  TableDefinition,
+  type DataQuery,
+  type PageState,
+  type SortState,
+} from '@m3kit/core';
 import { withDataQuery, withSelection } from '@m3kit/state';
 import {
   TableFilterBarChange,
@@ -14,6 +21,8 @@ import {
   PageToolbarComponent,
 } from '@m3kit/table';
 import { CUSTOMERS_TABLE_DEFINITION, Customer, makeCustomers } from '@m3kit/testing';
+
+import { readReportUrlState, syncReportUrlQuery } from './report-url-state';
 
 /** Seed for the synthetic customer fixtures, so the demo is deterministic. */
 const CUSTOMER_SEED = 1;
@@ -56,26 +65,65 @@ export class CustomersReportComponent {
   /** Single source of truth: fetches pages and drives the table and toolbar. */
   protected readonly store = inject(CustomersReportStore);
 
+  private readonly route = inject(ActivatedRoute);
+
+  private readonly router = inject(Router);
+
   /** Last customer the user clicked (selection is tracked by id in the store). */
   protected readonly selectedCustomer = computed(
     () => CUSTOMERS.find((customer) => this.store.isSelected()(customer)) ?? null,
   );
 
   constructor() {
-    // Seed the store with the definition's default sort before the
-    // first (and only) fetch that `connect` runs. Widened because the
-    // store's query carries untyped sort state.
+    // Seed the store from the URL helper before the first (and only)
+    // fetch that `connect` runs. Missing/garbage URLs fall back to the
+    // report definition's default sort.
     const sort = this.definition.defaultSort;
-    this.store.setSort(sort ? { key: sort.key, direction: sort.direction } : null);
+    const defaultQuery: DataQuery = {
+      filter: {},
+      sort: sort ? { key: sort.key, direction: sort.direction } : null,
+      page: { index: 0, size: 10 },
+    };
+    patchState(
+      this.store as unknown as WritableStateSource<{ query: DataQuery }>,
+      { query: readReportUrlState(this.route, defaultQuery).query },
+    );
     this.store.connect(this.dataSource);
   }
 
   protected onFilterChange(change: TableFilterBarChange): void {
+    const query = withTextFilter(this.store.query(), change.text);
     this.store.setTextFilter(change.text);
+    void syncReportUrlQuery(this.router, this.route, query);
+  }
+
+  protected onSortChange(sort: SortState | null): void {
+    const query: DataQuery = {
+      ...this.store.query(),
+      sort,
+      page: { ...this.store.page(), index: 0 },
+    };
+    this.store.setSort(sort);
+    void syncReportUrlQuery(this.router, this.route, query);
+  }
+
+  protected onPageChange(page: PageState): void {
+    const query: DataQuery = { ...this.store.query(), page };
+    this.store.setPage(page);
+    void syncReportUrlQuery(this.router, this.route, query);
   }
 
   protected onRowClicked(customer: Customer): void {
     this.store.clear();
     this.store.select(customer);
   }
+}
+
+function withTextFilter(query: DataQuery, text: string): DataQuery {
+  const nextText = text.trim() || undefined;
+  return {
+    ...query,
+    filter: { ...query.filter, text: nextText },
+    page: { ...query.page, index: 0 },
+  };
 }

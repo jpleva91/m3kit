@@ -387,13 +387,12 @@ implied by docs; until it is, claims and reality must match.
 - **Schema versioning: one version constant + one migration hook per
   serialized artifact.** `SerializedDataQuery` and `SavedView` each carry an
   explicit integer schema version (`DATA_QUERY_SCHEMA_VERSION = 1`,
-  `SAVED_VIEW_SCHEMA_VERSION = 1`) and deserialize through a single
-  migration switch (`migrateSerializedQuery`, and the saved-view
-  equivalent) — older versions migrate forward, garbage and *future*
-  (higher) versions return `null`, never throw. No migration framework;
-  the empty-at-v1 switch is spec-fixtured so the upgrade path is proven
-  before it is needed (the deferred `SavedView` density field is the
-  designated first v2 consumer).
+  `SAVED_VIEW_SCHEMA_VERSION = 1`) and deserialize through one validation /
+  migration path (`deserializeDataQuery`, `parseSavedView` with the
+  saved-view migration hook). Garbage and *future* (higher) versions return
+  `null`, never throw. No migration framework; v1 is the first saved-view
+  schema, so no saved-view old-version migration exists yet. The deferred
+  `SavedView` density field remains the designated first v2 consumer.
 - **Baseline-vs-adapter boundary.** The kit's deliverable is the contracts
   plus a pure CSV/JSON export baseline (`rowsToCsv`, `rowsToJson`,
   deterministic filename builder — no Blob/anchor/download code in
@@ -410,11 +409,11 @@ implied by docs; until it is, claims and reality must match.
   (drag-reorder, resize grips, column-picker UI) is explicitly not part
   of this wave — saved views, URL state, and app code are the writers.
 - **Telemetry redaction rule.** `ReportTelemetryEvent`s identify queries
-  exclusively by `dataQueryHash` (pure FNV-1a over the canonical
-  serialized query) and never carry raw filter text or row data; the rule
-  is documented on the types and asserted in specs. The reporter is
-  injected via an `InjectionToken` in `libs/state` (defaulting to a
-  no-op) because `libs/core` is Angular-free and owns only the pure
+  exclusively by `queryHash` (the output of `dataQueryHash`, pure FNV-1a
+  over the canonical serialized query) and never carry raw filter text or row
+  data; the rule is documented on the types and asserted in specs. The
+  reporter is injected via an `InjectionToken` in `libs/state` (defaulting to
+  a no-op) because `libs/core` is Angular-free and owns only the pure
   `ReportTelemetryReporter` interface and event union.
 - **`withDataQuery` error type change.** The store's `error` state becomes
   `ReportError | null` (normalized via `toReportError`, closed `kind`

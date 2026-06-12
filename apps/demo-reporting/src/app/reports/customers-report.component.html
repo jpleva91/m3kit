@@ -11,8 +11,8 @@
     [totalCount]="store.totalCount()"
     [sort]="store.sort()"
     [page]="store.page()"
-    (sortChange)="store.setSort($event)"
-    (pageChange)="store.setPage($event)"
+    (sortChange)="onSortChange($event)"
+    (pageChange)="onPageChange($event)"
     (rowClicked)="onRowClicked($event)"
   />
 

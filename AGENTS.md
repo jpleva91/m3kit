@@ -41,9 +41,19 @@ tsconfig alias and is resolved via `stylePreprocessorOptions.includePaths:
 ["libs/theme/src"]` (set on the app's `build` target and the
 `m3kit-table` Storybook targets) as `@use 'm3kit-theme'`.
 
-Component inventory (exported barrels, `libs/*/src/index.ts`):
-core — models, query engine, datasource interfaces, in-memory datasource;
-table — `data-table`, `table-filter-bar`, `page-toolbar`, `tree`;
+Component/contract inventory (exported barrels, `libs/*/src/index.ts`):
+core — table/column models, query engine, datasource interfaces, in-memory
+datasource, typed `ReportError`, six-kind `LoadState`, versioned
+`SerializedDataQuery` + URL helpers + `dataQueryHash`, headless
+`ColumnViewState`/`resolveColumns`, versioned `SavedView` helpers, CSV/JSON
+export contracts/helpers, temporal policy/range helpers, redacted telemetry
+event contracts;
+table — `data-table` (including the headless `columnState` input),
+`table-filter-bar`, `page-toolbar`, `tree`;
+state — NgRx SignalStore features: `withDataQuery` (query lifecycle,
+`ReportError`, `errorMessage`, derived `loadState`, stale marker, redacted
+telemetry emission via `REPORT_TELEMETRY_REPORTER`), `withSelection`, theme
+store;
 dashboard — `dashboard-grid`, `kpi-card`, `kpi-strip`, `detail-card`,
 `stat-list`, `description-list`, `timeline`;
 charts — `line-chart`, `bar-chart`, `donut-chart`, `chart-legend`,

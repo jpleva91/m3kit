@@ -1,5 +1,43 @@
 <section class="report-page">
-  <m3k-page-toolbar [title]="definition.title" [rowCount]="store.totalCount()" />
+  <m3k-page-toolbar [title]="definition.title" [rowCount]="store.totalCount()">
+    <button mat-stroked-button type="button" [matMenuTriggerFor]="savedViewsMenu">
+      Saved views
+    </button>
+    <button mat-stroked-button type="button" [matMenuTriggerFor]="exportMenu">
+      Export
+    </button>
+    <button mat-button type="button" (click)="markStale()">Mark stale</button>
+  </m3k-page-toolbar>
+
+  <mat-menu #savedViewsMenu="matMenu">
+    @for (view of savedViews(); track view.viewId) {
+      <button mat-menu-item type="button" (click)="applySavedView(view.viewId)">
+        {{ view.name }}
+      </button>
+    }
+  </mat-menu>
+
+  <mat-menu #exportMenu="matMenu">
+    <button mat-menu-item type="button" (click)="exportReport('csv', 'page')">
+      CSV · current page
+    </button>
+    <button mat-menu-item type="button" (click)="exportReport('csv', 'all')">
+      CSV · all filtered rows
+    </button>
+    <button mat-menu-item type="button" (click)="exportReport('json', 'page')">
+      JSON · current page
+    </button>
+    <button mat-menu-item type="button" (click)="exportReport('json', 'all')">
+      JSON · all filtered rows
+    </button>
+  </mat-menu>
+
+  @if (store.stale()) {
+    <m3k-banner severity="warning">
+      This report is stale.
+      <button m3kBannerAction mat-button type="button" (click)="refresh()">Refresh</button>
+    </m3k-banner>
+  }
 
   <m3k-table-filter-bar [definition]="definition" (filterChange)="onFilterChange($event)" />
 
@@ -19,6 +57,7 @@
 
   <m3k-data-table
     [definition]="definition"
+    [columnState]="columnState()"
     [rows]="store.rows()"
     [loading]="store.loading()"
     [error]="store.errorMessage()"

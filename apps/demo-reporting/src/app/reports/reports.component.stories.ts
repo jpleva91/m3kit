@@ -3,6 +3,7 @@ import { expect, within } from '@storybook/test';
 import { applicationConfig } from '@storybook/angular';
 import { provideNativeDateAdapter } from '@angular/material/core';
 import { provideNoopAnimations } from '@angular/platform-browser/animations';
+import { provideRouter, withDisabledInitialNavigation } from '@angular/router';
 import { ReportsComponent } from './reports.component';
 
 const meta: Meta<ReportsComponent> = {
@@ -10,7 +11,13 @@ const meta: Meta<ReportsComponent> = {
   title: 'Pages/ReportsComponent',
   tags: ['autodocs'],
   decorators: [
-    applicationConfig({ providers: [provideNoopAnimations(), provideNativeDateAdapter()] }),
+    applicationConfig({
+      providers: [
+        provideNoopAnimations(),
+        provideNativeDateAdapter(),
+        provideRouter([], withDisabledInitialNavigation()),
+      ],
+    }),
   ],
 };
 export default meta;
