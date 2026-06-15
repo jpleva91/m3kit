@@ -6,6 +6,8 @@
   role="img"
   [attr.aria-label]="ariaLabel()"
 >
+  <title>{{ ariaLabel() }}</title>
+  <desc>{{ accessibleDescription() }}</desc>
   @if (view(); as v) {
     @for (tick of v.valueTicks; track tick.pos) {
       @if (horizontal()) {

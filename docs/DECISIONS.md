@@ -441,6 +441,45 @@ claim against commercial suites honest. Headless column state and
 hash-only telemetry follow the same doctrine: the kit ships contracts and
 pure functions, consumers own policy and sinks.
 
+## ADR-017 — Advanced charts and maps: dependency-free SVG baseline, provider-neutral geo contracts, optional adapters only
+
+**Status:** Accepted (2026-06-15)
+
+**Decision:** The advanced reporting baseline stays dependency-free:
+
+- Charts remain hand-written SVG in `@m3kit/charts`. Shared accessibility
+  helpers generate prose summaries and table rows; shared SVG export helpers
+  stop at normalized SVG markup/data URIs. Browser downloads, PNG/PDF
+  rasterization, XLSX/PDF exports, and server export jobs stay adapter/app
+  responsibilities unless a later ADR explicitly moves them.
+- Sparkline parity is provided by the existing line chart in bare mode
+  (`showAxes=false`, `showGrid=false`, short `height`); a dedicated
+  sparkline component is deferred until repeated usage proves the smaller API
+  is worth another exported surface.
+- Core owns provider-neutral geospatial contracts (`GeoPoint`, `GeoBounds`,
+  `GeoFeature`, `MapLayerDefinition`, `MapViewport`, `MapViewportPatch`,
+  `MapSelection`) plus pure validation/bounds helpers. It does not own map
+  rendering, tile loading, API keys, billing, Places/Geocoding/Routes calls,
+  or vendor lifecycle semantics.
+- The demo/Storybook map surface is a no-key static SVG/list shell using
+  synthetic fixture data. Google Maps, MapLibre, OpenLayers, and deck.gl are
+  documented escape hatches only; no baseline dependency is added.
+
+**Escape-hatch criteria:** Open a new ADR before adding D3/ECharts/Highcharts,
+Google Maps, MapLibre, OpenLayers, deck.gl, Excel/PDF, or export/telemetry SDKs.
+The ADR must name the feature that exceeds the baseline, the adapter boundary,
+bundle/licensing/API-key implications, no-key fallback behavior, and how text
+or table alternatives remain available.
+
+**Rationale:** The public reference optimizes for copy-in ownership and
+reviewable source. SVG charts plus pure helpers cover the current line/area,
+bar/stacked, donut, and sparkline needs without dependency gravity. Geospatial
+reporting has even stronger vendor gravity (keys, billing, network tiles,
+privacy, quota, SDK lifecycle), so core should define the durable semantics and
+leave provider translation to optional adapters. This keeps the default repo
+runnable offline with synthetic data while giving enterprise adopters clear
+adapter seams when they choose a map or chart engine deliberately.
+
 ## Verification record — scaffold phase (2026-06-11)
 
 - In-workspace gate: `npx nx run-many -t lint test build` green for all four

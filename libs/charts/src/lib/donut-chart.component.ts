@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { donutChartAccessibilitySummary } from './chart-a11y';
 import {
   CHART_SERIES_TOKEN_COUNT,
   chartSeriesColor,
@@ -67,6 +68,9 @@ export class DonutChartComponent {
   /** Accessible description of the chart (`role="img"`). */
   readonly ariaLabel = input<string>('Donut chart');
 
+  /** Optional override for the generated SVG `<desc>` text. */
+  readonly ariaDescription = input<string | null>(null);
+
   protected readonly viewBox = `0 0 ${VIEWBOX_SIZE} ${VIEWBOX_SIZE}`;
   protected readonly center = VIEWBOX_SIZE / 2;
   protected readonly radius = RING_RADIUS;
@@ -95,6 +99,10 @@ export class DonutChartComponent {
   /** Vertical anchor for the center value: nudged up to fit the label. */
   protected readonly centerValueY = computed<number>(() =>
     this.centerLabel() === null ? this.center + 9 : this.center - 2,
+  );
+
+  protected readonly accessibleDescription = computed<string>(
+    () => this.ariaDescription() ?? donutChartAccessibilitySummary(this.slices()).description,
   );
 }
 

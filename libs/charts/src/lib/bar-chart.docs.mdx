@@ -53,7 +53,8 @@ export class QuarterlyInvoicesComponent {
 | `mode` | `'grouped' \| 'stacked'` | `'grouped'` | Bars side by side per category, or stacked into one segmented bar. Stacking clamps negative values to zero; grouped mode renders negatives below the zero baseline. |
 | `horizontal` | `boolean` | `false` | Lays categories on the y axis and values on the x axis (left gutter widens to fit category names). |
 | `height` | `number` | `240` | Rendered height in px (also the viewBox height). |
-| `ariaLabel` | `string` | `'Bar chart'` | Accessible description; the SVG renders with `role="img"`. |
+| `ariaLabel` | `string` | `'Bar chart'` | Short accessible name; rendered as SVG `aria-label` and `<title>`. |
+| `ariaDescription` | `string \| null` | `null` | Optional SVG `<desc>` override. Defaults to `barChartAccessibilitySummary(categories, series, mode).description`; use `summary.rows` as a table equivalent. |
 
 No outputs.
 

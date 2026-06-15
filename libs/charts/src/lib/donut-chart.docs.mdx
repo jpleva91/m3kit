@@ -52,7 +52,8 @@ export class InvoiceMixComponent {
 | `centerLabel` | `string \| null` | `null` | Small uppercase caption under the center value. |
 | `centerValue` | `string \| null` | `null` | Headline figure in the donut hole (brand display face). |
 | `height` | `number` | `240` | Rendered height in px; the square donut scales to fit (aspect preserved — the circle never distorts). |
-| `ariaLabel` | `string` | `'Donut chart'` | Accessible description; the SVG renders with `role="img"`. |
+| `ariaLabel` | `string` | `'Donut chart'` | Short accessible name; rendered as SVG `aria-label` and `<title>`. |
+| `ariaDescription` | `string \| null` | `null` | Optional SVG `<desc>` override. Defaults to `donutChartAccessibilitySummary(slices).description`; use `summary.rows` as a table equivalent. |
 
 No outputs.
 

@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { barChartAccessibilitySummary } from './chart-a11y';
 import { injectHostWidth } from './internal/host-width';
 import { chartSeriesColor, linearScale, niceTicks, round2 } from './internal/scale';
 
@@ -92,11 +93,20 @@ export class BarChartComponent {
   /** Accessible description of the chart (`role="img"`). */
   readonly ariaLabel = input<string>('Bar chart');
 
+  /** Optional override for the generated SVG `<desc>` text. */
+  readonly ariaDescription = input<string | null>(null);
+
   /** Host width in CSS px, doubling as the viewBox width. */
   private readonly hostWidth = injectHostWidth();
 
   protected readonly viewBox = computed<string>(
     () => `0 0 ${this.hostWidth()} ${this.height()}`,
+  );
+
+  protected readonly accessibleDescription = computed<string>(
+    () =>
+      this.ariaDescription() ??
+      barChartAccessibilitySummary(this.categories(), this.series(), this.mode()).description,
   );
 
   /** Render model, or `null` when there is nothing to plot. */

@@ -10,3 +10,4 @@ export * from './lib/column-state';
 export * from './lib/saved-view';
 export * from './lib/export';
 export * from './lib/telemetry';
+export * from './lib/geo';

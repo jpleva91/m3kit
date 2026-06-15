@@ -57,7 +57,8 @@ export class RevenueTrendComponent {
 | `showAxes` | `boolean` | `true` | Renders axis lines and tick labels (off switches to slim 4px margins — a bare sparkline shape). |
 | `showGrid` | `boolean` | `true` | Renders hairline horizontal grid lines at the y ticks. |
 | `height` | `number` | `240` | Rendered height in px (also the viewBox height). |
-| `ariaLabel` | `string` | `'Line chart'` | Accessible description; the SVG renders with `role="img"`. |
+| `ariaLabel` | `string` | `'Line chart'` | Short accessible name; rendered as SVG `aria-label` and `<title>`. |
+| `ariaDescription` | `string \| null` | `null` | Optional SVG `<desc>` override. Defaults to `lineChartAccessibilitySummary(series).description`; use `chartRowsToText(summary.rows)` for adjacent table fallbacks. |
 
 No outputs.
 
@@ -76,7 +77,9 @@ Token-only styling — the component consumes:
 ## Do / Don't
 
 - **Do** pass the same series order to `m3k-chart-legend` (`colorIndex` = series index) so legend swatches match line colors.
+- **Do** keep a table/text equivalent for decision-making charts; the exported `chart-a11y` helpers are the baseline, dependency-free way to produce it.
 - **Don't** style series colors yourself (no `[style.stroke]`, no per-brand CSS) — colors come only from the closed `--app-chart-1..6` contract so every brand reskins the chart for free.
+- **Don't** add D3/ECharts just for basic line/area/sparkline needs. Use the documented ADR escape hatch only when pan/zoom, linked brushing, annotations, or data volume exceed the SVG baseline.
 
 ## Related
 

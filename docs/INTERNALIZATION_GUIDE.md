@@ -173,6 +173,7 @@ merged into your copy, and no expectation that your improvements flow back.
 - [ ] Import commit landed, naming the upstream URL and source commit/tag.
 - [ ] Versioning owned internally; no internal process refers to upstream versions.
 - [ ] CI runs lint + test + build for the imported libs on every PR.
+- [ ] Chart/map adapter seams are preserved: baseline libs still run without API keys or vendor SDKs; any Google Maps/MapLibre/OpenLayers/deck.gl/ECharts/D3/Excel/PDF additions live in documented optional adapters with no-key/text/table fallbacks.
 - [ ] Boundary-violation proof re-run in the consumer workspace: deliberate violation
       failed lint, was reverted, and the proof was recorded.
 - [ ] Apache-2.0 LICENSE retained and NOTICE-style attribution added to your

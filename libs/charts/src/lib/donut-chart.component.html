@@ -5,6 +5,8 @@
   role="img"
   [attr.aria-label]="ariaLabel()"
 >
+  <title>{{ ariaLabel() }}</title>
+  <desc>{{ accessibleDescription() }}</desc>
   <!-- Rotated -90° so slices start at 12 o'clock and run clockwise. -->
   <g [attr.transform]="'rotate(-90 ' + center + ' ' + center + ')'">
     @for (slice of sliceViews(); track $index) {

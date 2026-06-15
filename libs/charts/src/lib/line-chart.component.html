@@ -6,6 +6,8 @@
   role="img"
   [attr.aria-label]="ariaLabel()"
 >
+  <title>{{ ariaLabel() }}</title>
+  <desc>{{ accessibleDescription() }}</desc>
   @if (view(); as v) {
     @if (showGrid()) {
       @for (tick of v.yTicks; track tick.pos) {

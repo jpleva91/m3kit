@@ -1,5 +1,6 @@
 import { ChangeDetectionStrategy, Component, computed, input } from '@angular/core';
 
+import { lineChartAccessibilitySummary } from './chart-a11y';
 import { injectHostWidth } from './internal/host-width';
 import {
   areaPath,
@@ -106,6 +107,9 @@ export class LineChartComponent {
   /** Accessible description of the chart (`role="img"`). */
   readonly ariaLabel = input<string>('Line chart');
 
+  /** Optional override for the generated SVG `<desc>` text. */
+  readonly ariaDescription = input<string | null>(null);
+
   protected readonly pointRadius = POINT_RADIUS;
 
   /** Host width in CSS px, doubling as the viewBox width. */
@@ -113,6 +117,10 @@ export class LineChartComponent {
 
   protected readonly viewBox = computed<string>(
     () => `0 0 ${this.hostWidth()} ${this.height()}`,
+  );
+
+  protected readonly accessibleDescription = computed<string>(
+    () => this.ariaDescription() ?? lineChartAccessibilitySummary(this.series()).description,
   );
 
   /** Render model, or `null` when there is nothing to plot. */
