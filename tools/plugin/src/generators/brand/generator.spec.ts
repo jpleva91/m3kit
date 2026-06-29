@@ -32,6 +32,19 @@ describe('brand generator', () => {
     expect(brand).toContain('#2A2D6E');
   });
 
+  it('emits the full contract surface so a scaffolded brand conforms', async () => {
+    await brandGenerator(tree, OPTIONS);
+
+    const brand = tree.read('styles/themes/_midnight.scss', 'utf-8') ?? '';
+    // Severity: reset by default (non-adopting) in both emissions, so an
+    // ancestor brand scope's pairs never shadow the contract fallbacks.
+    expect(brand.split('contract.severity-tokens-reset()').length - 1).toBe(2);
+    expect(brand).toContain('contract.font-data(');
+    expect(brand).toContain('contract.material-shape-bridge()');
+    // `& {}` wrap guards against Sass mixed-decls hoisting after mat.theme.
+    expect(brand).toContain('& {');
+  });
+
   it('documents the palette regeneration seeds in the colors file', async () => {
     await brandGenerator(tree, OPTIONS);
 
