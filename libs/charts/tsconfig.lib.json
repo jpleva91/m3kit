@@ -12,7 +12,6 @@
     "src/test-setup.ts",
     "**/*.stories.ts",
     "**/*.stories.js",
-    "jest.config.ts",
     "src/**/*.test.ts",
     "vite.config.ts",
     "vite.config.mts",
