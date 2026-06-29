@@ -76,8 +76,11 @@ function brandScss(fileName: string, className: string, options: BrandGeneratorS
 /// \`${options.primary}\`, tertiary \`${options.tertiary}\`, neutral \`${options.neutral}\`.
 ///
 /// TODO(brand): replace the placeholder typography, status pairs, and
-/// chart palettes below with this brand's real values (see DESIGN.md
-/// for the binding rules; docs/THEMING.md for the full walkthrough).
+/// chart palettes below with this brand's real values, and decide whether
+/// to adopt \`severity-tokens()\` (full feedback polish) or keep the
+/// \`severity-tokens-reset()\` default (the contract fallbacks already
+/// cover info/success/warning/error). See DESIGN.md for the binding
+/// rules; docs/THEMING.md for the full walkthrough.
 
 $_typography: (
   plain-family: 'Instrument Sans',
@@ -139,7 +142,7 @@ $_chart-light: ${options.primary}, ${options.tertiary}, #0e7490, #6b46c1, #1a6b3
 $_chart-dark: ${options.primary}, ${options.tertiary}, #5ec8e0, #b79cff, #6fcf8f, #f286b2;
 
 /// Emits the full light theme: color, typography, density, status,
-/// radius, and chart-series tokens.
+/// radius, font-data, and chart-series tokens.
 @mixin brand-light() {
   @include mat.theme(
     (
@@ -152,10 +155,24 @@ $_chart-dark: ${options.primary}, ${options.tertiary}, #5ec8e0, #b79cff, #6fcf8f
       density: 0,
     )
   );
-  @include contract.status-tokens($_status-light);
-  @include contract.radius-tokens();
-  @include contract.chart-tokens($_chart-light...);
-  color-scheme: light;
+  // \`& {}\`: these must follow \`mat.theme\`'s nested rules without Sass
+  // mixed-decls hoisting (declarations after nested rules).
+  & {
+    @include contract.status-tokens($_status-light);
+    // Severity: not adopted by default — the contract fallbacks already
+    // land on the brand's primary/tertiary/error families; reset so the
+    // default brand's pairs at bare \`html\` never shadow them. Swap for
+    // \`contract.severity-tokens($_severity-light)\` to adopt (see TODO).
+    @include contract.severity-tokens-reset();
+    @include contract.radius-tokens();
+    @include contract.font-data("'JetBrains Mono'");
+    @include contract.chart-tokens($_chart-light...);
+    color-scheme: light;
+    // Last: the shape bridge emits nested button rules, and Sass requires
+    // bare declarations (custom props, color-scheme) to precede nested
+    // rules (mixed-decls); emission order does not change resolved styles.
+    @include contract.material-shape-bridge();
+  }
 }
 
 /// Re-emits only what changes in dark mode; typography, density, and
@@ -170,9 +187,12 @@ $_chart-dark: ${options.primary}, ${options.tertiary}, #5ec8e0, #b79cff, #6fcf8f
       ),
     )
   );
-  @include contract.status-tokens($_status-dark);
-  @include contract.chart-tokens($_chart-dark...);
-  color-scheme: dark;
+  & {
+    @include contract.status-tokens($_status-dark);
+    @include contract.severity-tokens-reset();
+    @include contract.chart-tokens($_chart-dark...);
+    color-scheme: dark;
+  }
 }
 `;
 }
