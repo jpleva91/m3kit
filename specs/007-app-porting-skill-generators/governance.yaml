@@ -1,0 +1,23 @@
+spec_governed: true
+spec_reference_required: true
+spec: specs/007-app-porting-skill-generators/spec.md
+non_destructive_default: true
+external_effects:
+  allowed_without_user_approval:
+    - local file writes in isolated worktree
+    - local tests/lint/build
+  require_user_approval:
+    - pushing branch
+    - opening PR
+    - publishing plugin/package
+    - modifying consumer app route files automatically
+    - deleting/moving user source files
+verification_required:
+  - npx nx run m3kit-plugin:test
+  - npx nx run m3kit-plugin:lint
+  - npx nx run m3kit-plugin:build
+  - git diff --check
+  - gitleaks detect --no-git --source specs --redact=20 --verbose
+separate_verifier_required: true
+review_lane: gatewarden
+implementation_lane: claudecodeconductor
