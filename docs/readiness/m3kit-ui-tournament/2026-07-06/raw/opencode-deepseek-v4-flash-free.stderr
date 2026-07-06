@@ -1,0 +1,17 @@
+[0m
+> build · deepseek-v4-flash-free
+[0m
+[0m→ [0mRead docs/readiness/m3kit-ui-tournament/2026-07-06/notebooklm-source-packet.md
+[0m→ [0mRead docs/readiness/m3kit-ui-tournament/2026-07-06/feature-candidate-list.md
+[0m→ [0mRead DESIGN.md
+[0m• [0mExplore table component APIs[90m Explore Agent[0m
+[0m• [0mExplore table stories and tests[90m Explore Agent[0m
+[0m✓ [0mExplore table stories and tests[90m Explore Agent[0m
+[0m✓ [0mExplore table component APIs[90m Explore Agent[0m
+[0m→ [0mRead libs/core/src/lib/column-state.ts
+[0m→ [0mRead libs/core/src/lib/saved-view.ts
+[0m→ [0mRead libs/core/src/lib/models.ts
+[0m✱ [0mGlob "libs/table/src/lib/**/*.scss"[90m 4 matches[0m
+[0m→ [0mRead libs/theme/src/m3kit-theme/_contract.scss
+[0m→ [0mRead libs/table/src/lib/data-table.component.scss
+[0m→ [0mRead libs/table/src/lib/data-table.component.ts

@@ -1,0 +1,84 @@
+[
+  {
+    "id": "agy-gemini-3-5-flash-medium",
+    "driver": "agy",
+    "model": "Gemini 3.5 Flash (Medium)",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 61.0,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-gemini-3-5-flash-medium.md"
+  },
+  {
+    "id": "agy-gemini-3-5-flash-high",
+    "driver": "agy",
+    "model": "Gemini 3.5 Flash (High)",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 19.6,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-gemini-3-5-flash-high.md"
+  },
+  {
+    "id": "agy-gemini-3-5-flash-low",
+    "driver": "agy",
+    "model": "Gemini 3.5 Flash (Low)",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 25.1,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-gemini-3-5-flash-low.md"
+  },
+  {
+    "id": "agy-gemini-3-1-pro-low",
+    "driver": "agy",
+    "model": "Gemini 3.1 Pro (Low)",
+    "status": "dnf",
+    "exit_code": 1,
+    "seconds": 36.2,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-gemini-3-1-pro-low.md"
+  },
+  {
+    "id": "agy-gemini-3-1-pro-high",
+    "driver": "agy",
+    "model": "Gemini 3.1 Pro (High)",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 37.7,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-gemini-3-1-pro-high.md"
+  },
+  {
+    "id": "agy-claude-sonnet-4-6-thinking",
+    "driver": "agy",
+    "model": "Claude Sonnet 4.6 (Thinking)",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 129.4,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-claude-sonnet-4-6-thinking.md"
+  },
+  {
+    "id": "agy-claude-opus-4-6-thinking",
+    "driver": "agy",
+    "model": "Claude Opus 4.6 (Thinking)",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 150.7,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-claude-opus-4-6-thinking.md"
+  },
+  {
+    "id": "agy-gpt-oss-120b-medium",
+    "driver": "agy",
+    "model": "GPT-OSS 120B (Medium)",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 19.0,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-agy-gpt-oss-120b-medium.md"
+  },
+  {
+    "id": "hermes-openai-codex-gpt-5-5",
+    "driver": "hermes",
+    "model": "openai-codex/gpt-5.5",
+    "status": "completed",
+    "exit_code": 0,
+    "seconds": 46.7,
+    "file": "docs/readiness/m3kit-ui-tournament/2026-07-06/contestant-entry-hermes-openai-codex-gpt-5-5.md",
+    "note": "rerun without safe toolset; max-turns=1; embedded prompt only"
+  }
+]
