@@ -15,6 +15,7 @@
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
+      "@m3kit/ai": ["libs/ai/src/index.ts"],
       "@m3kit/charts": ["libs/charts/src/index.ts"],
       "@m3kit/core": ["libs/core/src/index.ts"],
       "@m3kit/dashboard": ["libs/dashboard/src/index.ts"],

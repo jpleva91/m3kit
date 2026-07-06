@@ -38,6 +38,12 @@ export default [
               sourceTag: 'scope:m3kit-theme',
               onlyDependOnLibsWithTags: [],
             },
+            // Optional headless worker-AI runtime contracts; depends on
+            // no m3kit libraries and ships no provider/runtime dependency.
+            {
+              sourceTag: 'scope:m3kit-ai',
+              onlyDependOnLibsWithTags: [],
+            },
             {
               sourceTag: 'scope:m3kit-table',
               onlyDependOnLibsWithTags: [
@@ -97,6 +103,7 @@ export default [
               sourceTag: 'type:app',
               onlyDependOnLibsWithTags: [
                 'scope:m3kit-core',
+                'scope:m3kit-ai',
                 'scope:m3kit-feedback',
                 'scope:m3kit-state',
                 'scope:m3kit-table',
