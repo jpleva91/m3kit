@@ -1,0 +1,25 @@
+Release Captain verification results
+Authority: local-write artifact generation; Tailnet serve verified separately.
+Required sources present: tournament-report.md, feature-candidate-list.md, notebooklm-source-packet.md, slide-deck-outline.md, video-presentation-script.md, contestant-run-results.json
+Contestant packets present: 18
+Winner/ranking summary:
+1 | OpenCode / DeepSeek v4 Flash free | Data Table Column Manager | 30 | Winner
+2 | Antigravity / Gemini 3.5 Flash Medium | Data Table Column Manager | 28 | Runner-up
+3 | Codex / gpt-5.5 | Saved View Menu | 24 | Honorable mention
+4 | Hermes openai-codex / gpt-5.5 | Data State primitive | 21 | Salvageable
+Generated artifacts:
+/home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/m3kit-ui-tournament-v2-deck.pptx: exists=True size=1010846
+/home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/m3kit-ui-tournament-v2-brief.html: exists=True size=33901
+/home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/video-package/m3kit-ui-tournament-v2-silent-deck.mp4: exists=True size=1163396
+/home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/video-package/m3kit-ui-tournament-v2-captions.srt: exists=True size=3071
+/home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/video-package/voiceover-script.md: exists=True size=2819
+/home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/artifact-manifest.md: exists=True size=4172
+Tailnet serve:
+/home/red/.hermes/scripts/serve-artifact /home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/m3kit-ui-tournament-v2-brief.html
+https://chimera-ant.tailf42b9f.ts.net:10011/m3kit-ui-tournament-v2-brief.html
+curl -sS -o /tmp/m3kit-tournament-brief-check.html -w 'http_code=%{http_code} size=%{size_download}\n' https://chimera-ant.tailf42b9f.ts.net:10011/m3kit-ui-tournament-v2-brief.html => http_code=200 size=33901
+Deck/video verification:
+python-pptx opened m3kit-ui-tournament-v2-deck.pptx => pptx_slides=11 size=1010846
+ffprobe m3kit-ui-tournament-v2-silent-deck.mp4 => h264 1920x1080 duration=88.033333 size=1163396
+Visual QA:
+Contact sheet reviewed twice; first pass found minor title/winner-panel text issues, then fixed and regenerated. Second pass had no blocking issues for a deliverable deck.

@@ -1,0 +1,504 @@
+<!doctype html><html><head><meta charset='utf-8'><meta name='viewport' content='width=device-width,initial-scale=1'><title>m3kit UI Tournament v2 Brief</title><style>
+    :root { color-scheme: light dark; --navy:#162033; --cobalt:#2454d6; --sienna:#a15c38; --paper:#f6f1e8; --ink:#1d2630; }
+    * { box-sizing: border-box; }
+    body { margin:0; font-family: Inter, ui-sans-serif, system-ui, -apple-system, Segoe UI, sans-serif; background: var(--paper); color: var(--ink); line-height:1.55; }
+    header { background: linear-gradient(135deg, var(--navy), #273757); color:white; padding: 32px 18px 26px; border-left: 10px solid var(--cobalt); }
+    main { max-width: 920px; margin: 0 auto; padding: 18px; }
+    h1 { font-size: clamp(30px, 7vw, 54px); line-height:1.02; margin: 0 0 12px; }
+    h2 { margin-top: 32px; padding-top: 16px; border-top: 3px solid #d9dedf; color: var(--navy); }
+    h3 { color: var(--cobalt); }
+    .badge { display:inline-block; background:#f0b38b; color:#1b2332; border-radius:999px; padding:5px 12px; font-weight:700; margin:4px 6px 4px 0; }
+    .cards { display:grid; grid-template-columns: repeat(auto-fit, minmax(190px, 1fr)); gap:12px; margin:18px 0; }
+    .card { background:white; border:1px solid #d6dae3; border-radius:18px; padding:16px; box-shadow:0 3px 12px rgba(20,32,51,.08); }
+    .winner { border-left: 8px solid var(--cobalt); }
+    table { width:100%; border-collapse: collapse; background:white; border-radius:14px; overflow:hidden; display:block; overflow-x:auto; }
+    th, td { padding:10px; border-bottom:1px solid #e3e6ed; text-align:left; vertical-align:top; }
+    th { background:#eef2fb; color:#182033; }
+    code { background:#eef2fb; padding:2px 5px; border-radius:5px; }
+    a { color: var(--cobalt); }
+    .path { font-family: ui-monospace, SFMono-Regular, Menlo, monospace; font-size: 13px; overflow-wrap:anywhere; }
+    .note { background:#fff7e8; border:1px solid #e2bf82; border-left:7px solid var(--sienna); border-radius:14px; padding:14px; }
+    @media (prefers-color-scheme: dark) { body { background:#121722; color:#edf1f7; } .card, table { background:#1d2636; } h2 { color:#dbe5ff; border-color:#39465d; } th { background:#273757; color:#fff; } td, th { border-color:#3d485d; } code { background:#273757; } .note { background:#2b2419; } }
+    </style></head>
+    <body><header><div class='badge'>Release Captain packet</div><div class='badge'>2026-07-06</div><h1>m3kit UI Component Tournament v2</h1><p>Phone-readable brief for the model×driver tournament deliverables. Winner: <strong>Data Table Column Manager</strong>.</p></header><main>
+    <section class='cards'>
+      <div class='card winner'><h3>Winner</h3><p><strong>OpenCode / DeepSeek v4 Flash free</strong><br>Data Table Column Manager<br><strong>30/30</strong></p></div>
+      <div class='card'><h3>Runner-up</h3><p>Antigravity / Gemini 3.5 Flash Medium<br>Data Table Column Manager<br><strong>28/30</strong></p></div>
+      <div class='card'><h3>Follow-up</h3><p>Codex / gpt-5.5 proposed Saved View Menu, best as slice two after column-state emission.</p></div>
+      <div class='card'><h3>NotebookLM</h3><p>Source packet ready. Notebook creation pending; no link fabricated.</p></div>
+    </section>
+    <h2>Ranking summary</h2><table><thead><tr><th>Rank</th><th>Lane</th><th>Feature</th><th>Score</th><th>Verdict</th></tr></thead><tbody><tr><td>1</td><td>OpenCode / DeepSeek v4 Flash free</td><td>Data Table Column Manager</td><td>30</td><td>Winner</td></tr><tr><td>2</td><td>Antigravity / Gemini 3.5 Flash Medium</td><td>Data Table Column Manager</td><td>28</td><td>Runner-up</td></tr><tr><td>3</td><td>Codex / gpt-5.5</td><td>Saved View Menu</td><td>24</td><td>Honorable mention</td></tr><tr><td>4</td><td>Hermes openai-codex / gpt-5.5</td><td>Data State primitive</td><td>21</td><td>Salvageable</td></tr></tbody></table>
+    <h2>Recommendation</h2><div class='note'><p>Approve a Spec Kit feature pack at <code>specs/007-table-column-manager-and-saved-view-seam/</code>: build <code>m3k-column-manager</code> in <code>libs/table</code>, cover hidden/pinned/locked/many/narrow states, add unit tests for emitted state, and Cypress keyboard/focus tests. Saved View Manager follows as the second slice.</p></div>
+    <h2>Deliverables</h2><ul>
+      <li class='path'>Report: /home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/tournament-report.md</li>
+      <li class='path'>NotebookLM source packet: /home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/notebooklm-source-packet.md</li>
+      <li class='path'>PPTX deck: /home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/m3kit-ui-tournament-v2-deck.pptx</li>
+      <li class='path'>Video package: /home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/video-package</li>
+      <li class='path'>Silent MP4 deck video: /home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/video-package/m3kit-ui-tournament-v2-silent-deck.mp4</li>
+      <li class='path'>Voiceover script: /home/red/angular-reporting-reference/.worktrees/t_3495c6dc/docs/readiness/m3kit-ui-tournament/2026-07-06/video-package/voiceover-script.md</li>
+    </ul>
+    <h2>Core report</h2><h1>m3kit UI Component Model×Driver Tournament v2</h1>
+<p>Date: 2026-07-06
+Mission Commander owner: <code>missioncommander</code>
+Output directory: <code>docs/readiness/m3kit-ui-tournament/2026-07-06/</code></p>
+<h2>Executive result</h2>
+<p>Winner: OpenCode / <code>opencode/deepseek-v4-flash-free</code> with Candidate D, <code>m3k-column-manager</code>.</p>
+<p>Runner-up: Antigravity/agy / <code>Gemini 3.5 Flash (Medium)</code>, also with Candidate D.</p>
+<p>Honorable mention: Codex / <code>gpt-5.5</code> with Candidate A, <code>m3k-saved-view-menu</code>.</p>
+<p>Additional in-process entry: Hermes/openai-codex <code>gpt-5.5</code> proposed a reusable Data State primitive. It is salvageable as a feedback/state-pattern idea, but scored lower because the API sketch used an off-contract <code>m3-data-state</code> selector instead of <code>m3k-*</code> and overlaps existing feedback components.</p>
+<p>Recommended next Spec Kit feature pack: implement the Data Table Column Manager first, then follow with Saved View Manager integration. Column Manager wins because the repo already has headless <code>ColumnViewState</code> and <code>resolveColumns</code>; the UI closes an enterprise table parity gap without new dependencies, endpoints, storage, model downloads, or boundary changes.</p>
+<h2>Mission Engine route record</h2>
+<p>Tier: T2 full spec-kit quality tournament, proposal-only.</p>
+<p>Model-router decision:
+- Preferred engine: Claude Code / Fable via <code>claudecodeconductor</code>, because the Mission Commander route policy prefers Claude/Fable for build-quality reasoning.
+- Fallback ladder: Claude/Fable → Antigravity/agy → Codex → OpenCode/free models → local/degraded synthesis.
+- Budget/rate-limit trigger: any lane that hangs, lacks credentials, or cannot produce an evidence-backed packet inside the bounded run is marked DNF/degraded rather than silently retried.
+- Evidence gate: score only packets with concrete repo/doc evidence; reject unsupported claims, generic aesthetics, inaccessible interaction models, dependency additions, hosted endpoints, credentials, model downloads, or token/theming violations.</p>
+<p>Downgrades logged:
+- Claude Code Fable was attempted and hung with no stdout; the tournament continued through Codex, agy, and OpenCode instead of silently treating Claude as successful.
+- Several available agy/OpenCode model variants were enumerated but recorded as DNF/degraded to avoid unbounded spend/runtime after representative lanes completed.</p>
+<h2>Runtime roster</h2>
+<table>
+<thead>
+<tr>
+<th>Lane</th>
+<th>Driver</th>
+<th style="text-align: right;">Model</th>
+<th>Status</th>
+<th>Entry file</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>codex-gpt-5-5</td>
+<td>Codex</td>
+<td style="text-align: right;">gpt-5.5</td>
+<td>completed</td>
+<td><code>contestant-entry-codex-gpt-5-5.md</code></td>
+</tr>
+<tr>
+<td>hermes-openai-codex-gpt-5-5</td>
+<td>Hermes current lane</td>
+<td style="text-align: right;">openai-codex/gpt-5.5</td>
+<td>completed/in-process</td>
+<td><code>contestant-entry-hermes-openai-codex-gpt-5-5.md</code></td>
+</tr>
+<tr>
+<td>claude-code-fable</td>
+<td>Claude Code</td>
+<td style="text-align: right;">fable</td>
+<td>DNF/hung</td>
+<td><code>contestant-entry-claude-code-fable.md</code></td>
+</tr>
+<tr>
+<td>claude-code-sonnet</td>
+<td>Claude Code</td>
+<td style="text-align: right;">sonnet</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-claude-code-sonnet.md</code></td>
+</tr>
+<tr>
+<td>claude-code-opus</td>
+<td>Claude Code</td>
+<td style="text-align: right;">opus</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-claude-code-opus.md</code></td>
+</tr>
+<tr>
+<td>agy-gemini-3-5-flash-medium</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">Gemini 3.5 Flash (Medium)</td>
+<td>completed</td>
+<td><code>contestant-entry-agy-gemini-3-5-flash-medium.md</code></td>
+</tr>
+<tr>
+<td>agy-gemini-3-5-flash-high</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">Gemini 3.5 Flash (High)</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-agy-gemini-3-5-flash-high.md</code></td>
+</tr>
+<tr>
+<td>agy-gemini-3-5-flash-low</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">Gemini 3.5 Flash (Low)</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-agy-gemini-3-5-flash-low.md</code></td>
+</tr>
+<tr>
+<td>agy-gemini-3-1-pro-low</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">Gemini 3.1 Pro (Low)</td>
+<td>DNF</td>
+<td><code>contestant-entry-agy-gemini-3-1-pro-low.md</code></td>
+</tr>
+<tr>
+<td>agy-gemini-3-1-pro-high</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">Gemini 3.1 Pro (High)</td>
+<td>DNF</td>
+<td><code>contestant-entry-agy-gemini-3-1-pro-high.md</code></td>
+</tr>
+<tr>
+<td>agy-claude-sonnet-4-6-thinking</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">Claude Sonnet 4.6 (Thinking)</td>
+<td>DNF</td>
+<td><code>contestant-entry-agy-claude-sonnet-4-6-thinking.md</code></td>
+</tr>
+<tr>
+<td>agy-claude-opus-4-6-thinking</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">Claude Opus 4.6 (Thinking)</td>
+<td>DNF</td>
+<td><code>contestant-entry-agy-claude-opus-4-6-thinking.md</code></td>
+</tr>
+<tr>
+<td>agy-gpt-oss-120b-medium</td>
+<td>Antigravity/agy</td>
+<td style="text-align: right;">GPT-OSS 120B (Medium)</td>
+<td>DNF</td>
+<td><code>contestant-entry-agy-gpt-oss-120b-medium.md</code></td>
+</tr>
+<tr>
+<td>opencode-deepseek-v4-flash-free</td>
+<td>OpenCode</td>
+<td style="text-align: right;">opencode/deepseek-v4-flash-free</td>
+<td>completed</td>
+<td><code>contestant-entry-opencode-deepseek-v4-flash-free.md</code></td>
+</tr>
+<tr>
+<td>opencode-big-pickle</td>
+<td>OpenCode</td>
+<td style="text-align: right;">opencode/big-pickle</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-opencode-big-pickle.md</code></td>
+</tr>
+<tr>
+<td>opencode-mimo-v2-5-free</td>
+<td>OpenCode</td>
+<td style="text-align: right;">opencode/mimo-v2.5-free</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-opencode-mimo-v2-5-free.md</code></td>
+</tr>
+<tr>
+<td>opencode-nemotron-3-ultra-free</td>
+<td>OpenCode</td>
+<td style="text-align: right;">opencode/nemotron-3-ultra-free</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-opencode-nemotron-3-ultra-free.md</code></td>
+</tr>
+<tr>
+<td>opencode-north-mini-code-free</td>
+<td>OpenCode</td>
+<td style="text-align: right;">opencode/north-mini-code-free</td>
+<td>degraded/not executed</td>
+<td><code>contestant-entry-opencode-north-mini-code-free.md</code></td>
+</tr>
+</tbody>
+</table>
+<h2>Score table</h2>
+<p>Scoring dimensions: contract fit, launch impact, UX/API, accessibility/state coverage, test/evidence, feasibility. Max 30.</p>
+<table>
+<thead>
+<tr>
+<th style="text-align: right;">Rank</th>
+<th>Lane</th>
+<th>Feature</th>
+<th style="text-align: right;">Contract</th>
+<th style="text-align: right;">Impact</th>
+<th style="text-align: right;">UX/API</th>
+<th style="text-align: right;">A11y/state</th>
+<th style="text-align: right;">Test/evidence</th>
+<th style="text-align: right;">Feasible</th>
+<th style="text-align: right;">Total</th>
+<th>Verdict</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td style="text-align: right;">1</td>
+<td>opencode-deepseek-v4-flash-free</td>
+<td>Data Table Column Manager</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">30</td>
+<td>Winner</td>
+</tr>
+<tr>
+<td style="text-align: right;">2</td>
+<td>agy-gemini-3-5-flash-medium</td>
+<td>Data Table Column Manager</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">28</td>
+<td>Runner-up</td>
+</tr>
+<tr>
+<td style="text-align: right;">3</td>
+<td>codex-gpt-5-5</td>
+<td>Saved View Menu</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">5</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">2</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">24</td>
+<td>Honorable mention; weaker evidence because its sandbox could not read files</td>
+</tr>
+<tr>
+<td style="text-align: right;">4</td>
+<td>hermes-openai-codex-gpt-5-5</td>
+<td>Data State primitive</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">3</td>
+<td style="text-align: right;">4</td>
+<td style="text-align: right;">21</td>
+<td>Salvageable, but selector/API need contract correction and overlap review</td>
+</tr>
+<tr>
+<td style="text-align: right;">DNF</td>
+<td>all degraded/unexecuted lanes</td>
+<td>none</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td style="text-align: right;">0</td>
+<td>Not scored</td>
+</tr>
+</tbody>
+</table>
+<h2>Why Column Manager won</h2>
+<p>OpenCode grounded the proposal in concrete existing seams: <code>m3k-data-table</code> already accepts <code>columnState</code>, and <code>libs/core</code> already owns <code>ColumnViewState</code> / <code>resolveColumns</code>. That means the implementation can live in <code>libs/table</code>, emit intent-only state, and compose later with saved views without solving persistence first. Its proposal avoided drag-only UX and required keyboard move controls, visible locked/required states, non-color-only pin/hidden states, and complete spec/story/Cypress coverage.</p>
+<h2>Salvageable ideas</h2>
+<ul>
+<li>Codex's <code>m3k-saved-view-menu</code> should become the second feature after Column Manager, because it captures the emitted <code>ColumnViewState[]</code> plus serialized query state.</li>
+<li>Hermes/openai-codex's Data State primitive can be mined for a future <code>m3k-report-state</code> / feedback-state consolidation, but only after checking overlap with <code>m3k-empty-state</code>, <code>m3k-error-state</code>, <code>m3k-skeleton</code>, <code>m3k-banner</code>, and <code>m3k-chart-card</code> states.</li>
+<li>Chart State Frame remains a strong follow-up for accessibility/readiness, especially if the next pack includes docs parity.</li>
+<li>The AI Runtime Demo Assistant Shell should stay deferred until provider-adapter policy is explicit; the parent gate intentionally kept assistant UI out of <code>@m3kit/ai</code>.</li>
+</ul>
+<h2>Recommended next Spec Kit feature pack</h2>
+<p>Feature pack: <code>specs/007-table-column-manager-and-saved-view-seam/</code>.</p>
+<p>Scope:
+1. <code>m3k-column-manager</code> in <code>libs/table</code>.
+2. Storybook parity stories: default, hidden columns, pinned columns, locked columns, many columns, narrow viewport.
+3. Unit tests for output state generation and edge cases.
+4. Cypress keyboard/focus tests.
+5. Demo wiring that feeds emitted <code>ColumnViewState[]</code> into <code>m3k-data-table</code>, without persistence.
+6. ADR note that Saved View Manager is follow-up and consumes this state.</p>
+<p>Estimated effort: 1.5–2.5 focused engineering days for the first slice; +1–2 days for saved-view UI follow-up.</p>
+<h2>Evidence commands/results</h2>
+<ul>
+<li><code>hermes profile list</code>: enumerated profiles including <code>claudecodeconductor</code>, <code>antigravityclipilot</code>, <code>codexoperator</code>, <code>gatewarden</code>, etc.</li>
+<li><code>command -v codex/claude/opencode/agy</code>: all four CLIs present under <code>/home/red/.local/bin</code>.</li>
+<li><code>claude auth status --text</code> with real HOME: login present via Claude Max account.</li>
+<li><code>codex doctor</code> with real HOME: auth configured, model <code>gpt-5.5</code>, websocket reachable; install/update path warning only.</li>
+<li><code>agy models</code>: listed Gemini 3.5 Flash Low/Medium/High, Gemini 3.1 Pro Low/High, Claude Sonnet 4.6 Thinking, Claude Opus 4.6 Thinking, GPT-OSS 120B Medium.</li>
+<li><code>opencode auth list</code>: 0 credentials; <code>opencode models</code>: free roster listed.</li>
+<li>Repo reads: <code>package.json</code>, <code>DESIGN.md</code>, <code>docs/FEATURE_ARCHITECTURE_ROADMAP.md</code>, <code>docs/UI_KIT_PARITY_RESEARCH.md</code>, <code>docs/WEB_WORKER_AI_CONSOLIDATION.md</code>, <code>libs/ai</code> protocol/adapter files, <code>m3k-data-table</code>, <code>m3k-chart-card</code>, <code>m3k-form-field</code>, <code>m3k-banner</code>.</li>
+<li>Contestant raw outputs are preserved under <code>raw/</code>.</li>
+</ul>
+    <h2>NotebookLM source packet excerpt</h2><h1>m3kit UI Component Tournament v2 — NotebookLM Source Packet</h1>
+<p>This packet is a source bundle for proposal-only tournament contestants. No NotebookLM source URL was created in this run.</p>
+<h2>Mission constraints</h2>
+<ul>
+<li>Produce proposals/prototypes only; no main implementation mutation until Jared approves a next Spec Kit feature pack.</li>
+<li>Preserve m3kit's clean-room, source-internalized, rethemable Material 3 reference-library model.</li>
+<li>Components must use the public <code>m3k-*</code> API and consume only Material system tokens plus the closed <code>--app-*</code> contract.</li>
+<li>No raw colors, no per-brand component selectors, no chart/UI dependency additions, no real data, no backends, no hosted endpoints, no credentials, no model downloads.</li>
+<li>Every exported component must eventually ship unit spec, Storybook story, and Cypress component test beside the component.</li>
+</ul>
+<h2>Repository baseline</h2>
+<ul>
+<li>Angular 19 / Nx 20 monorepo, package manager pnpm.</li>
+<li>Runtime dependencies are Angular, Angular Material/CDK, RxJS, zone.js, and <code>@ngrx/signals</code>; no third-party chart/UI library is allowed.</li>
+<li>Library graph: <code>core</code> and <code>theme</code> are roots; UI libraries (<code>table</code>, <code>dashboard</code>, <code>charts</code>, <code>forms</code>, <code>shell</code>, <code>feedback</code>, <code>testing</code>) may depend only on <code>core</code> and theme tokens as documented in AGENTS.md.</li>
+<li>Storybook host is <code>m3kit-table</code>; parity gallery under <code>libs/table/.storybook/parity/</code> is the brand-range regression surface.</li>
+</ul>
+<h2>Current exported UI surface</h2>
+<ul>
+<li>table: <code>m3k-data-table</code>, <code>m3k-table-filter-bar</code>, <code>m3k-page-toolbar</code>, <code>m3k-tree</code>.</li>
+<li>dashboard: <code>m3k-dashboard-grid</code>, <code>m3k-kpi-card</code>, <code>m3k-kpi-strip</code>, <code>m3k-detail-card</code>, <code>m3k-stat-list</code>, <code>m3k-description-list</code>, <code>m3k-timeline</code>.</li>
+<li>charts: <code>m3k-line-chart</code>, <code>m3k-bar-chart</code>, <code>m3k-donut-chart</code>, <code>m3k-chart-legend</code>, <code>m3k-chart-card</code>.</li>
+<li>forms: <code>m3k-form-field</code>, <code>m3k-form-section</code>, <code>m3k-filter-form</code>.</li>
+<li>shell: <code>m3k-app-shell</code>, <code>m3k-page-header</code>, <code>m3k-breadcrumbs</code>, <code>m3k-content-layout</code>, <code>m3k-tabs-page</code>, <code>m3k-stepper-flow</code>, <code>m3k-overflow-menu</code>, <code>m3k-list-page</code>, plus shell template slots.</li>
+<li>feedback: <code>m3k-empty-state</code>, <code>m3k-error-state</code>, <code>m3k-banner</code>, <code>m3k-skeleton</code>, <code>m3k-confirm-dialog</code>, snackbar service.</li>
+</ul>
+<h2>Design doctrine</h2>
+<ul>
+<li>Industrial-editorial "Instruments": precision-tool energy, paper-grade clarity, serious production software.</li>
+<li>Typography: DM Serif Display for page titles/large KPI values, Instrument Sans for UI/body, JetBrains Mono for data/code.</li>
+<li>Color: cobalt primary, sienna tertiary, tokenized status and chart palettes. Dark mode is first-class.</li>
+<li>Density: tables -2, forms/filter panels -1, cards/navigation 0.</li>
+<li>Layout: grid-disciplined and reporting-first; demo brands can choose app-side layout presets but libraries stay brand/layout-neutral.</li>
+<li>Anti-patterns: gradients-as-brand, glassmorphism, purple bias, shadow-on-everything, rainbow status pills, skeleton-shimmer theater, oversized icons, hero/landing pages.</li>
+</ul>
+<h2>Readiness gaps from docs and repo inspection</h2>
+<ul>
+<li>Table/report grid parity gaps: column resize/reorder/pinning UI, column manager, expandable/detail rows, virtual-scroll variant, export/saved-view actions.</li>
+<li>Filters/forms/date gaps: richer operator model, relative date filters, timezone-aware query patches, validation summary.</li>
+<li>Dashboard/page gaps: saved-view picker/manager, export menu/action slots, refresh/stale indicators, drill links.</li>
+<li>Chart gaps: chart-level error/loading/empty state contracts, accessible summaries/table fallback, tooltips/selection only if keyboard accessible, SVG export helper, larger data decimation.</li>
+<li>Maps/geospatial gaps: only optional future seam; no API-key vendor map should land as a baseline UI feature.</li>
+<li>Documentation gaps: API tables, keyboard behavior, accessibility notes, internalization checklists, parity dashboard.</li>
+</ul>
+<h2>@m3kit/ai port context approved by parent gate</h2>
+<p>Parent gate approved the uncommitted <code>@m3kit/ai</code> port in <code>/home/red/angular-reporting-reference/.worktrees/t_5057bd9c</code>.</p>
+<p>Shipped slice:
+- <code>libs/ai</code> import path <code>@m3kit/ai</code>, Nx project <code>m3kit-ai</code>.
+- Generic task protocol: request/result/error/progress/main-thread/worker messages.
+- <code>M3kAiRuntimeAdapter</code> seam and <code>defineM3kAiAdapter</code> helper.
+- Deterministic <code>M3kAiFakeAdapter</code> for tests and demos.
+- Worker harness for init, task, cancel, result, stream chunk, and error flows.
+- Warmup skip heuristics for disabled, unsupported Worker, save-data, slow connection, and low storage.
+- Validators for bounded strings, sentence counts, and JSON objects.
+- Privacy-safe telemetry: no-op sink plus allow-list redaction; prompt/input/output are not emitted by default.</p>
+<p>Guardrails:
+- No model downloads in CI.
+- No provider SDK dependencies.
+- No hosted endpoint or API-key storage by default.
+- No UI assistant/tournament flow in the port slice.
+- Provider adapters, app-side demo integration, and AI assistant UI exploration require separate specs and review gates.</p>
+<p>Parent gate evidence:
+- <code>NX_DAEMON=false corepack pnpm@10.14.0 exec nx run-many -t lint,test,build --all --skip-nx-cache</code> passed in the implementation worktree: 13 projects, including <code>m3kit-ai</code> 6 spec files / 13 tests; demo build budget warnings only.
+- <code>gitleaks detect --no-git --source specs docs --redact=20 --verbose</code> passed.
+- <code>git diff --check</code> passed.
+- Caveat: implementation is uncommitted/untracked on branch <code>wt/m3kit-ai-port</code>; tournament source should cite that exact worktree rather than assume main contains <code>libs/ai</code>.</p>
+<h2>Contestant output contract</h2>
+<p>Each entry must pick exactly one feature from the shared candidate list, or add one self-proposed feature with rationale and acceptance criteria. Entry packet must include:</p>
+<ol>
+<li>Feature selected.</li>
+<li>Rationale tied to m3kit launch/readiness.</li>
+<li>Component API sketch.</li>
+<li>UX states.</li>
+<li>Token/theming plan.</li>
+<li>Accessibility notes.</li>
+<li>Storybook/unit/Cypress test plan.</li>
+<li>Feasibility and implementation sequence.</li>
+<li>Evidence: repo paths/docs consulted and any commands run.</li>
+<li>Risks / rejection conditions.</li>
+</ol>
+<h2>Evidence gate / scoring rubric</h2>
+<p>Reject or penalize entries that:
+- Drift into generic AI aesthetics, marketing/hero pages, or purple/glass/gradient motifs.
+- Depend on inaccessible state handling or color-only meaning.
+- Violate token-only styling, <code>m3k-*</code> public API, library boundaries, synthetic-data-only, or no-new-dependency rules.
+- Claim unsupported existing components or APIs.
+- Require hosted endpoints, credentials, model downloads, or provider SDKs for baseline functionality.</p>
+<p>Score dimensions, 0-5 each:
+- Contract fit and boundary safety.
+- Launch/readiness impact.
+- UX/component API quality.
+- Accessibility and state coverage.
+- Test/Storybook/evidence quality.
+- Implementation feasibility.</p>
+    <h2>Candidate list</h2><h1>m3kit UI Component Tournament v2 — Curated Feature Candidate List</h1>
+<p>Curated by Mission Commander from repo state, AGENTS.md/DESIGN.md, <code>docs/FEATURE_ARCHITECTURE_ROADMAP.md</code>, <code>docs/UI_KIT_PARITY_RESEARCH.md</code>, current component inventory, and the parent-approved <code>@m3kit/ai</code> port evidence.</p>
+<h2>Selection criteria</h2>
+<p>A good candidate must:
+- Strengthen public launch/readiness for a source-internalized Angular reporting kit.
+- Fit the existing library graph and <code>m3k-*</code> API surface.
+- Stay token-only and brand-neutral across all 12 brands × light/dark.
+- Be useful without credentials, network sources, model downloads, or real data.
+- Be independently spec-kittable with unit spec, Storybook story, and Cypress component test.</p>
+<h2>Candidate A — Saved View Manager</h2>
+<p>Library: likely <code>libs/shell</code> for page/action surface plus <code>libs/core</code> saved-view contracts already present or extended.</p>
+<p>Problem: Enterprise reporting users expect named, shareable views over query + columns + density. The docs call saved views a baseline differentiator, but there is no exported manager UI.</p>
+<p>Feature shape:
+- <code>m3k-saved-view-menu</code> or <code>m3k-saved-view-manager</code> with current view, save-as, update, delete, and apply affordances.
+- Emits intents only; persistence adapter remains app/demo-owned.
+- Supports invalid/migrated/deleted view states.</p>
+<p>Acceptance criteria:
+- No storage, backend, auth, or tenant assumptions in the component.
+- Keyboard-accessible menu/dialog flow with labelled destructive actions.
+- Storybook covers empty list, dirty current view, migration warning, delete confirmation, and 12-brand visual pass.</p>
+<h2>Candidate B — Report Action Bar / Export Menu</h2>
+<p>Library: likely <code>libs/shell</code> or <code>libs/table</code> depending on scope.</p>
+<p>Problem: Export, refresh, saved view, timezone/locale, and bulk actions are repeated across reporting pages. Current <code>m3k-page-toolbar</code> is table-local and not enough for full pages.</p>
+<p>Feature shape:
+- <code>m3k-report-action-bar</code> with slots for primary actions and a typed export action menu.
+- Emits export requests using core export contracts; no Excel/PDF dependencies.
+- Surfaces loading/disabled/pending states and selected-row context.</p>
+<p>Acceptance criteria:
+- CSV/JSON baseline only; Excel/PDF are adapter docs.
+- ARIA labels for menu buttons, disabled reasons visible or described.
+- Storybook covers no selection, selected rows, server-export pending, export error, narrow viewport.</p>
+<h2>Candidate C — Chart State Frame and Accessible Data Fallback</h2>
+<p>Library: <code>libs/charts</code>.</p>
+<p>Problem: <code>m3k-chart-card</code> has loading/empty states, but chart accessibility and error/fallback coverage are listed readiness gaps. Charts need consistent summary, data table fallback, and error state without leaking chart-engine assumptions.</p>
+<p>Feature shape:
+- <code>m3k-chart-state-frame</code> or extension of <code>m3k-chart-card</code> that wraps SVG charts with <code>ariaLabel</code>, <code>ariaDescription</code>, optional hidden/expandable data table fallback, loading/empty/error/refreshing/stale states.
+- Keeps chart rendering dependency-free and token-only.</p>
+<p>Acceptance criteria:
+- Works with existing line/bar/donut/legend.
+- No color-only meaning; supports textual summary.
+- Storybook covers no data, loading, error, stale refresh, long labels, dark mode.</p>
+<h2>Candidate D — Data Table Column Manager</h2>
+<p>Library: <code>libs/table</code>.</p>
+<p>Problem: <code>m3k-data-table</code> already accepts headless <code>columnState</code>, but users need a first-class UI to toggle/reorder/pin columns and eventually save it into views.</p>
+<p>Feature shape:
+- <code>m3k-column-manager</code> component driven by <code>TableDefinition</code> + <code>ColumnViewState</code>.
+- Emits column view-state changes; does not persist.
+- Supports visible/hidden, reorder, pin left/right where <code>resolveColumns</code> can honor it; resize can remain future if necessary.</p>
+<p>Acceptance criteria:
+- No drag-only interaction; keyboard move up/down controls are mandatory.
+- Handles required/locked columns.
+- Storybook covers many columns, locked columns, hidden all disallowed, pinned columns, compact density.</p>
+<h2>Candidate E — Relative Date / Query Filter Builder</h2>
+<p>Library: <code>libs/forms</code> plus <code>libs/core</code> query operator contracts.</p>
+<p>Problem: Reporting products need date ranges like last 7 days, this month, custom range, and timezone policy. Current form field supports <code>date-range</code>, but the query/operator UX is not yet first class.</p>
+<p>Feature shape:
+- <code>m3k-relative-date-filter</code> or richer <code>m3k-filter-form</code> operator mode.
+- Emits typed query patches with explicit timezone/inclusivity semantics.
+- Supports preset chips and custom range.</p>
+<p>Acceptance criteria:
+- DST and timezone semantics documented; no local-date ambiguity.
+- Keyboard and screen-reader usable presets/custom range.
+- Unit tests for query patch generation and edge cases.</p>
+<h2>Candidate F — Storybook Parity Dashboard</h2>
+<p>Library/docs: Storybook host under <code>libs/table/.storybook</code> and docs.</p>
+<p>Problem: Launch readiness needs an honest surface showing baseline/adapter/docs/out-of-scope status against enterprise expectations and all brands/modes.</p>
+<p>Feature shape:
+- A Storybook page/MDX or Angular story rendering parity matrix badges from static metadata.
+- Links to components, docs, and escape-hatch decisions.</p>
+<p>Acceptance criteria:
+- Static synthetic metadata only.
+- Covers table, filters, dashboard, charts, maps, theming, docs.
+- Does not overstate AG Grid/ECharts/Google Maps parity.</p>
+<h2>Candidate G — No-Secret Map Preview Shell</h2>
+<p>Library: probably <code>libs/charts</code> or new optional/demo-only surface; high risk.</p>
+<p>Problem: Geospatial appears in parity docs, but vendor maps require API keys/network. A no-secret SVG/static map/list shell could demonstrate the adapter seam.</p>
+<p>Feature shape:
+- Static region/marker preview with accessible list alternative.
+- Uses core geo contracts if/when present.</p>
+<p>Acceptance criteria:
+- No Google/MapLibre dependencies and no API keys.
+- Explicitly positioned as preview shell, not full map adapter.
+- Strong accessibility fallback.</p>
+<h2>Candidate H — AI Runtime Demo Assistant Shell (defer-biased)</h2>
+<p>Library/app: demo app integration over approved <code>@m3kit/ai</code>; likely not reusable UI library yet.</p>
+<p>Problem: The <code>@m3kit/ai</code> port creates a runtime seam but intentionally excludes UI assistant/tournament flows.</p>
+<p>Feature shape:
+- App-side demo panel using <code>M3kAiFakeAdapter</code> to show summarization/extract/rewrite task lifecycle, warmup skipped/ready/failed states, and redacted telemetry.</p>
+<p>Acceptance criteria:
+- Fake adapter only; no provider SDKs, endpoints, credentials, or model downloads.
+- Clearly demo-only until provider adapters pass a later gate.
+- Useful as source packet evidence for future assistant UI but not the first public UI kit component unless paired with reporting workflows.</p>
+<h2>Curator recommendation before contestants</h2>
+<p>Most tournament-worthy candidates are D, C, A, and B. D leverages an existing headless capability and is a concrete UI gap. C closes an accessibility/state gap across every chart. A/B are strategically valuable but require sharper contract decisions around persistence/export ownership. H is relevant to the parent <code>@m3kit/ai</code> port but should be treated cautiously because the gate explicitly kept assistant UI out of the first slice.</p>
+    </main></body></html>

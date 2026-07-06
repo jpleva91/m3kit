@@ -1,0 +1,179 @@
+OpenAI Codex v0.142.4
+--------
+workdir: /home/red/angular-reporting-reference/.worktrees/t_d37c4224
+model: gpt-5.5
+provider: openai
+approval: never
+sandbox: read-only
+reasoning effort: xhigh
+reasoning summaries: none
+session id: 019f3776-8126-7d21-b55e-bd4ae7b820df
+--------
+user
+You are a contestant in the m3kit UI component model×driver tournament v2.
+
+Read these files before proposing:
+- docs/readiness/m3kit-ui-tournament/2026-07-06/notebooklm-source-packet.md
+- docs/readiness/m3kit-ui-tournament/2026-07-06/feature-candidate-list.md
+- AGENTS.md
+- DESIGN.md
+
+Task:
+Pick exactly one feature. It may be from the curated list or one self-added feature with rationale and acceptance criteria. Produce a concise Markdown entry packet with these sections:
+
+# Contestant Entry: <driver/model>
+
+## Selected feature
+## Why this wins for m3kit readiness
+## Component API sketch
+## UX states
+## Token/theming plan
+## Accessibility notes
+## Storybook, unit, and Cypress plan
+## Implementation feasibility and sequence
+## Evidence consulted
+## Risks / rejection conditions
+
+Rules:
+- Proposal/prototype only; do not modify source code.
+- No new dependencies unless you explicitly mark the idea as requiring a future ADR and therefore lower feasibility.
+- No hosted endpoints, API keys, credentials, model downloads, real data, or backends.
+- Preserve token-only styling and library boundaries.
+- Cite concrete repo paths/docs you used. Do not claim to have run commands unless you actually did.
+
+warning: Codex's Linux sandbox uses bubblewrap and needs access to create user namespaces.
+deprecated: `[features].codex_hooks` is deprecated. Use `[features].hooks` instead.
+Enable it with `--enable hooks` or `[features].hooks` in config.toml. See https://developers.openai.com/codex/config-basic#feature-flags for details.
+warning: Skill descriptions were shortened to fit the 2% skills context budget. Codex can still see every skill, but some descriptions are shorter. Disable unused skills or plugins to leave more room for the rest.
+hook: SessionStart
+hook: SessionStart Completed
+hook: UserPromptSubmit
+hook: UserPromptSubmit Completed
+codex
+I’ll use the API/interface design skill because this is primarily a public component contract proposal, then I’ll read the requested project docs before selecting one feature.
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PostToolUse
+hook: PostToolUse Completed
+codex
+The required `rtk` wrapper is failing immediately in this sandbox with a bubblewrap loopback error. I’m going to verify whether a non-proxy `rtk read` path works; if it does not, I’ll fall back to plain read-only commands so the requested files still get inspected.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Completed
+codex
+`rtk read` also fails before it can read anything, so I’m switching to ordinary read-only file commands for this turn. I’ll keep it to inspection only, matching the “proposal only” constraint.
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PreToolUse Completed
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse
+hook: PostToolUse Completed
+hook: PostToolUse Completed
+hook: PostToolUse Completed
+hook: PostToolUse Completed
+codex
+The execution sandbox itself is failing before any command runs, including plain `sed` and `wc`. I’m checking whether the workspace is exposed through MCP resources; if not, I’ll need to base the packet on the in-message AGENTS content plus any visible repository context and explicitly disclose the read limitation.
+mcp: codex/list_mcp_resources started
+mcp: codex/list_mcp_resources (completed)
+hook: PostToolUse
+hook: PostToolUse Completed
+web search: 
+web search: "docs/readiness/m3kit-ui-tournament/2026-07-06/notebooklm-source-packet.md"
+web search: 
+web search: "angular-reporting-reference" m3kit
+codex
+The local workspace is not exposed through MCP resources, and public web search did not find these tournament files. I’m checking whether the GitHub connector has a repository file-read tool available; if not, I’ll be transparent in the final packet about the files I could and could not actually inspect.
+web search: 
+web search: "m3kit" "Synthetic data only" "Token-only styling"
+codex
+The connector only exposes GitHub file fetch by known repo/path, and the repository does not appear discoverable from public search. I’m doing one last check with a minimal non-login command to see whether the command runner can bypass the shell setup failure.
+hook: PreToolUse
+hook: PreToolUse Completed
+hook: PostToolUse
+hook: PostToolUse Completed
+codex
+# Contestant Entry: Codex/GPT-5
+
+## Selected feature
+Self-added: `m3k-saved-view-menu`, a table/report saved-view picker and manager.
+
+Acceptance criteria:
+- Users can select, create, rename, duplicate, reset, and delete saved table views.
+- A saved view captures `SerializedDataQuery`, `ColumnViewState`, sorting, pagination-size preference, and optional label/description.
+- Emits persistence events only; no backend, storage, credentials, or real data.
+- Works with existing `@m3kit/core` saved-view helpers and table `columnState`.
+
+## Why this wins for m3kit readiness
+m3kit already has table state, URL query helpers, saved-view helpers, and a demo reporting surface, but saved views are a readiness-critical workflow that currently appears headless from the AGENTS.md inventory. A reusable saved-view UI turns those contracts into an adoption-ready reporting pattern without new dependencies.
+
+## Component API sketch
+```ts
+type SavedViewMenuMode = 'readonly' | 'editable';
+
+@Component({ selector: 'm3k-saved-view-menu' })
+export class SavedViewMenuComponent {
+  views = input.required<SavedView[]>();
+  activeViewId = input<string | null>(null);
+  dirty = input(false);
+  mode = input<SavedViewMenuMode>('editable');
+
+  viewSelected = output<string>();
+  viewCreate = output<SavedViewDraft>();
+  viewRename = output<{ id: string; name: string }>();
+  viewDuplicate = output<string>();
+  viewDelete = output<string>();
+  viewReset = output<string>();
+}
+```
+
+## UX states
+Default selected view, unsaved changes indicator, empty state, readonly mode, max-name validation, duplicate-name validation, destructive delete confirmation, disabled actions while parent persistence is pending.
+
+## Token/theming plan
+Token-only SCSS: `--mat-sys-*` for typography/color/state layers, `--app-radius-control` for trigger/menu controls, `--app-radius-card` for dialog surfaces, `--app-font-data` only for compact metadata. No brand selectors, no raw hex, no new `--app-*` token unless review proves saved-view status needs one.
+
+## Accessibility notes
+Use Material menu/dialog primitives internally. Trigger has `aria-haspopup="menu"` and reflects active view name. Dirty state is text plus icon, not color-only. Rename/create inputs have explicit labels and validation messages. Delete confirmation receives focus, supports Escape, and returns focus to trigger.
+
+## Storybook, unit, and Cypress plan
+Storybook in table stories: empty, single view, many views, dirty active view, readonly, validation error, dark/light brand examples.
+
+Unit tests: event emissions, disabled states, validation, active label computation, readonly action filtering.
+
+Cypress component tests: keyboard open/select, create/rename/delete flows, focus return after dialog, accessible validation text.
+
+## Implementation feasibility and sequence
+1. Add component in `libs/table/src/lib/saved-view-menu.*`.
+2. Reuse `SavedView` contracts from `@m3kit/core`.
+3. Add story/spec/cy beside the component.
+4. Export from `libs/table/src/index.ts`.
+5. Optionally wire into demo reporting after the component lands.
+
+No new dependency required.
+
+## Evidence consulted
+Used: AGENTS.md content provided in the prompt, especially library boundaries, token contract, exported component inventory, coverage bar, and no-new-dependency rules.
+
+Could not inspect the requested local files because the command runner failed before execution with `bwrap: loopback: Failed RTM_NEWADDR: Operation not permitted`, including `rtk read`, plain `sed`, `wc`, and `pwd`. That means this packet is provisional if tournament rules require verified reads of:
+- `docs/readiness/m3kit-ui-tournament/2026-07-06/notebooklm-source-packet.md`
+- `docs/readiness/m3kit-ui-tournament/2026-07-06/feature-candidate-list.md`
+- `DESIGN.md`
+
+## Risks / rejection conditions
+Reject if the candidate list already deprioritizes saved views, if `DESIGN.md` forbids this interaction pattern, or if saved-view persistence semantics are not stable enough in `@m3kit/core`. Also reject if implementation needs app-specific storage; this component should stay event-driven and source-internalizable.
+hook: Stop
+hook: Stop Completed
+tokens used
+37,756

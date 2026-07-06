@@ -1,0 +1,43 @@
+1
+00:00:00,000 --> 00:00:08,000
+m3kit UI Tournament v2. This tournament asked the available agent drivers to choose the next proposal-only UI component feature for m3kit after the @m3kit/ai port gate was approved.
+
+2
+00:00:08,000 --> 00:00:16,000
+The contract narrowed the field. This tournament asked the available agent drivers to choose the next proposal-only UI component feature for m3kit after the @m3kit/ai port gate was approved.
+
+3
+00:00:16,000 --> 00:00:24,000
+Shared source packet. m3kit is a clean-room Angular 19 / Nx 20 Material 3 reporting kit. The hard constraints are token-only styling, no new chart/UI libraries, synthetic data only, strict library boundaries, and complete component coverage.
+
+4
+00:00:24,000 --> 00:00:32,000
+Candidate slate. m3kit is a clean-room Angular 19 / Nx 20 Material 3 reporting kit. The hard constraints are token-only styling, no new chart/UI libraries, synthetic data only, strict library boundaries, and complete component coverage.
+
+5
+00:00:32,000 --> 00:00:40,000
+Runtime roster was evidence-first. Contestants received the same source packet: exported components, DESIGN.md doctrine, feature roadmap gaps, UI parity research, and the approved @m3kit/ai slice. The AI port matters as context, but assistant UI and provider adapters stay deferred.
+
+6
+00:00:40,000 --> 00:00:48,000
+Scoring rubric. Contestants received the same source packet: exported components, DESIGN.md doctrine, feature roadmap gaps, UI parity research, and the approved @m3kit/ai slice. The AI port matters as context, but assistant UI and provider adapters stay deferred.
+
+7
+00:00:48,000 --> 00:00:56,000
+Winner: Data Table Column Manager. Runtime discovery found Codex, Claude Code, Antigravity, and OpenCode. Codex, agy Gemini Flash Medium, OpenCode DeepSeek free, and the Hermes current lane produced usable packets. Hung or unbounded lanes were explicitly marked DNF or degraded.
+
+8
+00:00:56,000 --> 00:01:04,000
+Why it wins. Runtime discovery found Codex, Claude Code, Antigravity, and OpenCode. Codex, agy Gemini Flash Medium, OpenCode DeepSeek free, and the Hermes current lane produced usable packets. Hung or unbounded lanes were explicitly marked DNF or degraded.
+
+9
+00:01:04,000 --> 00:01:12,000
+Ranking summary. The winner is OpenCode with the Data Table Column Manager. It noticed that the table already accepts columnState and core already has headless column resolution. The missing piece is a UI for toggling, reordering, and pinning columns.
+
+10
+00:01:12,000 --> 00:01:20,000
+Recommended Spec Kit feature pack. The winner is OpenCode with the Data Table Column Manager. It noticed that the table already accepts columnState and core already has headless column resolution. The missing piece is a UI for toggling, reordering, and pinning columns.
+
+11
+00:01:20,000 --> 00:01:28,000
+Evidence and caveats. The next Spec Kit feature pack should implement m3k-column-manager in libs/table with Storybook coverage, unit tests for emitted state, and Cypress keyboard and focus tests. Saved View Manager should follow as the second slice.
