@@ -1,0 +1,41 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "M3kitPortAnalyze",
+  "title": "Analyze a target page for safe m3kit porting",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string",
+      "description": "Target component/page/route path to analyze.",
+      "$default": { "$source": "argv", "index": 0 },
+      "x-prompt": "Which page/component path should be analyzed?"
+    },
+    "project": {
+      "type": "string",
+      "description": "Optional Nx project name when the target is ambiguous."
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domain name for the porting packet. Inferred from target path when omitted."
+    },
+    "page": {
+      "type": "string",
+      "description": "Page/feature name for the porting packet. Inferred from the target filename when omitted."
+    },
+    "outputDir": {
+      "type": "string",
+      "description": "Directory for analysis outputs. Defaults to m3kit-porting/<domain>/<page>."
+    },
+    "scope": {
+      "type": "string",
+      "default": "ui",
+      "description": "Alias prefix used in recommendations."
+    },
+    "write": {
+      "type": "boolean",
+      "default": true,
+      "description": "When false, only logs the analysis; default writes the analysis packet."
+    }
+  },
+  "required": ["target"]
+}

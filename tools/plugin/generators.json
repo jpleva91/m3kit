@@ -25,6 +25,16 @@
       "implementation": "./src/generators/dashboard-page/generator",
       "schema": "./src/generators/dashboard-page/schema.json",
       "description": "Scaffold an app-side dashboard page (page-header + KPI cards + chart cards) wired to KPI and chart series stubs."
+    },
+    "port-analyze": {
+      "implementation": "./src/generators/port-analyze/generator",
+      "schema": "./src/generators/port-analyze/schema.json",
+      "description": "Analyze one Angular/Nx page and emit a non-destructive m3kit app-porting packet."
+    },
+    "port-page": {
+      "implementation": "./src/generators/port-page/generator",
+      "schema": "./src/generators/port-page/schema.json",
+      "description": "Generate side-by-side m3kit feature/data-access/ui app-porting scaffolds plus Spec Kit packet and runbook."
     }
   }
 }

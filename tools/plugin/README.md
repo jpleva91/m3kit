@@ -2,7 +2,8 @@
 
 Nx plugin with the m3kit generators: source-internalize the libs into a
 consumer workspace (`lift`), and scaffold on-contract artifacts
-(`component`, `brand`, `report-page`, `dashboard-page`).
+(`component`, `brand`, `report-page`, `dashboard-page`, `port-analyze`,
+`port-page`).
 
 m3kit is a reference to be read and copied, not a dependency to be
 installed — `lift` is the automated form of `docs/ADOPTION_GUIDE.md`.
@@ -98,6 +99,35 @@ The `@<scope>/*` import prefix is auto-detected from `tsconfig.base.json`
 npx nx g @m3kit/plugin:report-page open-invoices --project=demo-reporting
 npx nx g @m3kit/plugin:dashboard-page revenue-overview --project=demo-reporting
 ```
+
+### `port-analyze` / `port-page` — safe app-porting packet + scaffolds
+
+Analyzer-first migration support for one Angular/Nx page. `port-analyze`
+reads a target page/component/route, infers likely m3kit libs and
+manual-review data seams, and writes a non-destructive analysis packet.
+`port-page` consumes that analysis and creates side-by-side
+feature/data-access/ui libraries plus Spec Kit artifacts, runbook, and a
+safe AI wiring prompt. It does not delete source files or rewrite app routes;
+manual wiring snippets are emitted in the runbook.
+
+```sh
+npx nx g @m3kit/plugin:port-analyze \
+  --target=apps/acme/src/app/orders/orders-page.component.ts \
+  --domain=orders \
+  --page=orders-list \
+  --outputDir=m3kit-porting/orders/orders-list
+
+npx nx g @m3kit/plugin:port-page \
+  --analysis=m3kit-porting/orders/orders-list/analysis.json \
+  --domain=orders \
+  --page=orders-list \
+  --destinationRoot=libs/orders \
+  --apply=false \
+  --force=false
+```
+
+See `docs/APP_PORTING.md` and `skills/m3kit-app-port/SKILL.md` for the full
+analysis packet first / RED first / manual wiring workflow.
 
 ## CLI shim
 

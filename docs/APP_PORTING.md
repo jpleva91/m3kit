@@ -1,44 +1,72 @@
-# App Porting with m3kit
+# Safe m3kit App Porting
 
-m3kit's app-porting workflow is designed for **safe source-internalization and side-by-side migration**, not destructive rewrites.
+m3kit app porting is an analyzer-first workflow for moving one Angular/Nx page toward m3kit without destructive rewrites. The output is a reviewable packet plus side-by-side Nx-style feature/data-access/ui scaffolds.
 
-A user picks one page/route/component. The plugin analyzes it, recommends the m3kit libraries needed, and generates a migration packet with Nx best-practice layers:
+## Principles
 
-- `feature-*` for route/container orchestration,
-- `data-access` for API/store/facade seams,
-- `ui` for presentational m3kit-compatible components,
-- Spec Kit artifacts and tests for every generated unit,
-- a runbook showing how to wire the new route manually.
+- analysis packet first: inspect and document the target before code generation.
+- RED first: generated scaffolds include tests/pending behavior seams before business logic is filled in.
+- Do not delete, move, or rewrite original page, route, service, fixture, or test files by default.
+- manual wiring only: generated route snippets go in `runbook.md`; the generator does not mutate the consumer route table.
+- Synthetic fixtures only; no real customer data or secrets.
 
-## Safety model
-
-Default behavior:
-
-- original page files are unchanged,
-- generated code is side-by-side,
-- route replacement is a runbook snippet, not an automatic mutation,
-- existing destination files are not overwritten without `--force`,
-- business data in docs/fixtures must be synthetic or redacted.
-
-## Intended commands
+## Analyze one page
 
 ```sh
 npx nx g @m3kit/plugin:port-analyze \
   --target=apps/acme/src/app/orders/orders-page.component.ts \
   --domain=orders \
-  --page=orders-list
+  --page=orders-list \
+  --outputDir=m3kit-porting/orders/orders-list
+```
 
+Review the analysis packet first:
+
+- `analysis.json`
+- `porting-plan.md`
+- `component-inventory.md`
+- `data-access-map.md`
+- `test-plan.md`
+
+The analyzer records inferred m3kit libraries, UI components, route snippets, source files, and `manual-review` data-access seams. It must leave source files unchanged.
+
+## Generate side-by-side scaffolds
+
+```sh
 npx nx g @m3kit/plugin:port-page \
   --analysis=m3kit-porting/orders/orders-list/analysis.json \
   --domain=orders \
   --page=orders-list \
-  --apply=false
+  --destinationRoot=libs/orders \
+  --apply=false \
+  --force=false
 ```
 
-## Relationship to `lift`
+The scaffold creates:
 
-`lift` remains the primitive for pulling m3kit libraries into a consumer workspace. App porting uses the analyzer output to recommend or run the appropriate lift closure, then builds feature/data-access/ui scaffolds around the user's page.
+- `libs/<domain>/feature-<page>`: page/container shell.
+- `libs/<domain>/data-access`: facade and manual-review behavior specs.
+- `libs/<domain>/ui`: presentational summary/component shell with spec/story/cy coverage.
+- `m3kit-porting/<domain>/<page>`: Spec Kit packet, runbook, contracts, checklist, and safe AI prompt.
 
-## Relationship to AI agents
+## Wiring
 
-The repo ships `skills/m3kit-app-port/SKILL.md` so a human or agent can follow the workflow. The skill explicitly requires TDD, Spec Kit artifacts, non-destructive generation, and human approval before route replacement.
+Use generated `runbook.md` for manual wiring. Add the new route side-by-side, run tests, compare old/new behavior, and only then decide whether to replace the old page. Rollback should be as simple as removing the new route snippet because the original files remain untouched.
+
+## Verification
+
+Run at least:
+
+```sh
+npx nx run m3kit-plugin:test
+npx nx run m3kit-plugin:lint
+npx nx run m3kit-plugin:build
+git diff --check
+```
+
+For spec/docs safety scans when available:
+
+```sh
+gitleaks detect --no-git --source specs --redact=20 --verbose
+gitleaks detect --no-git --source docs --redact=20 --verbose
+```
