@@ -1,0 +1,53 @@
+{
+  "$schema": "https://json-schema.org/schema",
+  "$id": "M3kitPortPage",
+  "title": "Generate side-by-side m3kit app port scaffold",
+  "type": "object",
+  "properties": {
+    "target": {
+      "type": "string",
+      "description": "Target component/page/route path to analyze when no analysis file is supplied."
+    },
+    "domain": {
+      "type": "string",
+      "description": "Domain name for generated libraries. Required unless supplied by analysis."
+    },
+    "page": {
+      "type": "string",
+      "description": "Page/feature name. Inferred from analysis or target when omitted."
+    },
+    "analysis": {
+      "type": "string",
+      "description": "Path to an analysis.json emitted by port-analyze."
+    },
+    "mode": {
+      "type": "string",
+      "enum": ["scaffold", "analysis-only", "runbook-only"],
+      "default": "scaffold",
+      "description": "Generation mode. Scaffold is the default safe side-by-side mode."
+    },
+    "destinationRoot": {
+      "type": "string",
+      "description": "Root for generated libraries. Defaults to libs/<domain>."
+    },
+    "scope": {
+      "type": "string",
+      "description": "Alias prefix for lifted m3kit libs; auto-detected when omitted."
+    },
+    "libs": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Override m3kit libs. Defaults to analysis inferredM3kitLibs."
+    },
+    "apply": {
+      "type": "boolean",
+      "default": false,
+      "description": "Reserved for future route application. v1 emits snippets only and does not rewrite routes."
+    },
+    "force": {
+      "type": "boolean",
+      "default": false,
+      "description": "Overwrite generated destinations when explicit. Default refuses conflicts."
+    }
+  }
+}
