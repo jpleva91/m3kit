@@ -1,0 +1,21 @@
+{
+  "name": "customers-ui",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/customers/ui/src",
+  "tags": [
+    "scope:customers",
+    "type:ui"
+  ],
+  "targets": {
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "reportsDirectory": "../../../coverage/libs/customers/ui"
+      }
+    }
+  }
+}

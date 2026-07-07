@@ -1,0 +1,44 @@
+{
+  "schemaVersion": 1,
+  "target": "apps/demo-reporting/src/app/reports/customers-report.component.ts",
+  "projectName": "demo-reporting",
+  "domain": "customers",
+  "page": "customers-report",
+  "sourceFiles": [
+    "apps/demo-reporting/src/app/reports/customers-report.component.ts",
+    "apps/demo-reporting/src/app/reports/report-url-state.ts"
+  ],
+  "inferredM3kitLibs": [
+    "core",
+    "theme",
+    "shell",
+    "forms",
+    "table",
+    "feedback",
+    "state"
+  ],
+  "dataAccessSeams": [
+    {
+      "file": "apps/demo-reporting/src/app/reports/report-url-state.ts",
+      "status": "manual-review",
+      "reason": "Store/effects data flow needs manual review before porting."
+    }
+  ],
+  "uiComponents": [
+    {
+      "kind": "shell",
+      "evidence": "shell/chrome markup"
+    },
+    {
+      "kind": "table",
+      "evidence": "table-like data view"
+    }
+  ],
+  "routeSnippets": [
+    "{\n    path: 'reports/customers',\n    loadComponent: () =>\n      import('./reports/customers-report.component').then(\n        (m) => m.CustomersReportComponent,\n      ),\n  }"
+  ],
+  "manualReviewItems": [
+    "Review apps/demo-reporting/src/app/reports/report-url-state.ts: Store/effects data flow needs manual review before porting."
+  ],
+  "generatedAt": "2026-07-07T00:43:05.176Z"
+}

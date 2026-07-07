@@ -1,0 +1,6 @@
+non_destructive_default: true
+route_rewrite_allowed: false
+manual_wiring_required: true
+verification_required:
+  - nx tests for generated libs
+  - side-by-side visual comparison

@@ -58,6 +58,7 @@ export class OrdersService {
   tree.write(
     'apps/demo/src/app/app.routes.ts',
     `export const routes = [
+  { path: 'dashboard', loadComponent: () => import('./dashboard/dashboard.component').then((m) => m.DashboardComponent) },
   { path: 'orders', loadComponent: () => import('./orders/orders-page.component').then((m) => m.OrdersPageComponent) },
 ];
 `,
@@ -117,18 +118,19 @@ describe('port-analyze generator', () => {
     );
   });
 
-  it('writes the analysis packet and does not mutate source files', async () => {
+  it('writes the analysis packet, does not mutate source files, and does not return an Nx task callback', async () => {
     const tree = seedWorkspace();
     const beforeTarget = tree.read(TARGET, 'utf-8');
     const beforeRoutes = tree.read('apps/demo/src/app/app.routes.ts', 'utf-8');
 
-    await portAnalyzeGenerator(tree, {
+    const task = await portAnalyzeGenerator(tree, {
       target: TARGET,
       domain: 'orders',
       page: 'orders-list',
       outputDir: 'm3kit-porting/orders/orders-list',
     });
 
+    expect(task).toBeUndefined();
     for (const file of [
       'analysis.json',
       'porting-plan.md',

@@ -8,7 +8,7 @@ import {
 } from '@nx/devkit';
 
 import { detectScope } from '../utils/detect-scope';
-import { portAnalyzeGenerator, type PortingAnalysis } from '../port-analyze/generator';
+import { analyzePortTarget, type PortingAnalysis } from '../port-analyze/generator';
 import type { PortPageGeneratorSchema } from './schema';
 
 /** Generate side-by-side Nx-style app porting scaffolds without touching source app routes. */
@@ -49,7 +49,7 @@ async function loadAnalysis(tree: Tree, options: PortPageGeneratorSchema): Promi
   if (!options.target) {
     throw new Error('port-page requires --analysis or --target.');
   }
-  return portAnalyzeGenerator(tree, {
+  return analyzePortTarget(tree, {
     target: options.target,
     domain: options.domain,
     page: options.page,
