@@ -1,0 +1,9 @@
+<section class="customers-report-summary">
+  <h2>Porting status: {{ state().status }}</h2>
+  <p>Source files: {{ state().sourceFiles.length }}</p>
+  <ul>
+    @for (item of state().manualReviewItems; track item) {
+      <li>{{ item }}</li>
+    }
+  </ul>
+</section>

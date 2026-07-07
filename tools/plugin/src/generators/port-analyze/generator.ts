@@ -24,11 +24,11 @@ export interface PortingAnalysis {
   generatedAt: string;
 }
 
-/** Analyze one source page and emit a non-destructive m3kit porting packet. */
-export async function portAnalyzeGenerator(
+/** Analyze one source page and return a reviewable m3kit porting packet model. */
+export function analyzePortTarget(
   tree: Tree,
   options: PortAnalyzeGeneratorSchema,
-): Promise<PortingAnalysis> {
+): PortingAnalysis {
   const target = normalizePath(options.target);
   if (!tree.exists(target)) {
     throw new Error(`Unable to resolve target '${options.target}'. Pass a workspace-relative component/page path or add --project when ambiguous.`);
@@ -40,7 +40,7 @@ export async function portAnalyzeGenerator(
   const outputDir = options.outputDir ?? joinPathFragments('m3kit-porting', domain, page);
   const source = tree.read(target, 'utf-8') ?? '';
   const siblingSources = findSiblingSources(tree, target, source);
-  const routeSnippets = findRouteSnippets(tree, projectName, page);
+  const routeSnippets = findRouteSnippets(tree, projectName, page, target);
   const dataAccessSeams = siblingSources
     .filter((file) => file !== target)
     .map((file) => ({ file, status: 'manual-review' as const, reason: seamReason(tree.read(file, 'utf-8') ?? '') }));
@@ -67,6 +67,14 @@ export async function portAnalyzeGenerator(
   }
 
   return analysis;
+}
+
+/** Analyze one source page and emit a non-destructive m3kit porting packet. */
+export async function portAnalyzeGenerator(
+  tree: Tree,
+  options: PortAnalyzeGeneratorSchema,
+): Promise<void> {
+  analyzePortTarget(tree, options);
 }
 
 function normalizePath(path: string): string {
@@ -124,9 +132,13 @@ function findSiblingSources(tree: Tree, target: string, source: string): string[
   return [...files];
 }
 
-function findRouteSnippets(tree: Tree, projectName: string, page: string): string[] {
+function findRouteSnippets(tree: Tree, projectName: string, page: string, target: string): string[] {
   const project = getProjects(tree).get(projectName);
   const sourceRoot = project?.sourceRoot ?? joinPathFragments(project?.root ?? '', 'src');
+  const targetImportPath = target
+    .replace(`${sourceRoot}/app/`, '')
+    .replace(/\.ts$/, '');
+  const targetStem = target.split('/').pop()?.replace(/\.ts$/, '') ?? page;
   const routePaths = [
     joinPathFragments(sourceRoot, 'app', 'app.routes.ts'),
     joinPathFragments(sourceRoot, 'app', 'routes.ts'),
@@ -137,10 +149,12 @@ function findRouteSnippets(tree: Tree, projectName: string, page: string): strin
       continue;
     }
     const routeSource = tree.read(routePath, 'utf-8') ?? '';
-    const routeMatch = routeSource.match(/\{[^{}]*path:\s*['"][^'"]+['"][\s\S]*?\}/m);
-    if (routeMatch) {
-      snippets.push(routeMatch[0]);
-    }
+    const routeMatches = [...routeSource.matchAll(/\{[^{}]*path:\s*['"][^'"]+['"][\s\S]*?\}/gm)]
+      .map((match) => match[0]);
+    const matchedRoutes = routeMatches.filter((snippet) =>
+      snippet.includes(page) || snippet.includes(targetImportPath) || snippet.includes(targetStem),
+    );
+    snippets.push(...(matchedRoutes.length > 0 ? matchedRoutes : routeMatches));
   }
   if (snippets.length === 0) {
     snippets.push(`{ path: '${page}', loadComponent: () => import('./${page}/${page}.component') }`);

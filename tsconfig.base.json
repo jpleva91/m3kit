@@ -10,23 +10,60 @@
     "importHelpers": true,
     "target": "es2015",
     "module": "esnext",
-    "lib": ["es2020", "dom"],
+    "lib": [
+      "es2020",
+      "dom"
+    ],
     "skipLibCheck": true,
     "skipDefaultLibCheck": true,
     "baseUrl": ".",
     "paths": {
-      "@m3kit/ai": ["libs/ai/src/index.ts"],
-      "@m3kit/charts": ["libs/charts/src/index.ts"],
-      "@m3kit/core": ["libs/core/src/index.ts"],
-      "@m3kit/dashboard": ["libs/dashboard/src/index.ts"],
-      "@m3kit/feedback": ["libs/feedback/src/index.ts"],
-      "@m3kit/forms": ["libs/forms/src/index.ts"],
-      "@m3kit/plugin": ["tools/plugin/src/index.ts"],
-      "@m3kit/shell": ["libs/shell/src/index.ts"],
-      "@m3kit/state": ["libs/state/src/index.ts"],
-      "@m3kit/table": ["libs/table/src/index.ts"],
-      "@m3kit/testing": ["libs/testing/src/index.ts"]
+      "@m3kit/ai": [
+        "libs/ai/src/index.ts"
+      ],
+      "@m3kit/charts": [
+        "libs/charts/src/index.ts"
+      ],
+      "@m3kit/core": [
+        "libs/core/src/index.ts"
+      ],
+      "@m3kit/dashboard": [
+        "libs/dashboard/src/index.ts"
+      ],
+      "@m3kit/feedback": [
+        "libs/feedback/src/index.ts"
+      ],
+      "@m3kit/forms": [
+        "libs/forms/src/index.ts"
+      ],
+      "@m3kit/plugin": [
+        "tools/plugin/src/index.ts"
+      ],
+      "@m3kit/shell": [
+        "libs/shell/src/index.ts"
+      ],
+      "@m3kit/state": [
+        "libs/state/src/index.ts"
+      ],
+      "@m3kit/table": [
+        "libs/table/src/index.ts"
+      ],
+      "@m3kit/testing": [
+        "libs/testing/src/index.ts"
+      ],
+      "@m3kit/customers/feature-customers-report": [
+        "libs/customers/feature-customers-report/src/index.ts"
+      ],
+      "@m3kit/customers/data-access": [
+        "libs/customers/data-access/src/index.ts"
+      ],
+      "@m3kit/customers/ui": [
+        "libs/customers/ui/src/index.ts"
+      ]
     }
   },
-  "exclude": ["node_modules", "tmp"]
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
 }

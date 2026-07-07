@@ -1,0 +1,21 @@
+{
+  "name": "customers-feature-customers-report",
+  "$schema": "../../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "library",
+  "sourceRoot": "libs/customers/feature-customers-report/src",
+  "tags": [
+    "scope:customers",
+    "type:feature"
+  ],
+  "targets": {
+    "test": {
+      "executor": "@nx/vite:test",
+      "outputs": [
+        "{options.reportsDirectory}"
+      ],
+      "options": {
+        "reportsDirectory": "../../../coverage/libs/customers/feature-customers-report"
+      }
+    }
+  }
+}
