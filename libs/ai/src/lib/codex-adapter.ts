@@ -12,21 +12,23 @@ import {
 export interface M3kAiCodexAdapterOptions
   extends Partial<Omit<M3kAiOpenAiAdapterOptions, 'baseUrl' | 'model'>> {
   /**
-   * OpenAI-compatible gateway URL. Defaults to `hermes proxy`'s bind
-   * (`http://127.0.0.1:8645/v1`).
+   * OpenAI-compatible gateway URL. Defaults to the codex→OpenAI gateway bind
+   * (`http://127.0.0.1:8646/v1`).
    *
-   * The raw codex backend (`chatgpt.com/backend-api/codex`) is OAuth-gated
-   * and not reachable from a browser, so a gateway that speaks plain
-   * `/chat/completions` and attaches credentials upstream is required. Point
-   * this at whatever exposes codex that way.
+   * The raw codex backend (`chatgpt.com/backend-api/codex`) is OAuth-gated and
+   * speaks the Responses API, not `/chat/completions` — so a translating
+   * gateway is required. `hermes proxy` (`:8645`) is a non-transforming
+   * forwarder and cannot serve codex; the companion `codex-openai-gateway`
+   * (`:8646`) reuses Hermes's own codex translation + credentials to expose a
+   * plain `/chat/completions` surface. Point this at whatever does that.
    */
   readonly baseUrl?: string;
   /** Model name; defaults to `gpt-5.5` (the ReadyBench worker default). */
   readonly model?: string;
 }
 
-/** Default gateway: the local `hermes proxy` bind (see `hermes proxy start`). */
-export const M3KIT_CODEX_DEFAULT_BASE_URL = 'http://127.0.0.1:8645/v1';
+/** Default: the local codex→OpenAI translating gateway (codex-openai-gateway). */
+export const M3KIT_CODEX_DEFAULT_BASE_URL = 'http://127.0.0.1:8646/v1';
 export const M3KIT_CODEX_DEFAULT_MODEL = 'gpt-5.5';
 
 /**
