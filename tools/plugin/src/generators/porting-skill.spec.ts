@@ -35,4 +35,15 @@ describe('m3kit app porting skill and docs', () => {
       expect(content).toContain('manual wiring');
     }
   });
+
+  it('documents the sanctioned external app probe limitation', () => {
+    const skill = readFileSync(join(repoRoot, 'skills/m3kit-app-port/SKILL.md'), 'utf-8');
+    const docs = readFileSync(join(repoRoot, 'docs/APP_PORTING.md'), 'utf-8');
+
+    for (const content of [skill, docs]) {
+      expect(content).toContain('external app');
+      expect(content).toContain('apps/demo-reporting/src/app/legacy-probe');
+      expect(content).toContain('hash before/after');
+    }
+  });
 });

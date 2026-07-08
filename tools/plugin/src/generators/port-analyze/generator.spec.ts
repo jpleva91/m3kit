@@ -118,6 +118,89 @@ describe('port-analyze generator', () => {
     );
   });
 
+  it('detects PrimeNG table-like views as m3kit table candidates', async () => {
+    const tree = createTreeWithEmptyWorkspace();
+    addProjectConfiguration(tree, 'demo', {
+      root: 'apps/demo',
+      sourceRoot: 'apps/demo/src',
+      projectType: 'application',
+    });
+    tree.write(
+      'apps/demo/src/app/customers/customer-list.component.ts',
+      `import { Component, signal } from '@angular/core';
+
+@Component({
+  selector: 'app-customer-list',
+  standalone: true,
+  template: ` + '`' + `
+    <p-table [value]="customers()">
+      <ng-template pTemplate="body" let-customer>
+        <tr><td>{{ customer.name }}</td></tr>
+      </ng-template>
+    </p-table>
+  ` + '`' + `,
+})
+export class CustomerListComponent {
+  readonly customers = signal([{ name: 'Ada' }]);
+}
+`,
+    );
+
+    await portAnalyzeGenerator(tree, {
+      target: 'apps/demo/src/app/customers/customer-list.component.ts',
+      domain: 'customers',
+      page: 'customer-list',
+      outputDir: 'm3kit-porting/customers/customer-list',
+    });
+
+    const analysis = readJson(tree, 'm3kit-porting/customers/customer-list/analysis.json') as {
+      inferredM3kitLibs: string[];
+      uiComponents: Array<{ kind: string; evidence: string }>;
+    };
+
+    expect(analysis.inferredM3kitLibs).toContain('table');
+    expect(analysis.uiComponents).toEqual(
+      expect.arrayContaining([expect.objectContaining({ kind: 'table' })]),
+    );
+  });
+
+  it('prefers matched route snippets from route files colocated near the target', async () => {
+    const tree = seedWorkspace();
+    tree.write(
+      'apps/demo/src/app/legacy-probe/customer-list.component.ts',
+      `import { Component } from '@angular/core';
+
+@Component({
+  selector: 'app-customer-list',
+  standalone: true,
+  template: '<p>customers</p>',
+})
+export class CustomerListComponent {}
+`,
+    );
+    tree.write(
+      'apps/demo/src/app/legacy-probe/app.routes.ts',
+      `export const legacyRoutes = [
+  { path: 'legacy-customers', loadComponent: () => import('./customer-list.component').then((m) => m.CustomerListComponent) },
+];
+`,
+    );
+
+    await portAnalyzeGenerator(tree, {
+      target: 'apps/demo/src/app/legacy-probe/customer-list.component.ts',
+      domain: 'legacy-insurance',
+      page: 'customer-list',
+      outputDir: 'm3kit-porting/legacy-insurance/customer-list',
+    });
+
+    const analysis = readJson(tree, 'm3kit-porting/legacy-insurance/customer-list/analysis.json') as {
+      routeSnippets: string[];
+    };
+
+    expect(analysis.routeSnippets).toHaveLength(1);
+    expect(analysis.routeSnippets[0]).toContain("path: 'legacy-customers'");
+  });
+
   it('writes the analysis packet, does not mutate source files, and does not return an Nx task callback', async () => {
     const tree = seedWorkspace();
     const beforeTarget = tree.read(TARGET, 'utf-8');

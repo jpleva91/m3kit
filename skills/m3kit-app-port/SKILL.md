@@ -47,7 +47,8 @@ npx nx g @m3kit/plugin:port-analyze \
 ```
 
 3. Confirm the analysis packet first: `analysis.json`, `porting-plan.md`, `component-inventory.md`, `data-access-map.md`, and `test-plan.md`.
-4. Generate side-by-side scaffolds only after the packet is reviewed:
+4. For an external app probe, copy only the target component/page and any tiny synthetic route fixture into `apps/demo-reporting/src/app/legacy-probe`, record a hash before/after analysis to prove the copied target stayed unchanged, and remove probe-only copied source before commit unless it is an intentionally authored synthetic fixture.
+5. Generate side-by-side scaffolds only after the packet is reviewed:
 
 ```sh
 npx nx g @m3kit/plugin:port-page \
@@ -59,9 +60,9 @@ npx nx g @m3kit/plugin:port-page \
   --force=false
 ```
 
-5. Follow RED first TDD: keep the generated pending/manual-review specs failing for real business behavior before filling data-access or UI logic.
-6. Follow the generated runbook for manual wiring. Add route snippets side-by-side; do not replace the original route until tests, comparison, and human review pass.
-7. Verify generated libs and the app route comparison. Preserve rollback instructions.
+6. Follow RED first TDD: keep the generated pending/manual-review specs failing for real business behavior before filling data-access or UI logic.
+7. Follow the generated runbook for manual wiring. Add route snippets side-by-side; do not replace the original route until tests, comparison, and human review pass.
+8. Verify generated libs and the app route comparison. Preserve rollback instructions.
 
 ## Generator Contract
 
@@ -96,6 +97,7 @@ npx nx g @m3kit/plugin:port-page \
 - Do not copy real customer data or secrets into generated fixtures.
 - Do not overwrite generated destinations unless `--force=true` is explicit and the conflict report has been reviewed.
 - manual wiring only: route snippets in `runbook.md` are instructions, not automatic edits.
+- external app paths are not direct generator targets yet; use the workspace-local legacy probe pattern above instead of broad filesystem mutation.
 
 ## Verification Checklist
 

@@ -30,6 +30,17 @@ Review the analysis packet first:
 
 The analyzer records inferred m3kit libraries, UI components, route snippets, source files, and `manual-review` data-access seams. It must leave source files unchanged.
 
+## External app probes
+
+`port-analyze` currently expects `--target` to be a workspace-relative file inside the m3kit Nx tree. For an external app probe, do not point the generator at arbitrary filesystem paths and do not let the probe mutate the source checkout.
+
+Sanctioned pattern for a one-page legacy probe:
+
+1. Copy only the small target component/page and any tiny synthetic route fixture needed for analysis into `apps/demo-reporting/src/app/legacy-probe`.
+2. Record a hash before/after analysis for the copied target so the probe proves the analyzer is non-destructive.
+3. Run `port-analyze` against the copied workspace-relative file and review the packet.
+4. Remove the probe-only copied source and generated scratch libs before commit unless the test intentionally uses a synthetic fixture authored in this repo.
+
 ## Generate side-by-side scaffolds
 
 ```sh

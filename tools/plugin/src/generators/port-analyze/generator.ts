@@ -139,11 +139,9 @@ function findRouteSnippets(tree: Tree, projectName: string, page: string, target
     .replace(`${sourceRoot}/app/`, '')
     .replace(/\.ts$/, '');
   const targetStem = target.split('/').pop()?.replace(/\.ts$/, '') ?? page;
-  const routePaths = [
-    joinPathFragments(sourceRoot, 'app', 'app.routes.ts'),
-    joinPathFragments(sourceRoot, 'app', 'routes.ts'),
-  ];
-  const snippets: string[] = [];
+  const routePaths = candidateRoutePaths(sourceRoot, target);
+  const matchedSnippets: string[] = [];
+  const fallbackSnippets: string[] = [];
   for (const routePath of routePaths) {
     if (!tree.exists(routePath)) {
       continue;
@@ -154,19 +152,39 @@ function findRouteSnippets(tree: Tree, projectName: string, page: string, target
     const matchedRoutes = routeMatches.filter((snippet) =>
       snippet.includes(page) || snippet.includes(targetImportPath) || snippet.includes(targetStem),
     );
-    snippets.push(...(matchedRoutes.length > 0 ? matchedRoutes : routeMatches));
+    matchedSnippets.push(...matchedRoutes);
+    fallbackSnippets.push(...routeMatches);
   }
+  const snippets = matchedSnippets.length > 0 ? matchedSnippets : fallbackSnippets;
   if (snippets.length === 0) {
     snippets.push(`{ path: '${page}', loadComponent: () => import('./${page}/${page}.component') }`);
   }
   return snippets;
 }
 
+function candidateRoutePaths(sourceRoot: string, target: string): string[] {
+  const appRoot = joinPathFragments(sourceRoot, 'app');
+  const paths = new Set<string>();
+  const targetParts = target.split('/').slice(0, -1);
+  while (targetParts.length > 0) {
+    const dir = targetParts.join('/');
+    paths.add(joinPathFragments(dir, 'app.routes.ts'));
+    paths.add(joinPathFragments(dir, 'routes.ts'));
+    if (dir === appRoot) {
+      break;
+    }
+    targetParts.pop();
+  }
+  paths.add(joinPathFragments(appRoot, 'app.routes.ts'));
+  paths.add(joinPathFragments(appRoot, 'routes.ts'));
+  return [...paths];
+}
+
 function inferM3kitLibs(source: string, siblingSource: string): string[] {
   const combined = `${source}\n${siblingSource}`;
   const libs = new Set<string>(['core', 'theme', 'shell']);
   if (/form|ReactiveFormsModule|FormBuilder|formControlName/i.test(combined)) libs.add('forms');
-  if (/mat-table|<table|dataSource|MatTableModule/i.test(combined)) libs.add('table');
+  if (isTableLikeView(combined)) libs.add('table');
   if (/chart|canvas|svg|trend|kpi/i.test(combined)) libs.add('charts');
   if (/error|empty|snackbar|dialog|banner|skeleton/i.test(combined)) libs.add('feedback');
   if (/HttpClient|Service|Store|signalStore|inject\(/i.test(combined)) libs.add('state');
@@ -177,7 +195,7 @@ function inferUiComponents(source: string): Array<{ kind: string; evidence: stri
   const checks: Array<[string, RegExp, string]> = [
     ['shell', /app-shell|router-outlet|page-header|toolbar|sidenav/i, 'shell/chrome markup'],
     ['forms', /form|ReactiveFormsModule|FormBuilder|formControlName/i, 'form controls'],
-    ['table', /mat-table|<table|dataSource|MatTableModule/i, 'table-like data view'],
+    ['table', tableLikeViewPattern(), 'table-like data view'],
     ['dashboard', /kpi|metric|stat-card/i, 'dashboard metrics'],
     ['charts', /chart|canvas|svg|trend/i, 'chart-like visualization'],
     ['feedback', /error|empty|snackbar|dialog|banner|skeleton/i, 'feedback state'],
@@ -185,6 +203,14 @@ function inferUiComponents(source: string): Array<{ kind: string; evidence: stri
   return checks
     .filter(([, regex]) => regex.test(source))
     .map(([kind, , evidence]) => ({ kind, evidence }));
+}
+
+function isTableLikeView(source: string): boolean {
+  return tableLikeViewPattern().test(source);
+}
+
+function tableLikeViewPattern(): RegExp {
+  return /mat-table|<table|dataSource|MatTableModule|<p-table\b|pTemplate\s*=|primeng\/table/i;
 }
 
 function seamReason(source: string): string {
